@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Barloader from '../components/component/Barloader';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -29,11 +29,12 @@ const Register = () => {
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await sendEmailVerification(userCredential.user);
             console.log('User signed up:', userCredential.user);
-            toast.success('Registration successful! Redirecting to login...');
+            toast.success('Registration successful! Please check your email to verify your account.');
             setTimeout(() => {
                 navigate('/sign-in'); // Redirect to the login page
-            }, 3000); // Redirect after 3 seconds
+            }, 5000); // Redirect after 3 seconds
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 toast.error('Email already in use');
@@ -42,7 +43,7 @@ const Register = () => {
             } else if (error.code === 'auth/password-does-not-meet-requirements') {
                 toast.error('Weak password (minimum 6 characters, at least one uppercase letter, one lowercase letter, one special character, and one number)');
             } else {
-                toast.error('Error signing up: ' + error.mesage);
+                toast.error('Error signing up: ' + error.message);
             }
         } finally {
             setIsLoading(false);

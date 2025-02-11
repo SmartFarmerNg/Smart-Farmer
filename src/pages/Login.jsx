@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Barloader from '../components/component/Barloader';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,11 +26,21 @@ const Login = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in:', userCredential.user);
+      const user = userCredential.user;
+
+      // Check if the user's email is verified
+      if (!user.emailVerified) {
+        toast.error('Please verify your email before logging in.');
+        await auth.signOut(); // Sign out the user if email is not verified
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('User logged in:', user);
       toast.success('Login successful! Redirecting...');
       setTimeout(() => {
-        navigate('/dashboard'); // Redirect to the home page or dashboard
-      }, 5000); // Redirect after 5 seconds
+        navigate('/dashboard'); // Redirect to the dashboard or home page
+      }, 3000); // Redirect after 3 seconds
     } catch (error) {
       if (error.code === 'auth/invalid-email') {
         toast.error('Invalid email');
@@ -38,11 +48,27 @@ const Login = () => {
         toast.error('User not found');
       } else if (error.code === 'auth/wrong-password') {
         toast.error('Incorrect password');
+      } else if (error.code === 'auth/too-many-requests') {
+        toast.error('Too many attempts. Please try again later or reset your password.');
       } else {
         toast.error('Error logging in: ' + error.message);
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast.error('Please enter your email address to reset your password.');
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success('Password reset email sent. Please check your inbox.');
+    } catch (error) {
+      toast.error('Error sending password reset email: ' + error.message);
     }
   };
 
@@ -109,6 +135,13 @@ const Login = () => {
               Sign up
             </Link>
           </span>
+          <button
+            type="button"
+            className='text-[#0FA280] hover:text-[#0fa270] mt-2'
+            onClick={handleForgotPassword}
+          >
+            Forgot Password?
+          </button>
         </form>
       </div>
     </div>
