@@ -7,6 +7,8 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import * as motion from "motion/react-client"
+
 const Register = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
@@ -128,7 +130,9 @@ const Register = () => {
                             {showConfirmPassword ? <EyeOff className='text-[#0FA280]' /> : <Eye className='text-[#0FA280]' />}
                         </button>
                     </label>
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.85 }}
                         type="submit"
                         className='bg-[#0FA280] hover:bg-[#0fa270] p-3 w-full font-semibold text-xl rounded-lg text-white'
                         disabled={isLoading}
@@ -136,7 +140,7 @@ const Register = () => {
                         {isLoading ? (
                             <Loader2 className='animate-spin m-auto w-7 h-7' />
                         ) : 'Register'}
-                    </button>
+                    </motion.button>
                     <span>
                         Do you have an account?{' '}
                         <Link to="/sign-in" className='text-[#0FA280] hover:text-[#0fa270]'>
