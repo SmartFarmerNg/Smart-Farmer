@@ -70,7 +70,7 @@ const Profile = () => {
                                 whileTap={{ scale: 0.85 }}
                                 type="button"
                                 className='bg-[#442C2E] px-1 py-2 w-full font-semibold text-sm rounded-lg text-white'
-                                onClick={() => navigate('/dashboard')}
+                                onClick={() => navigate('/deposit')}
                             >
                                 Fund account
                             </motion.button>
