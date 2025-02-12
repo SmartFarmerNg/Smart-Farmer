@@ -38,7 +38,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className='h-screen w-full flex flex-col items-center bg-[#FFFBFA] py-4'>
+        <div className='h-screen w-full flex flex-col items-center bg-[#FFFBFA] py-4 font-serif'>
             <h1 className='text-xl font-bold'>Invest</h1>
             <div className='flex items-center gap-5 w-full md:w-[70%] lg:w-[50%] p-5'>
                 <button className='bg-[#0FA280] flex gap-2 px-2 p-1 w-full rounded-md'>

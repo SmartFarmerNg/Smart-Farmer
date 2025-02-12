@@ -53,7 +53,7 @@ const Register = () => {
     };
 
     return (
-        <div className='h-screen flex flex-col items-center bg-[#E7F6F2]'>
+        <div className='h-screen flex flex-col items-center bg-[#E7F6F2] font-serif'>
             {isLoading && <Barloader />}
             <ToastContainer
                 position="top-right"

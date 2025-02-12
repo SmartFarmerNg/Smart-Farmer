@@ -42,7 +42,7 @@ const Profile = () => {
         return <Barloader />; // Show a loading indicator while checking auth state
     }
     return (
-        <div className=' bg-[#FFFBFA] w-full'>
+        <div className=' bg-[#FFFBFA] w-full font-serif'>
             <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] py-5 m-auto'>
                 <header className='w-full mb-5 flex items-center justify-between px-5'>
                     <button onClick={() => navigate('/dashboard')}>
@@ -58,12 +58,12 @@ const Profile = () => {
                     <div className='bg-[#DBF1EC] w-full rounded-xl flex justify-between p-3 px-5 shadow-2xl my-6'>
                         <div className='flex flex-col justify-between gap-3'>
                             <div className='flex flex-col gap-1'>
-                                <h1 className='font-bold text-sm'>Primary account</h1>
-                                <span className='text-sm'>$20,000</span>
+                                <h1 className='font-extrabold text-xs'>Primary account</h1>
+                                <span className='text-xs'>$20,000</span>
                             </div>
                             <div className='flex flex-col gap-1'>
-                                <h1 className='font-bold text-sm'>Available balance</h1>
-                                <span className='text-sm'>$20,000</span>
+                                <h1 className='font-extrabold text-xs'>Available balance</h1>
+                                <span className='text-xs'>$20,000</span>
                             </div>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
