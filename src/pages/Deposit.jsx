@@ -25,7 +25,6 @@ const Deposit = () => {
                     <ArrowRight className='text-[#0FA280] w-6 h-6' />
                 </button>
             </div>
-            <Footer page='profile' />
         </div>
     )
 }
