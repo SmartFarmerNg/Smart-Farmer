@@ -25,7 +25,7 @@ const Deposit = () => {
                 });
             } else {
                 // If no user is logged in, redirect to the login page
-                navigate('/login');
+                navigate('/sign-in');
             }
             setLoading(false); // Set loading to false once the user data is fetched
         });
