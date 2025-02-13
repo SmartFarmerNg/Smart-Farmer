@@ -75,7 +75,7 @@ const Login = () => {
   };
 
   return (
-    <div className='h-screen flex flex-col items-center bg-[#E7F6F2] font-serif'>
+    <div className='h-screen flex flex-col items-center bg-[#E7F6F2] font-sans'>
       {isLoading && <Barloader />}
       <ToastContainer
         position="top-right"

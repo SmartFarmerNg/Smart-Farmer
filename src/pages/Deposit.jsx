@@ -1,10 +1,38 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Footer from '../components/component/Footer'
 import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const Deposit = () => {
     const navigate = useNavigate();
+    const [user, setUser] = useState(null); // State to store the logged-in user's data
+    const [loading, setLoading] = useState(true); // State to track loading status
+
+    useEffect(() => {
+        // Set up the Firebase auth state observer
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                // If a user is logged in, store their data in state
+                setUser({
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    displayName: currentUser.displayName,
+                    photoURL: currentUser.photoURL,
+                });
+            } else {
+                // If no user is logged in, redirect to the login page
+                navigate('/login');
+            }
+            setLoading(false); // Set loading to false once the user data is fetched
+        });
+
+        // Clean up the observer when the component unmounts
+        return () => unsubscribe();
+    }, [navigate]);
+
+
     return (
         <div className=' bg-[#FFFBFA] w-full font-serif'>
             <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] py-5 m-auto gap-3'>

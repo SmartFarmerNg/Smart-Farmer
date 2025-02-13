@@ -42,7 +42,7 @@ const Profile = () => {
         return <Barloader />; // Show a loading indicator while checking auth state
     }
     return (
-        <div className=' bg-[#FFFBFA] w-full font-serif'>
+        <div className=' bg-[#FFFBFA] w-full font-sans'>
             <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] py-5 m-auto'>
                 <header className='w-full mb-5 flex items-center justify-between px-5'>
                     <button onClick={() => navigate('/dashboard')}>
