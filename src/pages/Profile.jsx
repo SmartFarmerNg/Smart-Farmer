@@ -55,7 +55,15 @@ const Profile = () => {
                     <span className='text-sm'>Welcome</span>
                 </div>
                 <section className='px-5'>
-                    <div className='bg-[#DBF1EC] w-full rounded-xl flex justify-between p-3 px-5 shadow-2xl my-6'>
+                    <motion.div
+                        initial={{ opacity: 0, transform: 'translateX(100px)' }}
+                        animate={{ opacity: 1, transform: 'translateX(0)' }}
+                        transition={{
+                            duration: 0.8,
+                            delay: 0.1,
+                            ease: [0, 0.71, 0.2, 1.01],
+                        }}
+                        className='bg-[#DBF1EC] w-full rounded-xl flex justify-between p-3 px-5 shadow-2xl my-6'>
                         <div className='flex flex-col justify-between gap-3'>
                             <div className='flex flex-col gap-1'>
                                 <h1 className='font-extrabold text-xs'>Primary account</h1>
@@ -76,12 +84,27 @@ const Profile = () => {
                             </motion.button>
                         </div>
                         <Home />
-                    </div>
+                    </motion.div>
                 </section>
                 <section className='px-5'>
-                    <h1 className='text-base font-bold'>Recent transactions</h1>
+                    <motion.h1
+                        initial={{ opacity: 0, transform: 'translateX(100px)' }}
+                        animate={{ opacity: 1, transform: 'translateX(0)' }}
+                        transition={{
+                            duration: 0.8,
+                            delay: 0.2,
+                            ease: [0, 0.71, 0.2, 1.01],
+                        }}
+                        className='text-base font-bold'>Recent transactions</motion.h1>
                     <div className='flex flex-col gap-2 mt-4'>
-                        <div className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
+                        <motion.div
+                            initial={{ opacity: 0, transform: 'translateX(100px)' }}
+                            animate={{ opacity: 1, transform: 'translateX(0)' }}
+                            transition={{
+                                duration: 0.8,
+                                delay: 0.25,
+                                ease: [0, 0.71, 0.2, 1.01],
+                            }} className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
                             <div className='flex items-center w-10 h-10 bg-[#46BF5A] rounded-full justify-center text-white'>
                                 <ArrowDownLeft />
                             </div>
@@ -92,8 +115,15 @@ const Profile = () => {
                             <div className='self-start ml-auto text-sm'>
                                 <h1>$50,500</h1>
                             </div>
-                        </div>
-                        <div className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, transform: 'translateX(100px)' }}
+                            animate={{ opacity: 1, transform: 'translateX(0)' }}
+                            transition={{
+                                duration: 0.8,
+                                delay: 0.3,
+                                ease: [0, 0.71, 0.2, 1.01],
+                            }} className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
                             <div className='flex items-center w-10 h-10 bg-[#46BF5A] rounded-full justify-center text-white'>
                                 <ArrowDownLeft />
                             </div>
@@ -104,8 +134,15 @@ const Profile = () => {
                             <div className='self-start ml-auto text-sm'>
                                 <h1>$50,500</h1>
                             </div>
-                        </div>
-                        <div className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, transform: 'translateX(100px)' }}
+                            animate={{ opacity: 1, transform: 'translateX(0)' }}
+                            transition={{
+                                duration: 0.8,
+                                delay: 0.35,
+                                ease: [0, 0.71, 0.2, 1.01],
+                            }} className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
                             <div className='flex items-center w-10 h-10 bg-[#D90101] rounded-full justify-center text-white'>
                                 <ArrowUpRight />
                             </div>
@@ -116,7 +153,7 @@ const Profile = () => {
                             <div className='self-start ml-auto text-sm'>
                                 <h1>$50,500</h1>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
             </div>
