@@ -79,7 +79,7 @@ const Login = () => {
       {isLoading && <Barloader />}
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={2300}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

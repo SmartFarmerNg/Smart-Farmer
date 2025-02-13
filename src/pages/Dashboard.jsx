@@ -24,7 +24,7 @@ const Dashboard = () => {
                 });
             } else {
                 // If no user is logged in, redirect to the login page
-                navigate('/login');
+                navigate('/sign-in');
             }
             setLoading(false); // Set loading to false once the user data is fetched
         });
@@ -34,7 +34,10 @@ const Dashboard = () => {
     }, [navigate]);
 
     if (loading) {
-        return <Barloader />; // Show a loading indicator while checking auth state
+        return <>
+            <Barloader /> {/*  Show a loading indicator while checking auth state */}
+            <Footer page='dashboard' />
+        </>
     }
 
     return (
@@ -56,6 +59,24 @@ const Dashboard = () => {
                     </div>
                 </button>
             </div>
+            <section className='w-full md:w-[70%] lg:w-[50%] p-5'>
+                <input type="text" className='w-full p-2 border rounded-md' placeholder='Search' />
+                <h1 className='text-lg font-bold mt-2'>Top crops to invest in</h1>
+                <div className='flex flex-wrap items-center justify-between mt-2'>
+                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3'>
+                        <h2 className='font-semibold'>Maize</h2>
+                    </div>
+                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3'>
+                        <h2 className='font-semibold'>Cassava</h2>
+                    </div>
+                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3 borde'>
+                        <h2 className='font-semibold'>Cocoa</h2>
+                    </div>
+                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3'>
+                        <h2 className='font-semibold'>Palm oil</h2>
+                    </div>
+                </div>
+            </section>
             <Footer page='dashboard' />
         </div>
     );

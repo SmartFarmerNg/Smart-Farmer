@@ -36,7 +36,7 @@ const Deposit = () => {
 
 
     return (
-        <div className=' bg-[#FFFBFA] w-full font-serif'>
+        <div className=' bg-[#FFFBFA] w-full font-sans'>
             <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] p-5 m-auto gap-3'>
                 <header className='w-full mb-5 flex items-center justify-between'>
                     <button onClick={() => navigate('/profile')} className='mr-auto cursor-pointer'>
@@ -47,27 +47,27 @@ const Deposit = () => {
                     <h1 className='text-2xl font-bold text-[#0FA280]'>Deposit</h1>
                 </div>
                 <motion.button
-                    initial={{ opacity: 0, transform: 'translateX(-100px)' }}
+                    initial={{ opacity: 0, transform: 'translateX(100px)' }}
                     animate={{ opacity: 1, transform: 'translateX(0)' }}
                     transition={{
                         duration: 0.8,
                         delay: 0.1,
                         ease: [0, 0.71, 0.2, 1.01],
                     }}
-                    className='flex justify-between items-center border-2 border-[#0FA280] rounded-lg p-5 cursor-pointer'>
-                    <h1 className='font-bold text-xl'>Deposit via Paystack</h1>
+                    className='flex justify-between items-center border-2 border-[#0FA280] rounded-lg p-3 cursor-pointer'>
+                    <h1 className='font-bold'>Deposit via Paystack</h1>
                     <ArrowRight className='text-[#0FA280] w-6 h-6' />
                 </motion.button>
                 <motion.button
-                    initial={{ opacity: 0, transform: 'translateX(-100px)' }}
+                    initial={{ opacity: 0, transform: 'translateX(100px)' }}
                     animate={{ opacity: 1, transform: 'translateX(0)' }}
                     transition={{
                         duration: 0.8,
                         delay: 0.2,
                         ease: [0, 0.71, 0.2, 1.01],
                     }}
-                    className='flex justify-between items-center border-2 border-[#0FA280] rounded-lg p-5 cursor-pointer'>
-                    <h1 className='font-bold text-xl'>Deposit via Bank Transfer</h1>
+                    className='flex justify-between items-center border-2 border-[#0FA280] rounded-lg p-3 cursor-pointer'>
+                    <h1 className='font-bold'>Deposit via Bank Transfer</h1>
                     <ArrowRight className='text-[#0FA280] w-6 h-6' />
                 </motion.button>
             </div>

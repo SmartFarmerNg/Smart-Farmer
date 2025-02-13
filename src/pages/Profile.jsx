@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from 'firebase/auth';
-import { ArrowDownLeft, ArrowLeft, ArrowRightLeft, ArrowUpRight, Bell, ChartNoAxesColumn, Home, User } from 'lucide-react'
+import { ArrowDownLeft, ArrowLeft, ArrowRightLeft, ArrowUpRight, Bell, ChartNoAxesColumn, Home, LogOut, User } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ const Profile = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null); // State to store the logged-in user's data
     const [loading, setLoading] = useState(true); // State to track loading status
+    const [isLogginOut, setIsLogginout] = useState(false); // State to track loading status
 
     useEffect(() => {
         // Set up the Firebase auth state observer
@@ -27,7 +28,7 @@ const Profile = () => {
                 });
             } else {
                 // If no user is logged in, redirect to the login page
-                navigate('/login');
+                navigate('/sign-in');
             }
             console.log(currentUser);
 
@@ -39,15 +40,27 @@ const Profile = () => {
     }, [navigate]);
 
     if (loading) {
-        return <Barloader />; // Show a loading indicator while checking auth state
+        return <>
+            <Barloader /> {/* // Show a loading indicator while checking auth state */}
+            <Footer page='dashboard' />
+        </>
     }
+
+    const handleLogout = () => {
+        setIsLogginout(true)
+        setTimeout(() => {
+            auth.signOut();
+        }, 1000);
+    };
     return (
         <div className=' bg-[#FFFBFA] w-full font-sans'>
+            {isLogginOut && <Barloader />}
             <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] py-5 m-auto'>
-                <header className='w-full mb-5 flex items-center justify-between px-5'>
+                <header className='w-full mb-5 flex items-center gap-3 px-5'>
                     <button onClick={() => navigate('/dashboard')}>
                         <ArrowLeft className='text-black w-6 h-6' />
                     </button>
+                    <LogOut onClick={() => handleLogout()} className='text-black w-6 h-6 ml-auto' />
                     <Bell className='text-black w-6 h-6' />
                 </header>
                 <div className='flex flex-col items-center gap-1 mr-auto px-5'>
