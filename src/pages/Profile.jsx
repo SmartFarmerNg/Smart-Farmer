@@ -1,31 +1,41 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import { ArrowDownLeft, ArrowLeft, ArrowRightLeft, ArrowUpRight, Bell, ChartNoAxesColumn, Home, LogOut, User } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 
 import * as motion from "motion/react-client"
 import Footer from '../components/component/Footer';
 import Barloader from '../components/component/Barloader';
+import { doc, getDoc } from 'firebase/firestore';
 
 
 const Profile = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null); // State to store the logged-in user's data
+    const [user, setUser] = useState([]); // State to store the logged-in user's data
     const [loading, setLoading] = useState(true); // State to track loading status
     const [isLogginOut, setIsLogginout] = useState(false); // State to track loading status
 
+    const fetchUserData = async (uid) => {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            if (userDoc.exists()) {
+                return userDoc.data();
+            }
+            return null;
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            return null;
+        }
+    };
+
     useEffect(() => {
         // Set up the Firebase auth state observer
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 // If a user is logged in, store their data in state
-                setUser({
-                    uid: currentUser.uid,
-                    email: currentUser.email,
-                    displayName: currentUser.displayName,
-                    photoURL: currentUser.photoURL,
-                });
+                const userData = await fetchUserData(currentUser.uid);
+                setUser(userData);
             } else {
                 // If no user is logged in, redirect to the login page
                 navigate('/sign-in');
@@ -38,7 +48,6 @@ const Profile = () => {
         // Clean up the observer when the component unmounts
         return () => unsubscribe();
     }, [navigate]);
-
     if (loading) {
         return <>
             <Barloader /> {/* // Show a loading indicator while checking auth state */}
@@ -63,8 +72,8 @@ const Profile = () => {
                     <LogOut onClick={() => handleLogout()} className='text-black w-6 h-6 ml-auto' />
                     <Bell className='text-black w-6 h-6' />
                 </header>
-                <div className='flex flex-col items-center gap-1 mr-auto px-5'>
-                    <h1 className='text-sm font-bold'>Hi, User</h1>
+                <div className='flex flex-col gap-1 mr-auto px-5'>
+                    <h1 className='text-sm font-bold'>Hi, {user.username}</h1>
                     <span className='text-sm'>Welcome</span>
                 </div>
                 <section className='px-5'>

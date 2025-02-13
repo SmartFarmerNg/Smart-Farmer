@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Barloader from '../components/component/Barloader';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import * as motion from "motion/react-client"
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
 const Register = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -30,22 +31,40 @@ const Register = () => {
         }
 
         try {
+            // Step 1: Create the user in Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await sendEmailVerification(userCredential.user);
-            console.log('User signed up:', userCredential.user);
+            const user = userCredential.user;
+
+            // Step 2: Send email verification
+            await sendEmailVerification(user);
+
+            // Step 3: Add user data to Firestore
+            const usersDoc = doc(db, 'users', user.uid); // Reference to the 'users' collection
+            await setDoc(usersDoc, {
+                uid: user.uid, // Unique ID from Firebase Authentication
+                email: user.email, // User's email
+                username: username, // Additional field: username
+                createdAt: new Date().toISOString(), // Timestamp for when the user was created
+            });
+
+            console.log('User signed up and data saved to Firestore:', user);
             toast.success('Registration successful! Please check your email to verify your account.');
             setTimeout(() => {
                 navigate('/sign-in'); // Redirect to the login page
-            }, 5000); // Redirect after 3 seconds
+            }, 10000); // Redirect after 5 seconds
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 toast.error('Email already in use');
             } else if (error.code === 'auth/invalid-email') {
                 toast.error('Invalid email');
             } else if (error.code === 'auth/password-does-not-meet-requirements') {
-                toast.error('Weak password (minimum 6 characters, at least one uppercase letter, one lowercase letter, one special character, and one number)');
+                toast.error(
+                    'Weak password (minimum 6 characters, at least one uppercase letter, one lowercase letter, one special character, and one number)'
+                );
             } else {
                 toast.error('Error signing up: ' + error.message);
+                console.log(error.message);
+                
             }
         } finally {
             setIsLoading(false);

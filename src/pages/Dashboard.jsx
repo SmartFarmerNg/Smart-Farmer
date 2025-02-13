@@ -63,16 +63,16 @@ const Dashboard = () => {
                 <input type="text" className='w-full p-2 border rounded-md' placeholder='Search' />
                 <h1 className='text-lg font-bold mt-2'>Top crops to invest in</h1>
                 <div className='flex flex-wrap items-center justify-between mt-2'>
-                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3'>
+                    <div className='flex items-center gap-2 w-[47%] mt-5 rounded-md shadow-2xl p-3 border-b border-[#0FA280]'>
                         <h2 className='font-semibold'>Maize</h2>
                     </div>
-                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3'>
+                    <div className='flex items-center gap-2 w-[47%] mt-5 rounded-md shadow-2xl p-3 border-b border-[#0FA280]'>
                         <h2 className='font-semibold'>Cassava</h2>
                     </div>
-                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3 borde'>
+                    <div className='flex items-center gap-2 w-[47%] mt-5 rounded-md shadow-2xl p-3 border-b border-[#0FA280]'>
                         <h2 className='font-semibold'>Cocoa</h2>
                     </div>
-                    <div className='flex items-center gap-2 w-[45%] mt-5 rounded-md shadow-2xl p-3'>
+                    <div className='flex items-center gap-2 w-[47%] mt-5 rounded-md shadow-2xl p-3 border-b border-[#0FA280]'>
                         <h2 className='font-semibold'>Palm oil</h2>
                     </div>
                 </div>
