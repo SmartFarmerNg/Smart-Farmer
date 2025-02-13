@@ -35,9 +35,9 @@ const Deposit = () => {
 
     return (
         <div className=' bg-[#FFFBFA] w-full font-serif'>
-            <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] py-5 m-auto gap-3'>
-                <header className='w-full mb-5 flex items-center justify-between px-5'>
-                    <button onClick={() => navigate('/profile')} className='mr-auto'>
+            <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] p-5 m-auto gap-3'>
+                <header className='w-full mb-5 flex items-center justify-between'>
+                    <button onClick={() => navigate('/profile')} className='mr-auto cursor-pointer'>
                         <ArrowLeft className='text-black w-6 h-6' />
                     </button>
                 </header>

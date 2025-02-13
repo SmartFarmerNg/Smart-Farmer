@@ -79,7 +79,7 @@ const Profile = () => {
                     </div>
                 </section>
                 <section className='px-5'>
-                    <h1 className='text-sm font-bold'>Recent transactions</h1>
+                    <h1 className='text-base font-bold'>Recent transactions</h1>
                     <div className='flex flex-col gap-2 mt-4'>
                         <div className='flex items-center gap-4 bg-white shadow-xl py-2 px-3 rounded-xl'>
                             <div className='flex items-center w-10 h-10 bg-[#46BF5A] rounded-full justify-center text-white'>
