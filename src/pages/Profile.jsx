@@ -62,7 +62,7 @@ const Profile = () => {
         }, 1000);
     };
     return (
-        <div className=' bg-[#FFFBFA] w-full font-sans'>
+        <div className='bg-[#FFFBFA] w-full font-sans'>
             {isLogginOut && <Barloader />}
             <div className='h-screen flex flex-col w-full md:w-[70%] lg:w-[50%] py-5 m-auto'>
                 <header className='w-full mb-5 flex items-center gap-3 px-5'>
