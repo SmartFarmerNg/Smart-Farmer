@@ -82,7 +82,7 @@ const Register = () => {
     };
 
     return (
-        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 font-sans bg-gradient-to-br from-[#f0f9ff] to-[#dff6ff]'>
+        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 font-sans bg-gradient-to-br from-[#0fa2808e] to-[#0e9777]'>
             {isLoading && <Barloader />}
             <ToastContainer position="top-right" autoClose={5000} />
             <motion.div
@@ -91,13 +91,13 @@ const Register = () => {
                 transition={{ duration: 0.5 }}
                 className='w-full sm:w-[60%] lg:w-[40%] bg-white p-8 rounded-2xl shadow-xl flex flex-col gap-4 items-center'
             >
-                <h1 className='font-bold text-3xl text-blue-500'>Register</h1>
+                <h1 className='font-bold text-3xl text-[#0FA280]'>Register</h1>
                 <p className='text-gray-600'>Enter your personal information</p>
                 <form className="flex flex-col gap-4 items-center w-full" onSubmit={handleSubmit} disabled={isLoading}>
                     {['firstName', 'lastName', 'email', 'phoneNumber', 'referralCode'].map((field) => (
                         <input
                             key={field}
-                            className='w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
+                            className='w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-[#0FA280] focus:outline-none'
                             type={field === 'email' ? 'email' : 'text'}
                             placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                             id={field}
@@ -109,7 +109,7 @@ const Register = () => {
                     {[['password', showPassword, setShowPassword], ['confirmPassword', showConfirmPassword, setShowConfirmPassword]].map(([field, show, setShow]) => (
                         <div key={field} className='relative w-full'>
                             <input
-                                className='w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
+                                className='w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-[#0FA280] focus:outline-none'
                                 type={show ? 'text' : 'password'}
                                 placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                                 id={field}
@@ -119,7 +119,7 @@ const Register = () => {
                             />
                             <button
                                 type="button"
-                                className='absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-500'
+                                className='absolute right-4 top-1/2 transform -translate-y-1/2 text-[#0FA280]'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeOff /> : <Eye />}
@@ -130,13 +130,13 @@ const Register = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
-                        className='bg-blue-500 hover:bg-blue-600 p-3 w-full font-semibold text-lg rounded-lg text-white shadow-md'
+                        className='bg-[#0FA280] hover:bg-[#0FA270] p-3 w-full font-semibold text-lg rounded-lg text-white shadow-md'
                         disabled={isLoading}
                     >
                         {isLoading ? <Loader2 className='animate-spin m-auto w-6 h-6' /> : 'Register'}
                     </motion.button>
                     <span className='text-gray-600'>
-                        Already have an account? <Link to="/sign-in" className='text-blue-500 hover:text-blue-600 font-semibold'>Sign in</Link>
+                        Already have an account? <Link to="/sign-in" className='text-[#0FA270] hover:text-[#0FA280] font-semibold'>Sign in</Link>
                     </span>
                 </form>
             </motion.div>

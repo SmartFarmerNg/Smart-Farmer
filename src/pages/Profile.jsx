@@ -47,18 +47,18 @@ const Profile = () => {
     };
 
     return (
-        <div className='min-h-screen flex flex-col items-center bg-white text-gray-900 pb-6 font-sans'>
+        <div className='min-h-screen px-3 flex flex-col items-center bg-white text-gray-900 pb-6 font-sans'>
             {isLoggingOut && <Barloader />}
             <div className='w-full max-w-lg mx-auto mb-14 py-5 flex flex-col flex-grow'>
-                <header className='w-full flex items-center gap-3 px-5 mb-6'>
+                <header className='w-full flex items-center gap-3 mb-6'>
                     <button onClick={() => navigate('/dashboard')}><ArrowLeft className='text-gray-900 w-6 h-6' /></button>
                     <LogOut onClick={handleLogout} className='text-gray-900 w-6 h-6 ml-auto cursor-pointer' />
                     <Bell className='text-gray-900 w-6 h-6 cursor-pointer' />
                 </header>
-                <div className='px-5'>
+                <div>
                     <h1 className='text-sm font-semibold bg-white shadow-md px-6 py-3 rounded-2xl'>Hi, {currentUser?.displayName}</h1>
                 </div>
-                <section className='px-5 mt-6'>
+                <section className='mt-6'>
                     <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -81,7 +81,7 @@ const Profile = () => {
                         <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12 scale-400' />
                     </motion.div>
                 </section>
-                <section className='px-5 mt-6'>
+                <section className='mt-6'>
                     <h1 className='text-lg font-semibold text-gray-900'>Investment</h1>
                     <div className='flex flex-col gap-3 mt-4'>
                         {/* {['Deposit', 'Deposit', 'Withdraw'].map((type, index) => (

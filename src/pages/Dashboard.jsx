@@ -39,18 +39,16 @@ const Dashboard = () => {
         { crop: 'Cassava', investmentReturn: '15%', duration: '6 months' },
         { crop: 'Cocoa', investmentReturn: '15%', duration: '4 months' },
         { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
-        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
-        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
-        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
-        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
-        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
+        { crop: 'Maize', investmentReturn: '10%', duration: '2 months' },
+        { crop: 'Cassava', investmentReturn: '15%', duration: '6 months' },
+        { crop: 'Cocoa', investmentReturn: '15%', duration: '4 months' },
         { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
     ], []);
 
     if (loading) return <Barloader />;
 
     return (
-        <div className='min-h-screen px-3 flex flex-col items-center bg-white text-gray-900 py-6 font-sans'>
+        <div className='min-h-screen px-3 flex flex-col items-center bg-white text-gray-900 py-6 mb-14 font-sans'>
             <motion.h1
                 className='text-sm font-semibold bg-gray-100 shadow-md px-8 py-4 rounded-xl w-full'
                 initial={{ opacity: 0, y: -20 }}
@@ -66,11 +64,11 @@ const Dashboard = () => {
                         key={index}
                         className='bg-gray-100 shadow-md w-full mx-auto flex gap-3 px-6 py-4 rounded-xl border border-gray-300 overflow-hidden relative'
                     >
-                        <Icon className='w-16 h-16 text-[#0FA280] scale-300 -rotate-12 opacity-20 absolute' />
                         <div className='text-left'>
                             <p className='text-sm font-semibold'>{label}</p>
                             <p className='text-lg font-semibold'>{amount}</p>
                         </div>
+                        <Icon className='w-16 h-16 text-[#0FA280] scale-250 -rotate-20 opacity-20 absolute right-10 top-3' />
                     </div>
                 ))}
             </div>

@@ -9,8 +9,8 @@ const Invest = () => {
   const investmentOptions = ['Agro'];
 
   return (
-    <div className='min-h-screen flex flex-col items-center bg-gradient-to-br from-white to-gray-200 text-gray-900 py-6 font-sans'>
-      <header className='w-full max-w-lg mx-auto flex items-center gap-3 px-5 mb-6'>
+    <div className='min-h-screen px-3 flex flex-col items-center bg-gradient-to-br from-white to-gray-200 text-gray-900 py-6 font-sans'>
+      <header className='w-full max-w-lg mx-auto flex items-center gap-3 mb-6'>
         <button onClick={() => navigate(-1)}><ArrowLeft className='text-gray-700 w-6 h-6' /></button>
         <h1 className='text-lg font-semibold'>Investment Options</h1>
       </header>

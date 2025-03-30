@@ -64,7 +64,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#f0f9ff] to-[#dff6ff]">
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0fa2808e] to-[#0e9777]">
       <ToastContainer position="top-right" autoClose={2300} />
 
       <motion.div
@@ -81,7 +81,7 @@ const Login = () => {
             <label className="text-gray-700 font-semibold">Email</label>
             <input
               type="email"
-              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0FA280]"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -92,7 +92,7 @@ const Login = () => {
             <label className="text-gray-700 font-semibold">Password</label>
             <input
               type={showPassword ? 'text' : 'password'}
-              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0FA280]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -102,7 +102,7 @@ const Login = () => {
               className="absolute right-4 top-1/2 transform"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <EyeOff className="text-blue-500" /> : <Eye className="text-blue-500" />}
+              {showPassword ? <EyeOff className="text-[#0FA280]" /> : <Eye className="text-[#0FA280]" />}
             </button>
           </div>
 
@@ -110,20 +110,20 @@ const Login = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white p-3 w-full rounded-lg font-semibold text-lg"
+            className="bg-[#0FA280] hover:bg-[#0FA280] text-white p-3 w-full rounded-lg font-semibold text-lg"
             disabled={isLoading}
           >
-            {isLoading ? <Loader2 className="animate-spin mx-auto text-blue-500 h-7 w-7" /> : 'Log in'}
+            {isLoading ? <Loader2 className="animate-spin mx-auto text-white h-7 w-7" /> : 'Log in'}
           </motion.button>
 
           <div className="text-center">
             <span className="text-gray-600">Don't have an account? </span>
-            <Link to="/sign-up" className="text-blue-500 hover:text-blue-600 font-semibold">Sign up</Link>
+            <Link to="/sign-up" className="text-[#0FA280] hover:text-[#0FA280] font-semibold">Sign up</Link>
           </div>
 
           <button
             type="button"
-            className="text-blue-500 hover:text-blue-600 font-semibold mt-2 w-full"
+            className="text-[#0FA280] hover:text-[#0FA280] font-semibold mt-2 w-full"
             onClick={handleForgotPassword}
           >
             Forgot Password?

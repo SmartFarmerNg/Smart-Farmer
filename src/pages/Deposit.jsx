@@ -29,7 +29,7 @@ const Deposit = () => {
     }, [navigate]);
 
     return (
-        <div className="w-full min-h-screen max-w-lg bg-white/30 backdrop-blur-xl shadow-lg p-6 font-sans">
+        <div className="w-full min-h-screen max-w-lg bg-white/30 backdrop-blur-xl shadow-lg p-3 font-sans">
             <header className="flex items-center mb-6">
                 <button onClick={() => navigate("/profile")} className="cursor-pointer">
                     <ArrowLeft className="text-gray-800 w-6 h-6" />
@@ -40,7 +40,7 @@ const Deposit = () => {
             <div className="flex flex-col gap-5">
                 {[
                     { method: "Deposit via Paystack", delay: 0.1 },
-                    { method: "Deposit via Bank Transfer", delay: 0.2 },
+                    { method: "Deposit via Bank Transfer", delay: 0.15 },
                 ].map((item, index) => (
                     <motion.button
                         key={index}

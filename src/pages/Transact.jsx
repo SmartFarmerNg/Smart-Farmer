@@ -15,7 +15,7 @@ const Transact = () => {
     return (
         <div className="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-900">
             {/* Main Content */}
-            <main className="flex-grow flex flex-col items-center px-4 py-10">
+            <main className="flex-grow flex flex-col items-center px-3 py-10">
                 {/* Balance Section */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
