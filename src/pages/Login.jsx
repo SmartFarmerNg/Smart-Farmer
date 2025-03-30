@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Barloader from '../components/component/Barloader';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-
-import * as motion from "motion/react-client"
+import { motion } from "framer-motion";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,31 +28,23 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Check if the user's email is verified
       if (!user.emailVerified) {
         toast.error('Please verify your email before logging in.');
-        await auth.signOut(); // Sign out the user if email is not verified
+        await auth.signOut();
         setIsLoading(false);
         return;
       }
 
-      console.log('User logged in:', user);
       toast.success('Login successful! Redirecting...');
-      setTimeout(() => {
-        navigate('/dashboard'); // Redirect to the dashboard or home page
-      }, 3000); // Redirect after 3 seconds
+      setTimeout(() => navigate('/dashboard'), 2000);
     } catch (error) {
-      if (error.code === 'auth/invalid-email') {
-        toast.error('Invalid email');
-      } else if (error.code === 'auth/user-not-found') {
-        toast.error('User not found');
-      } else if (error.code === 'auth/invalid-credential') {
-        toast.error('Incorrect email/password');
-      } else if (error.code === 'auth/too-many-requests') {
-        toast.error('Too many attempts. Please try again later or reset your password.');
-      } else {
-        toast.error('Error logging in: ' + error.message);
-      }
+      const errorMessages = {
+        'auth/invalid-email': 'Invalid email',
+        'auth/user-not-found': 'User not found',
+        'auth/invalid-credential': 'Incorrect email/password',
+        'auth/too-many-requests': 'Too many attempts. Please reset your password.'
+      };
+      toast.error(errorMessages[error.code] || 'Error logging in: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -62,92 +52,86 @@ const Login = () => {
 
   const handleForgotPassword = async () => {
     if (!email) {
-      toast.error('Please enter your email address to reset your password.');
+      toast.error('Please enter your email to reset your password.');
       return;
     }
-
     try {
       await sendPasswordResetEmail(auth, email);
-      toast.success('Password reset email sent. Please check your inbox.');
+      toast.success('Password reset email sent. Check your inbox.');
     } catch (error) {
-      toast.error('Error sending password reset email: ' + error.message);
+      toast.error('Error sending reset email: ' + error.message);
     }
   };
 
   return (
-    <div className='h-screen flex flex-col items-center bg-[#E7F6F2] font-sans'>
-      {isLoading && <Barloader />}
-      <ToastContainer
-        position="top-right"
-        autoClose={2300}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <div className='w-full sm:w-[60%] lg:w-[40%] flex flex-col justify-center items-center rounded-lg m-auto'>
-        <h1 className='font-semibold text-2xl'>Login</h1>
-        <p>Log in to continue using the app</p>
-        <form className="flex flex-col gap-3 items-center w-full p-10" onSubmit={handleSubmit}>
-          <label className='font-bold text-lg flex flex-col gap-1 w-full' htmlFor="email">
-            Email
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#f0f9ff] to-[#dff6ff]">
+      <ToastContainer position="top-right" autoClose={2300} />
+
+      <motion.div
+        className="bg-white shadow-xl p-10 rounded-2xl w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center border border-gray-200"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-3xl font-bold text-gray-900">Login</h1>
+        <p className="text-gray-600">Access your account</p>
+
+        <form className="w-full mt-6 space-y-5" onSubmit={handleSubmit}>
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-semibold">Email</label>
             <input
-              className='w-full p-3 rounded-md border border-[#0FA280]'
               type="email"
-              id="email"
+              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-          </label>
-          <label className='font-bold text-lg flex flex-col gap-1 w-full relative' htmlFor="password">
-            Password
+          </div>
+
+          <div className="relative flex flex-col">
+            <label className="text-gray-700 font-semibold">Password</label>
             <input
-              className='w-full p-3 rounded-md border border-[#0FA280]'
               type={showPassword ? 'text' : 'password'}
-              id="password"
+              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button
               type="button"
-              className='absolute right-3 top-2/3 transform -translate-y-1/2 cursor-pointer'
+              className="absolute right-4 top-1/2 transform -translate-y-1/2"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? <EyeOff className='text-[#0FA280]' /> : <Eye className='text-[#0FA280]' />}
+              {showPassword ? <EyeOff className="text-blue-500" /> : <Eye className="text-blue-500" />}
             </button>
-          </label>
+          </div>
+
+          {isLoading && <Loader2 className="animate-spin mx-auto text-blue-500 h-7 w-7" />}
+
           <motion.button
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.85 }}
+            whileTap={{ scale: 0.95 }}
             type="submit"
-            className='bg-[#0FA280] hover:bg-[#0fa270] p-3 w-full font-semibold text-xl rounded-lg text-white'
+            className="bg-blue-500 hover:bg-blue-600 text-white p-3 w-full rounded-lg font-semibold text-lg"
             disabled={isLoading}
           >
-            {isLoading ? (
-              <Loader2 className='animate-spin m-auto w-7 h-7' />
-            ) : 'Log in'}
+            {isLoading ? 'Logging in...' : 'Log in'}
           </motion.button>
-          <span>
-            Don't have an account?{' '}
-            <Link to="/sign-up" className='text-[#0FA280] hover:text-[#0fa270]'>
-              Sign up
-            </Link>
-          </span>
+
+          <div className="text-center">
+            <span className="text-gray-600">Don't have an account? </span>
+            <Link to="/sign-up" className="text-blue-500 hover:text-blue-600 font-semibold">Sign up</Link>
+          </div>
+
           <button
             type="button"
-            className='text-[#0FA280] hover:text-[#0fa270] mt-2'
+            className="text-blue-500 hover:text-blue-600 font-semibold mt-2"
             onClick={handleForgotPassword}
           >
             Forgot Password?
           </button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

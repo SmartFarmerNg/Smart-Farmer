@@ -1,32 +1,45 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Login from './Login'
-import Barloader from '../components/component/Barloader'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Login from './Login';
+import Barloader from '../components/component/Barloader';
+import { motion } from 'framer-motion';
 
 const LandingPage = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const navigate = useNavigate()
-
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
         setTimeout(() => {
-            navigate('/sign-up')
+            navigate('/sign-up');
         }, 1000);
-    }
-
+    };
 
     return (
-        <div className='bg-[#E7F6F2] h-screen flex flex-col items-center m-auto gap-6 font-sans'>
+        <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans'>
             {isLoading && <Barloader />}
-            <div className='container flex flex-col items-center gap-5 bg-white p-5 rounded-lg shadow-2xl shadow-[#00000098] mt-auto sm:w-[70%] lg:w-[50%] xl:w-[30%]'>
-                <h1 className='text-4xl font-bold text-[#0FA280]'>Smart Farmer</h1>
-                <span className='text-md text-center'>Your partner in Smart farming. Get ready to transform your farming experience with Smart Farmer. Our app is designed to help you</span>
-            </div>
-            <button onClick={handleSubmit} className='bg-[#0FA280] hover:bg-[#0fa270] p-3 px-14 font-semibold text-xl rounded-lg mb-auto' >Get Started</button>
-        </div>
-    )
-}
 
-export default LandingPage
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className='backdrop-blur-lg bg-white/10 shadow-xl rounded-2xl p-8 text-center max-w-md w-full'
+            >
+                <h1 className='text-5xl font-extrabold text-white drop-shadow-lg'>Smart Farmer</h1>
+                <p className='text-md mt-4 text-white/90'>Your partner in Smart Farming. Transform your farming experience with intelligent insights and automation.</p>
+            </motion.div>
+
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSubmit}
+                className='mt-8 bg-white text-[#0FA280] px-8 py-3 rounded-lg font-semibold text-lg shadow-lg hover:bg-opacity-90 transition'
+            >
+                Get Started
+            </motion.button>
+        </div>
+    );
+};
+
+export default LandingPage;

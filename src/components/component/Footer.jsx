@@ -1,41 +1,31 @@
-import { ArrowRightLeft, ChartNoAxesColumn, Home, User, UserCircle2 } from 'lucide-react'
-import React from 'react'
+import { ArrowRightLeft, ChartBar, Home, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Footer = ({ page }) => {
     const navigate = useNavigate();
-    return (
-        <footer className='flex items-center justify-between bg-[#0FA280] fixed bottom-0 w-full py-3'>
-            <button
-                onClick={() => navigate('/dashboard')}
-                className={`${page === 'dashboard' ? 'scale-110 gap-1 text-white' : ''} flex flex-col items-center text-[#B4C5B4] text-xs ml-[2%] cursor-pointer w-full`}
-            >
-                <Home className={`${page === 'dashboard' ? 'text-white scale-110' : 'text-[#B4C5B4]'} w-5 h-5`} />
-                Home
-            </button>
-            <button
-                onClick={() => navigate('/invest')}
-                className={`${page === 'invest' ? 'scale-110 gap-1 text-white' : ''} flex flex-col items-center text-[#B4C5B4] text-xs cursor-pointer w-full`}
-            >
-                <ChartNoAxesColumn className={`${page === 'invest' ? 'text-white scale-110' : 'text-[#B4C5B4]'} w-5 h-5`} />
-                Invest
-            </button>
-            <button
-                onClick={() => navigate('/transact')}
-                className={`${page === 'transact' ? 'scale-110 gap-1 text-white' : ''} flex flex-col items-center text-[#B4C5B4] text-xs cursor-pointer w-full`}
-            >
-                <ArrowRightLeft className={`${page === 'transact' ? 'text-white scale-110' : 'text-[#B4C5B4]'} w-5 h-5`} />
-                Transact
-            </button>
-            <button
-                onClick={() => navigate('/profile')}
-                className={`${page === 'profile' ? 'scale-110 gap-1 text-white' : ''} flex flex-col items-center text-[#B4C5B4] text-xs mr-[2%] cursor-pointer w-full`}
-            >
-                <UserCircle2 className={`${page === 'profile' ? 'text-white' : 'text-[#B4C5B4]'} w-5 h-5`} />
-                Profile
-            </button>
-        </footer>
-    )
-}
+    const menuItems = [
+        { name: 'Home', icon: Home, route: '/dashboard', key: 'dashboard' },
+        { name: 'Invest', icon: ChartBar, route: '/invest', key: 'invest' },
+        { name: 'Transact', icon: ArrowRightLeft, route: '/transact', key: 'transact' },
+        { name: 'Profile', icon: UserCircle, route: '/profile', key: 'profile' }
+    ];
 
-export default Footer
+    return (
+        <footer className='fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-full flex items-center justify-around px-6 py-3 w-[90%] md:w-[60%] backdrop-blur-lg bg-opacity-80 border border-gray-200'>
+            {menuItems.map(({ name, icon: Icon, route, key }) => (
+                <motion.button
+                    key={key}
+                    onClick={() => navigate(route)}
+                    whileTap={{ scale: 0.9 }}
+                    className={`flex flex-col items-center text-xs transition-all ${page === key ? 'text-[#0FA280] font-bold' : 'text-gray-500'}`}
+                >
+                    <Icon className={`w-5 h-5 transition-all ${page === key ? 'text-[#0FA280] scale-110' : 'text-gray-400'}`} />
+                    {name}
+                </motion.button>
+            ))}
+        </footer>
+    );
+};
+
+export default Footer;
