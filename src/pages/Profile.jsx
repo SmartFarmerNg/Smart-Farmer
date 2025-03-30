@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from 'firebase/auth';
-import { ArrowDownLeft, ArrowLeft, ArrowRightLeft, ArrowUpRight, Bell, Home, LogOut } from 'lucide-react';
+import { ArrowDownLeft, ArrowLeft, ArrowRightLeft, ArrowUpRight, BadgeDollarSign, Bell, DollarSign, Home, LogOut } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -47,37 +47,38 @@ const Profile = () => {
     };
 
     return (
-        <div className='min-h-screen flex flex-col items-center bg-gradient-to-br from-white to-gray-200 text-gray-900 py-6 font-sans'>
+        <div className='min-h-screen flex flex-col items-center bg-white text-gray-900 pb-6 font-sans'>
             {isLoggingOut && <Barloader />}
-            <div className='w-full max-w-lg mx-auto py-5 flex flex-col flex-grow'>
+            <div className='w-full max-w-lg mx-auto mb-14 py-5 flex flex-col flex-grow'>
                 <header className='w-full flex items-center gap-3 px-5 mb-6'>
                     <button onClick={() => navigate('/dashboard')}><ArrowLeft className='text-gray-900 w-6 h-6' /></button>
                     <LogOut onClick={handleLogout} className='text-gray-900 w-6 h-6 ml-auto cursor-pointer' />
                     <Bell className='text-gray-900 w-6 h-6 cursor-pointer' />
                 </header>
                 <div className='px-5'>
-                    <h1 className='text-xl font-semibold bg-white shadow-md px-6 py-3 rounded-2xl'>Hi, {currentUser?.displayName}</h1>
-                    <span className='text-sm text-gray-600'>Welcome back!</span>
+                    <h1 className='text-sm font-semibold bg-white shadow-md px-6 py-3 rounded-2xl'>Hi, {currentUser?.displayName}</h1>
                 </div>
                 <section className='px-5 mt-6'>
                     <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                        className='bg-white shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center'>
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className='bg-gray-100 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center overflow-hidden'>
                         <div>
                             <h1 className='font-semibold text-gray-700 text-sm'>Primary account</h1>
-                            <p className='text-lg font-bold'>$20,000</p>
+                            <p className='text-base font-bold'>$20,000</p>
                             <h1 className='font-semibold text-gray-700 text-sm mt-2'>Available balance</h1>
-                            <p className='text-lg font-bold'>$20,000</p>
+                            <p className='text-base font-bold'>$20,000</p>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.9 }}
-                                className='mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md w-full'>
+                                className='mt-4 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow-md w-full'
+                                onClick={() => navigate('/deposit')}
+                            >
                                 Fund account
                             </motion.button>
                         </div>
-                        <Home className='text-blue-500 w-12 h-12 opacity-50' />
+                        <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12 scale-400' />
                     </motion.div>
                 </section>
                 <section className='px-5 mt-6'>
@@ -89,8 +90,8 @@ const Profile = () => {
                                 initial={{ opacity: 0, y: 50 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-                                className='bg-white shadow-md rounded-xl p-4 border border-gray-300 flex items-center gap-4'>
-                                <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${type === 'Withdraw' ? 'bg-red-500' : 'bg-green-500'}`}>
+                                className='bg-gray-100 shadow-md rounded-xl p-4 border border-gray-300 flex items-center gap-4 overflow-hidden'>
+                                <div className={`w-10 h-10 scale-250 opacity-30 flex items-center justify-center rounded-full text-white ${type === 'Withdraw' ? 'bg-red-500' : 'bg-green-500'}`}>
                                     {type === 'Withdraw' ? <ArrowUpRight /> : <ArrowDownLeft />}
                                 </div>
                                 <div>

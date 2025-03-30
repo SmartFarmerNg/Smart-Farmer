@@ -12,7 +12,7 @@ const Footer = ({ page }) => {
     ];
 
     return (
-        <footer className='fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-full flex items-center justify-around px-6 py-3 w-[90%] md:w-[60%] backdrop-blur-lg bg-opacity-80 border border-gray-200'>
+        <footer className='fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-white/15 shadow-lg rounded-full flex items-center justify-around px-2 py-3 w-[90%] md:w-[60%] backdrop-blur-lg border border-gray-200'>
             {menuItems.map(({ name, icon: Icon, route, key }) => (
                 <motion.button
                     key={key}

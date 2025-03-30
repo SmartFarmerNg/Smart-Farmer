@@ -31,18 +31,22 @@ const Dashboard = () => {
     }, [navigate]);
 
     const financeData = useMemo(() => [
-        { label: 'Cash', amount: '$150,250', Icon: Banknote },
-        { label: 'Assets', amount: '$530,000', Icon: Briefcase }
+        { label: 'Balance', amount: '$150,250', Icon: Banknote }
     ], []);
 
-    const crops = useMemo(() => ['Maize', 'Cassava', 'Cocoa', 'Palm Oil'], []);
+    const crops = useMemo(() => [
+        { crop: 'Maize', investmentReturn: '10%' },
+        { crop: 'Cassava', investmentReturn: '15%' },
+        { crop: 'Cocoa', investmentReturn: '15%' },
+        { crop: 'Palm Oil', investmentReturn: '18%' },
+    ], []);
 
     if (loading) return <Barloader />;
 
     return (
-        <div className='min-h-screen flex flex-col items-center bg-gradient-to-br from-[#E7F6F2] to-[#B2DFDB] text-gray-900 py-6 font-sans'>
+        <div className='min-h-screen px-3 flex flex-col items-center bg-white text-gray-900 py-6 font-sans'>
             <motion.h1
-                className='text-2xl font-bold bg-white/30 backdrop-blur-lg shadow-lg px-8 py-4 rounded-2xl'
+                className='text-sm font-semibold bg-gray-100 shadow-md px-8 py-4 rounded-xl w-full'
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
@@ -50,43 +54,45 @@ const Dashboard = () => {
                 Welcome, {user?.displayName || 'User'} 👋
             </motion.h1>
 
-            <div className='flex gap-6 mt-6'>
+            <div className='flex gap-6 mt-6 w-full mx-auto'>
                 {financeData.map(({ label, amount, Icon }, index) => (
-                    <motion.div
+                    <div
                         key={index}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className='bg-white/30 backdrop-blur-lg shadow-lg flex gap-3 px-6 py-4 rounded-2xl border border-gray-300'
+                        className='bg-gray-100 shadow-md w-full mx-auto flex gap-3 px-6 py-1 rounded-xl border border-gray-300 overflow-hidden'
                     >
-                        <Icon className='w-6 h-6 text-gray-700' />
+                        <Icon className='w-16 h-16 text-[#0FA280] scale-300 -rotate-12 opacity-20' />
                         <div className='text-left'>
                             <p className='text-sm font-semibold'>{label}</p>
                             <p className='text-lg font-semibold'>{amount}</p>
                         </div>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
-            <section className='w-full max-w-2xl mt-8 p-6 bg-white/30 backdrop-blur-lg shadow-lg rounded-2xl border border-gray-300'>
+            <section className="w-full max-w-2xl mt-8 p-6 bg-white/30 backdrop-blur-md shadow-lg rounded-2xl border border-gray-200">
                 <input
-                    type='text'
-                    className='w-full p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280]'
-                    placeholder='Search investments...'
+                    type="text"
+                    className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280] transition-all"
+                    placeholder="Search investments..."
                 />
-                <h2 className='text-xl font-bold mt-4'>Top Crops to Invest In</h2>
-                <div className='grid grid-cols-2 gap-4 mt-4'>
+
+                <h2 className="text-xl font-bold mt-6 text-gray-900">Top Crops to Invest In</h2>
+
+                <div className="grid grid-cols-2 gap-4 mt-4">
                     {crops.map((crop, index) => (
                         <motion.div
                             key={index}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className='bg-gray-100/50 shadow-lg p-4 rounded-lg text-center font-semibold'
+                            className="bg-white/50 backdrop-blur-lg shadow-md p-5 rounded-xl text-center font-semibold border border-gray-300 transition-all"
                         >
-                            {crop}
+                            <div className="text-lg text-gray-800">{crop.crop}</div>
+                            <div className="text-[#0FA280] font-bold text-sm mt-1">{crop.investmentReturn}</div>
                         </motion.div>
                     ))}
                 </div>
             </section>
+
 
             <Footer page='dashboard' />
         </div>
