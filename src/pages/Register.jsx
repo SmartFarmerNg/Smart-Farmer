@@ -82,18 +82,18 @@ const Register = () => {
     };
 
     return (
-        <div className='h-screen flex flex-col items-center bg-gray-100 text-gray-900 font-sans'>
+        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 font-sans bg-gradient-to-br from-[#f0f9ff] to-[#dff6ff]'>
             {isLoading && <Barloader />}
             <ToastContainer position="top-right" autoClose={5000} />
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className='w-full sm:w-[60%] lg:w-[40%] bg-white p-8 rounded-2xl shadow-xl flex flex-col items-center'
+                className='w-full sm:w-[60%] lg:w-[40%] bg-white p-8 rounded-2xl shadow-xl flex flex-col gap-4 items-center'
             >
                 <h1 className='font-bold text-3xl text-blue-500'>Register</h1>
                 <p className='text-gray-600'>Enter your personal information</p>
-                <form className="flex flex-col gap-4 items-center w-full" onSubmit={handleSubmit}>
+                <form className="flex flex-col gap-4 items-center w-full" onSubmit={handleSubmit} disabled={isLoading}>
                     {['firstName', 'lastName', 'email', 'phoneNumber', 'referralCode'].map((field) => (
                         <input
                             key={field}
@@ -119,7 +119,7 @@ const Register = () => {
                             />
                             <button
                                 type="button"
-                                className='absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500'
+                                className='absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-500'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeOff /> : <Eye />}
@@ -127,7 +127,7 @@ const Register = () => {
                         </div>
                     ))}
                     <motion.button
-                        whileHover={{ scale: 1.05 }}
+                        whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.95 }}
                         type="submit"
                         className='bg-blue-500 hover:bg-blue-600 p-3 w-full font-semibold text-lg rounded-lg text-white shadow-md'
@@ -136,7 +136,7 @@ const Register = () => {
                         {isLoading ? <Loader2 className='animate-spin m-auto w-6 h-6' /> : 'Register'}
                     </motion.button>
                     <span className='text-gray-600'>
-                        Already have an account? <Link to="/sign-in" className='text-blue-500 hover:text-blue-600'>Sign in</Link>
+                        Already have an account? <Link to="/sign-in" className='text-blue-500 hover:text-blue-600 font-semibold'>Sign in</Link>
                     </span>
                 </form>
             </motion.div>

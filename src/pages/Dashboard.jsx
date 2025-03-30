@@ -31,13 +31,19 @@ const Dashboard = () => {
     }, [navigate]);
 
     const financeData = useMemo(() => [
-        { label: 'Balance', amount: '$1500', Icon: Banknote }
+        { label: 'Balance', amount: '$1,500', Icon: Banknote }
     ], []);
 
     const crops = useMemo(() => [
         { crop: 'Maize', investmentReturn: '10%', duration: '2 months' },
         { crop: 'Cassava', investmentReturn: '15%', duration: '6 months' },
         { crop: 'Cocoa', investmentReturn: '15%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
         { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
     ], []);
 
@@ -72,7 +78,7 @@ const Dashboard = () => {
             <section className="w-full max-w-2xl mt-8 p-6 bg-white/30 backdrop-blur-md shadow-lg rounded-2xl border border-gray-200">
                 <input
                     type="text"
-                    className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280] transition-all"
+                    className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280] transition-all sticky top-2 z-10"
                     placeholder="Search crop..."
                 />
 

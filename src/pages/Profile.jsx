@@ -39,7 +39,7 @@ const Profile = () => {
         return () => unsubscribe();
     }, [navigate]);
 
-    if (loading) return <><Barloader /><Footer page='dashboard' /></>;
+    if (loading) return <><Barloader /><Footer page='profile' /></>;
 
     const handleLogout = () => {
         setIsLoggingOut(true);

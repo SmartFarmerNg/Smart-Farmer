@@ -76,7 +76,7 @@ const Login = () => {
         <h1 className="text-3xl font-bold text-gray-900">Login</h1>
         <p className="text-gray-600">Access your account</p>
 
-        <form className="w-full mt-6 space-y-5" onSubmit={handleSubmit}>
+        <form className="w-full mt-6 space-y-5" onSubmit={handleSubmit} disabled={isLoading}>
           <div className="flex flex-col">
             <label className="text-gray-700 font-semibold">Email</label>
             <input
@@ -99,23 +99,21 @@ const Login = () => {
             />
             <button
               type="button"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2"
+              className="absolute right-4 top-1/2 transform"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff className="text-blue-500" /> : <Eye className="text-blue-500" />}
             </button>
           </div>
 
-          {isLoading && <Loader2 className="animate-spin mx-auto text-blue-500 h-7 w-7" />}
-
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white p-3 w-full rounded-lg font-semibold text-lg"
             disabled={isLoading}
           >
-            {isLoading ? 'Logging in...' : 'Log in'}
+            {isLoading ? <Loader2 className="animate-spin mx-auto text-blue-500 h-7 w-7" /> : 'Log in'}
           </motion.button>
 
           <div className="text-center">
@@ -125,7 +123,7 @@ const Login = () => {
 
           <button
             type="button"
-            className="text-blue-500 hover:text-blue-600 font-semibold mt-2"
+            className="text-blue-500 hover:text-blue-600 font-semibold mt-2 w-full"
             onClick={handleForgotPassword}
           >
             Forgot Password?
