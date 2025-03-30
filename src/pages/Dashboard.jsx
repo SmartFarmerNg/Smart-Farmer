@@ -31,14 +31,14 @@ const Dashboard = () => {
     }, [navigate]);
 
     const financeData = useMemo(() => [
-        { label: 'Balance', amount: '$150,250', Icon: Banknote }
+        { label: 'Balance', amount: '$1500', Icon: Banknote }
     ], []);
 
     const crops = useMemo(() => [
-        { crop: 'Maize', investmentReturn: '10%' },
-        { crop: 'Cassava', investmentReturn: '15%' },
-        { crop: 'Cocoa', investmentReturn: '15%' },
-        { crop: 'Palm Oil', investmentReturn: '18%' },
+        { crop: 'Maize', investmentReturn: '10%', duration: '2 months' },
+        { crop: 'Cassava', investmentReturn: '15%', duration: '6 months' },
+        { crop: 'Cocoa', investmentReturn: '15%', duration: '4 months' },
+        { crop: 'Palm Oil', investmentReturn: '18%', duration: '4 months' },
     ], []);
 
     if (loading) return <Barloader />;
@@ -58,9 +58,9 @@ const Dashboard = () => {
                 {financeData.map(({ label, amount, Icon }, index) => (
                     <div
                         key={index}
-                        className='bg-gray-100 shadow-md w-full mx-auto flex gap-3 px-6 py-1 rounded-xl border border-gray-300 overflow-hidden'
+                        className='bg-gray-100 shadow-md w-full mx-auto flex gap-3 px-6 py-4 rounded-xl border border-gray-300 overflow-hidden relative'
                     >
-                        <Icon className='w-16 h-16 text-[#0FA280] scale-300 -rotate-12 opacity-20' />
+                        <Icon className='w-16 h-16 text-[#0FA280] scale-300 -rotate-12 opacity-20 absolute' />
                         <div className='text-left'>
                             <p className='text-sm font-semibold'>{label}</p>
                             <p className='text-lg font-semibold'>{amount}</p>
@@ -73,21 +73,21 @@ const Dashboard = () => {
                 <input
                     type="text"
                     className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280] transition-all"
-                    placeholder="Search investments..."
+                    placeholder="Search crop..."
                 />
 
                 <h2 className="text-xl font-bold mt-6 text-gray-900">Top Crops to Invest In</h2>
 
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                    {crops.map((crop, index) => (
+                <div className="grid grid-cols-1 gap-4 mt-4">
+                    {crops.map((data, index) => (
                         <motion.div
                             key={index}
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.95 }}
-                            className="bg-white/50 backdrop-blur-lg shadow-md p-5 rounded-xl text-center font-semibold border border-gray-300 transition-all"
+                            className="bg-white/50 backdrop-blur-lg shadow-md p-5 rounded-xl text-center font-semibold border border-gray-300 transition-all flex justify-between items-center"
                         >
-                            <div className="text-lg text-gray-800">{crop.crop}</div>
-                            <div className="text-[#0FA280] font-bold text-sm mt-1">{crop.investmentReturn}</div>
+                            <div className="text-lg text-gray-800">{data.crop}</div>
+                            <div className="text-[#0FA280] font-bold text-sm mt-1 flex items-center gap-1">{data.investmentReturn} / <p className='text-gray-400 text-xs'>{data.duration}</p></div>
                         </motion.div>
                     ))}
                 </div>

@@ -66,9 +66,9 @@ const Profile = () => {
                         className='bg-gray-100 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center overflow-hidden'>
                         <div>
                             <h1 className='font-semibold text-gray-700 text-sm'>Primary account</h1>
-                            <p className='text-base font-bold'>$20,000</p>
+                            <p className='text-base font-bold'>$1,500</p>
                             <h1 className='font-semibold text-gray-700 text-sm mt-2'>Available balance</h1>
-                            <p className='text-base font-bold'>$20,000</p>
+                            <p className='text-base font-bold'>$1,500</p>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.9 }}
@@ -82,9 +82,9 @@ const Profile = () => {
                     </motion.div>
                 </section>
                 <section className='px-5 mt-6'>
-                    <h1 className='text-lg font-semibold text-gray-900'>Recent transactions</h1>
+                    <h1 className='text-lg font-semibold text-gray-900'>Investment</h1>
                     <div className='flex flex-col gap-3 mt-4'>
-                        {['Deposit', 'Deposit', 'Withdraw'].map((type, index) => (
+                        {/* {['Deposit', 'Deposit', 'Withdraw'].map((type, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 50 }}
@@ -100,7 +100,7 @@ const Profile = () => {
                                 </div>
                                 <div className='ml-auto font-bold text-gray-900'>$50,500</div>
                             </motion.div>
-                        ))}
+                        ))} */}
                     </div>
                 </section>
             </div>
