@@ -49,7 +49,7 @@ const Profile = () => {
     return (
         <div className='min-h-screen px-3 flex flex-col items-center bg-white text-gray-900 pb-6 font-sans'>
             {isLoggingOut && <Barloader />}
-            <div className='w-full max-w-lg mx-auto mb-14 py-5 flex flex-col flex-grow'>
+            <div className='w-full max-w-2xl mx-auto mb-14 py-5 flex flex-col flex-grow'>
                 <header className='w-full flex items-center gap-3 mb-6'>
                     <button onClick={() => navigate('/dashboard')}><ArrowLeft className='text-gray-900 w-6 h-6' /></button>
                     <LogOut onClick={handleLogout} className='text-gray-900 w-6 h-6 ml-auto cursor-pointer' />

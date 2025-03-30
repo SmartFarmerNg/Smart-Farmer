@@ -48,7 +48,7 @@ const Dashboard = () => {
     if (loading) return <Barloader />;
 
     return (
-        <div className='min-h-screen px-3 flex flex-col items-center bg-white text-gray-900 py-6 mb-14 font-sans'>
+        <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto bg-white text-gray-900 py-6 mb-14 font-sans'>
             <motion.h1
                 className='text-sm font-semibold bg-gray-100 shadow-md px-8 py-4 rounded-xl w-full'
                 initial={{ opacity: 0, y: -20 }}

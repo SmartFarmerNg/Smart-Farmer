@@ -13,7 +13,7 @@ const Transact = () => {
     const [balance, setBalance] = useState(1500);
 
     return (
-        <div className="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-900">
+        <div className="min-h-screen flex flex-col justify-between bg-white text-gray-900 max-w-2xl mx-auto px-3 font-sans">
             {/* Main Content */}
             <main className="flex-grow flex flex-col items-center px-3 py-10">
                 {/* Balance Section */}
@@ -21,14 +21,14 @@ const Transact = () => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md text-center border border-gray-200"
+                    className="bg-white shadow-lg rounded-xl p-6 w-full text-center border border-gray-200"
                 >
                     <h2 className="text-lg font-semibold text-gray-600">Available Balance</h2>
                     <p className="text-3xl font-bold text-[#0FA280]">${balance.toLocaleString()}</p>
                 </motion.div>
 
                 {/* Quick Actions */}
-                <div className="mt-6 w-full max-w-md grid grid-cols-2 gap-4 bg-white shadow-md rounded-lg">
+                <div className="mt-6 w-full grid grid-cols-2 gap-4 bg-white shadow-md rounded-lg">
                     {[
                         { name: "Deposit", icon: <ArrowDownLeft className="text-[#0FA280] w-8 h-8" /> },
                         { name: "Withdraw", icon: <ArrowUpRight className="text-[#0FA280] w-8 h-8" /> }
@@ -45,7 +45,7 @@ const Transact = () => {
                     ))}
                 </div>
                 {/* Transaction History */}
-                <div className="mt-8 w-full max-w-md">
+                <div className="mt-8 w-full">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Transactions</h2>
                     <div className="flex flex-col gap-3">
                         {transactions.map((txn, index) => (
@@ -56,12 +56,12 @@ const Transact = () => {
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 className="bg-gray-100 shadow-md rounded-xl p-4 flex items-center gap-4 overflow-hidden"
                             >
-                                <div className={`w-10 h-10 scale-250 -translate-x-1 opacity-30 flex items-center justify-center rounded-full text-white ${txn.color}`}>
+                                <div className={`w-10 h-10 scale-250 -translate-x-1 opacity-30 flex items-center justify-center rounded-full text-white ${txn.color} shadow-2xl`}>
                                     {txn.icon}
                                 </div>
                                 <div>
-                                    <h1 className="font-semibold text-gray-700">{txn.type}</h1>
-                                    <span className="text-xs text-gray-500">{txn.date}</span>
+                                    <h1 className="font-semibold text-gray-700 sm:text-lg">{txn.type}</h1>
+                                    <span className="text-xs sm:text-base text-gray-500">{txn.date}</span>
                                 </div>
                                 <div className="ml-auto font-bold text-gray-900">${txn.amount.toLocaleString()}</div>
                             </motion.div>

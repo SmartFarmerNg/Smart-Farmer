@@ -9,8 +9,8 @@ const Invest = () => {
   const investmentOptions = ['Agro'];
 
   return (
-    <div className='min-h-screen px-3 flex flex-col items-center bg-gradient-to-br from-white to-gray-200 text-gray-900 py-6 font-sans'>
-      <header className='w-full max-w-lg mx-auto flex items-center gap-3 mb-6'>
+    <div className='min-h-screen max-w-2xl mx-auto px-3 flex flex-col items-center bg-white text-gray-900 py-6 font-sans'>
+      <header className='w-full mx-auto flex items-center gap-3 mb-6'>
         <button onClick={() => navigate(-1)}><ArrowLeft className='text-gray-700 w-6 h-6' /></button>
         <h1 className='text-lg font-semibold'>Investment Options</h1>
       </header>
@@ -18,7 +18,7 @@ const Invest = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className='w-full max-w-lg bg-white shadow-md p-6 rounded-2xl border border-gray-300'>
+        className='w-full bg-white shadow-md p-6 rounded-2xl border border-gray-300'>
         <h2 className='text-xl font-bold mb-4'>Choose an Investment</h2>
         <div className='grid grid-cols-2 gap-4'>
           {investmentOptions.map((option, index) => (
