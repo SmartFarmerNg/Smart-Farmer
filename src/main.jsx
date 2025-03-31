@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <App className=" bg-gradient-to-br from-[#0FA280] to-[#054D3B]" />
     <ToastContainer />
   </StrictMode>,
 )

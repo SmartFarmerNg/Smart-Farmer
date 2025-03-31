@@ -12,10 +12,10 @@ const transactions = [
 const Transact = () => {
     const [balance, setBalance] = useState(1500);
 
-    return (
-        <div className="min-h-screen flex flex-col justify-between bg-white text-gray-900 max-w-2xl mx-auto px-3 font-sans">
+    return (<div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans'>
+        <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto py-6 pb-14'>
             {/* Main Content */}
-            <main className="flex-grow flex flex-col items-center px-3 py-10">
+            <main className="flex-grow flex flex-col items-center px-3 py-10 w-full">
                 {/* Balance Section */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
@@ -46,7 +46,7 @@ const Transact = () => {
                 </div>
                 {/* Transaction History */}
                 <div className="mt-8 w-full">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-4">Recent Transactions</h2>
+                    <h2 className="text-lg font-semibold text-white mb-4">Recent Transactions</h2>
                     <div className="flex flex-col gap-3">
                         {transactions.map((txn, index) => (
                             <motion.div
@@ -56,12 +56,12 @@ const Transact = () => {
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 className="bg-gray-100 shadow-md rounded-xl p-4 flex items-center gap-4 overflow-hidden"
                             >
-                                <div className={`w-10 h-10 scale-250 -translate-x-1 opacity-30 flex items-center justify-center rounded-full text-white ${txn.color} shadow-2xl`}>
+                                <div className={`w-10 h-10 scale-250 -translate-x-1 opacity-70 flex items-center justify-center rounded-full text-white ${txn.color}`}>
                                     {txn.icon}
                                 </div>
-                                <div>
-                                    <h1 className="font-semibold text-gray-700 sm:text-lg">{txn.type}</h1>
-                                    <span className="text-xs sm:text-base text-gray-500">{txn.date}</span>
+                                <div className="z-10">
+                                    <h1 className="font-semibold text-gray-900 sm:text-lg">{txn.type}</h1>
+                                    <span className="text-xs sm:text-base text-gray-800">{txn.date}</span>
                                 </div>
                                 <div className="ml-auto font-bold text-gray-900">${txn.amount.toLocaleString()}</div>
                             </motion.div>
@@ -73,6 +73,7 @@ const Transact = () => {
             {/* Footer */}
             <Footer page="transact" />
         </div>
+    </div>
     );
 };
 

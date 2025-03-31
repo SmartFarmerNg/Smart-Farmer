@@ -82,7 +82,7 @@ const Register = () => {
     };
 
     return (
-        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 font-sans bg-gradient-to-br from-[#0fa2808e] to-[#0e9777]'>
+        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 font-sans bg-gradient-to-br from-[#0FA280] to-[#054D3B]'>
             {isLoading && <Barloader />}
             <ToastContainer position="top-right" autoClose={5000} />
             <motion.div
@@ -119,7 +119,7 @@ const Register = () => {
                             />
                             <button
                                 type="button"
-                                className='absolute right-4 top-1/2 transform -translate-y-1/2 text-[#0FA280]'
+                                className='absolute right-4 top-1/2 transform -translate-y-1/2 text-[#0FA280] cursor-pointer'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeOff /> : <Eye />}

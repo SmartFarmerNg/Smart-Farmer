@@ -64,7 +64,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0fa2808e] to-[#0e9777]">
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0FA280] to-[#054D3B]">
       <ToastContainer position="top-right" autoClose={2300} />
 
       <motion.div
@@ -73,7 +73,7 @@ const Login = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-gray-900">Login</h1>
+        <h1 className="text-3xl font-bold text-[#0FA280]">Login</h1>
         <p className="text-gray-600">Access your account</p>
 
         <form className="w-full mt-6 space-y-5" onSubmit={handleSubmit} disabled={isLoading}>
@@ -99,7 +99,7 @@ const Login = () => {
             />
             <button
               type="button"
-              className="absolute right-4 top-1/2 transform"
+              className="absolute right-4 top-1/2 transform cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff className="text-[#0FA280]" /> : <Eye className="text-[#0FA280]" />}
