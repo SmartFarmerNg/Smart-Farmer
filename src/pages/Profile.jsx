@@ -47,9 +47,9 @@ const Profile = () => {
     };
 
     return (<div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans'>
-        <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto py-6 pb-14'>
+        <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto pb-14'>
             {isLoggingOut && <Barloader />}
-            <div className='w-full max-w-2xl mx-auto mb-14 py-5 flex flex-col flex-grow'>
+            <div className='w-full max-w-2xl mx-auto py-5 flex flex-col flex-grow'>
                 <header className='w-full flex items-center gap-3 mb-6'>
                     <button onClick={() => navigate('/dashboard')}><ArrowLeft className='text-white w-6 h-6 cursor-pointer' /></button>
                     <LogOut onClick={handleLogout} className='text-white w-6 h-6 ml-auto cursor-pointer' />

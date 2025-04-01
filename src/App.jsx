@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Deposit from './pages/Deposit';
 import Invest from './pages/Invest';
 import Transact from './pages/Transact';
+import Withdraw from './pages/Withdraw';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/deposit" element={<Deposit />} />
+        <Route path="/withdraw" element={<Withdraw />} />
         <Route path="/invest" element={<Invest />} />
         <Route path="/transact" element={<Transact />} />
         <Route path="*" element={<NotFound />} /> {/* Catch-all route for 404 pages */}

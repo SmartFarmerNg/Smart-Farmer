@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Login from './Login';
 import Barloader from '../components/component/Barloader';
 import { motion } from 'framer-motion';
 
@@ -17,7 +16,7 @@ const LandingPage = () => {
     };
 
     return (
-        <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans'>
+        <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans relative'>
             {isLoading && <Barloader />}
 
             <motion.div
@@ -26,6 +25,7 @@ const LandingPage = () => {
                 transition={{ duration: 0.8, ease: 'easeOut' }}
                 className='backdrop-blur-lg bg-white/10 shadow-xl rounded-2xl p-8 text-center max-w-2xl w-full'
             >
+                <img src="src\assets\Submark-removebg-preview.png" alt="" />
                 <h1 className='text-5xl font-extrabold text-white drop-shadow-lg'>Smart Farmer</h1>
                 <p className='text-md mt-4 text-white/90'>Your partner in Smart Farming. Transform your farming experience with intelligent insights and automation.</p>
             </motion.div>
