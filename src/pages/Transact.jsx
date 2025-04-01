@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowDownLeft, ArrowUpRight, Banknote, ChevronLeftCircle, ChevronRightCircle, CircleDollarSign, Loader } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Banknote, ChevronLeftCircle, ChevronRightCircle, CircleDollarSign, Loader, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import Footer from "../components/component/Footer";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +39,7 @@ const Transact = () => {
                 const data = doc.data();
                 if (data.type === "Deposit") totalBalance += data.amount;
                 if (data.type === "Withdraw") totalBalance -= data.amount;
+                if (data.type === "Invest") totalBalance -= data.amount;
                 return { id: doc.id, ...data };
             });
 
@@ -49,7 +50,6 @@ const Transact = () => {
 
         return unsubscribe;
     };
-
     // Sort transactions by timestamp (newest first)
     const sortedTransactions = transactions
         .slice()
@@ -85,7 +85,7 @@ const Transact = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className="flex flex-col items-center bg-white p-3 rounded-lg shadow-md hover:shadow-xl transition"
-                            onClick={() => navigate(`/${action.toLowerCase()}`)}
+                            onClick={() => navigate(`/transact/${action.toLowerCase()}`)}
                         >
                             {action === "Deposit" ? <ArrowDownLeft className="text-green-600 w-5 h-5" /> : <ArrowUpRight className="text-red-600 w-5 h-5" />}
                             <span className="text-sm font-semibold mt-2">{action}</span>
@@ -112,8 +112,8 @@ const Transact = () => {
                                     transition={{ duration: 0.5, delay: index * 0.1 }}
                                     className="bg-gray-100 shadow-md rounded-xl p-4 py-2 flex items-center gap-4 overflow-hidden"
                                 >
-                                    <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${txn.type === "Deposit" ? "bg-green-500" : "bg-red-500"}`}>
-                                        {txn.type === "Deposit" ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+                                    <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${txn.type === "Deposit" ? "bg-green-400" : txn.type === "Invest" ? "bg-blue-400" : "bg-red-400"}`}>
+                                        {txn.type === "Deposit" ? <ArrowDownLeft className="w-5 h-5" /> : txn.type === "Invest" ? <Wallet className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
                                     </div>
                                     <div className="z-10">
                                         <h1 className="font-semibold text-gray-900 sm:text-lg">{txn.type}</h1>

@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { PaystackButton } from "react-paystack";
 import { doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import FloatingBackground from "../components/component/FloatingBackground";
 
 const Deposit = () => {
     const navigate = useNavigate();
@@ -81,6 +82,7 @@ const Deposit = () => {
 
     return (
         <div className="bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
+            <FloatingBackground />
             {showSuccess ? (
                 <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg text-center">
                     <h1 className="text-2xl font-bold text-white">🎉 Deposit Successful!</h1>
