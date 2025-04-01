@@ -31,7 +31,7 @@ const LandingPage = () => {
                     transition={{ duration: 0.8, ease: 'easeOut' }}
                     className='backdrop-blur-lg bg-white/10 shadow-xl rounded-2xl p-8 text-center max-w-2xl w-full'
                 >
-                    <img src='src/assets/Submark-removebg-preview.png' className='w-32 h-32 mx-auto' alt='' />
+                    <img src='src/assets/Submark-removebg-preview.png' className='w-32 h-32 mx-auto' alt='Logo' />
                     <h1 className='text-3xl font-extrabold text-white drop-shadow-lg'>Smart Farmer</h1>
                     <p className='text-md mt-4 text-white/90 w-[70%] mx-auto'>
                         Your partner in Smart Farming. Transform your farming experience with intelligent insights and automation.
