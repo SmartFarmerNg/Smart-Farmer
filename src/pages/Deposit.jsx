@@ -59,7 +59,7 @@ const Deposit = () => {
             status: "successful",
             type: "Deposit",
             transactionId: reference.reference,
-            timestamp: new Date(),
+            timestamp: new Date().toISOString(),
         });
 
         setTd(reference.reference);
@@ -86,7 +86,7 @@ const Deposit = () => {
                     <h1 className="text-2xl font-bold text-white">🎉 Deposit Successful!</h1>
                     <p className="text-lg mt-2">Your new balance: <span className="font-semibold">NGN {balance.toLocaleString()}</span></p>
                     <p className="text-lg mt-2">Your Transaction ID: <span className="font-semibold">{td}</span></p>
-                    <button className="bg-white text-black font-semibold px-6 py-3 rounded-xl mt-4 hover:bg-gray-300 transition" onClick={() => navigate("/dashboard")}>Go to Dashboard</button>
+                    <button className="bg-white text-black font-semibold px-6 py-3 rounded-xl mt-4 hover:bg-gray-300 transition cursor-pointer" onClick={() => navigate("/invest")}>Start Investing Now!🚀</button>
                 </div>
             ) : (
                 <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg">

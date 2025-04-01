@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { motion } from "framer-motion";
+import FloatingBackground from '../components/component/FloatingBackground';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -67,21 +68,22 @@ const Login = () => {
     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0FA280] to-[#054D3B]">
       <ToastContainer position="top-right" autoClose={2300} />
 
+      <FloatingBackground />
       <motion.div
-        className="bg-white shadow-xl p-10 rounded-2xl w-full sm:w-[60%] lg:w-[40%] flex flex-col items-center border border-gray-200"
+        className=" bg-white/15 backdrop-blur-xs shadow-xl p-8 rounded-2xl w-[95%] sm:w-[60%] lg:w-[40%] flex flex-col items-center border border-gray-200"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-[#0FA280]">Login</h1>
-        <p className="text-gray-600">Access your account</p>
+        <h1 className="text-3xl font-bold text-white">Login</h1>
+        <p className="text-gray-100 mt-2">Access your account</p>
 
-        <form className="w-full mt-6 space-y-5" onSubmit={handleSubmit} disabled={isLoading}>
+        <form className="w-full flex flex-col mt-6 space-y-5" onSubmit={handleSubmit} disabled={isLoading}>
           <div className="flex flex-col">
-            <label className="text-gray-700 font-semibold">Email</label>
+            <label className="text-gray-100 font-semibold">Email</label>
             <input
               type="email"
-              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0FA280]"
+              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0FA280] text-gray-100"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -89,10 +91,10 @@ const Login = () => {
           </div>
 
           <div className="relative flex flex-col">
-            <label className="text-gray-700 font-semibold">Password</label>
+            <label className="text-gray-100 font-semibold">Password</label>
             <input
               type={showPassword ? 'text' : 'password'}
-              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0FA280]"
+              className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0FA280] text-gray-100"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -102,7 +104,7 @@ const Login = () => {
               className="absolute right-4 top-1/2 transform cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <EyeOff className="text-[#0FA280]" /> : <Eye className="text-[#0FA280]" />}
+              {showPassword ? <EyeOff className="text-gray-100" /> : <Eye className="text-gray-100" />}
             </button>
           </div>
 
@@ -117,13 +119,13 @@ const Login = () => {
           </motion.button>
 
           <div className="text-center">
-            <span className="text-gray-600">Don't have an account? </span>
-            <Link to="/sign-up" className="text-[#0FA280] hover:text-[#0FA280] font-semibold">Sign up</Link>
+            <span className="text-gray-100">Don't have an account? </span>
+            <Link to="/sign-up" className="cursor-pointer text-blue-800 hover:text-[#0FA280] font-semibold">Sign up</Link>
           </div>
 
           <button
             type="button"
-            className="text-[#0FA280] hover:text-[#0FA280] font-semibold mt-2 w-full"
+            className="cursor-pointer text-blue-800 hover:text-[#0FA280] font-semibold mt-2 w-fit mx-auto"
             onClick={handleForgotPassword}
           >
             Forgot Password?

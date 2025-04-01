@@ -32,10 +32,11 @@ const Withdraw = () => {
         return () => unsubscribe();
     }, [navigate]);
 
-    const handleWithdraw = async () => {
-        const withdrawAmount = parseFloat(amount);
+    const handleWithdraw = async (e) => {
+        e.preventDefault();
+        const withdrawAmount = Number(amount);
 
-        if (withdrawAmount <= 0) {
+        if (withdrawAmount <= 0 || !withdrawAmount) {
             alert("Please enter a valid amount!");
             return;
         }
@@ -58,7 +59,7 @@ const Withdraw = () => {
             amount: withdrawAmount,
             status: "successful",
             type: "Withdraw",
-            timestamp: serverTimestamp(),
+            timestamp: new Date().toISOString(),
         });
 
         // Update local state
@@ -67,7 +68,7 @@ const Withdraw = () => {
     };
 
     return (
-        <div className="bg-gradient-to-br from-[#A20F0F] to-[#5D0404] text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
+        <div className="bg-gradient-to-br from-blue-950 to-blue-900 text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
             {showSuccess ? (
                 <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg text-center">
                     <h1 className="text-2xl font-bold text-white">🎉 Withdrawal Successful!</h1>
@@ -87,18 +88,18 @@ const Withdraw = () => {
 
                     <p className="text-lg text-white mb-4">Current Balance: <span className="font-semibold">NGN {balance}</span></p>
 
-                    <div className="flex flex-col gap-5 text-white">
+                    <form className="flex flex-col gap-5 text-white">
                         <input
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="Enter withdrawal amount"
-                            className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        <button onClick={handleWithdraw} className="bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition cursor-pointer">
+                        <button onClick={(e) => handleWithdraw(e)} type="button" className="bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition cursor-pointer">
                             Withdraw Now
                         </button>
-                    </div>
+                    </form>
                 </div>
             )}
         </div>

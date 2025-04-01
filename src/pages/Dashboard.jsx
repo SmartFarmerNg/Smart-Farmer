@@ -7,6 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import Footer from '../components/component/Footer';
 import Barloader from '../components/component/Barloader';
 import { motion } from 'framer-motion';
+import FloatingBackground from '../components/component/FloatingBackground';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -62,6 +63,7 @@ const Dashboard = () => {
 
     return (
         <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans'>
+            <FloatingBackground />
             {loading && <Barloader />}
             <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto py-6 pb-20'>
                 <motion.h1
