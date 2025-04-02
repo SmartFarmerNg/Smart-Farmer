@@ -23,7 +23,7 @@ const InvestmentsCarousel = ({ investments }) => {
     };
 
     return (
-        <div className="relative w-full max-w-xl mx-auto">
+        <div className="relative w-[90%] max-w-xl mx-auto">
             <h2 className="text-xl font-bold text-white text-center mb-4">Your Investments</h2>
 
             {/* Slider Container */}
@@ -31,36 +31,34 @@ const InvestmentsCarousel = ({ investments }) => {
                 <motion.div
                     ref={containerRef}
                     className="flex gap-4"
-                    animate={{ x: -currentIndex * 280 }} // Moves the slider
+                    animate={{ x: -currentIndex * 295 }} // Moves the slider
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 >
                     {investments.map((investment, index) => (
-                        <motion.div
+                        <div
                             key={index}
-                            className="bg-white shadow-md rounded-xl p-4 min-w-[260px]"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.96 }}
+                            className="bg-white shadow-md rounded-xl p-4 min-w-[280px]"
                         >
                             <p className="font-semibold">{investment.productName}</p>
                             <p className="text-sm">Units Invested: {investment.unitsInvested}</p>
                             <p className="text-sm">Investment Amount: NGN {investment.investmentAmount.toLocaleString()}</p>
                             <p className="text-sm">Date: {new Date(investment.investmentDate).toLocaleDateString()}</p>
-                        </motion.div>
+                        </div>
                     ))}
                 </motion.div>
             </div>
-                {/* Navigation Buttons */}
-                <div className="absolute top-1/2 -left-12">
-                    <button onClick={prevSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
-                        <ChevronLeft className="w-5 h-5" />
-                    </button>
-                </div>
+            {/* Navigation Buttons */}
+            <div className="absolute top-1/2 -left-12">
+                <button onClick={prevSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
+                    <ChevronLeft className="w-5 h-5" />
+                </button>
+            </div>
 
-                <div className="absolute top-1/2 -right-12">
-                    <button onClick={nextSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
-                        <ChevronRight className="w-5 h-5" />
-                    </button>
-                </div>
+            <div className="absolute top-1/2 -right-12">
+                <button onClick={nextSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
+                    <ChevronRight className="w-5 h-5" />
+                </button>
+            </div>
 
         </div>
     );

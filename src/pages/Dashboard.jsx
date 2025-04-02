@@ -134,7 +134,7 @@ const Dashboard = () => {
                     ))}
                 </div>
 
-                <div className="mt-6 mx-auto z-10">
+                <div className="mt-6 mx-auto z-10 w-[90%] max-w-2xl px-2 ">
                     {investments.length > 0 && <InvestmentsCarousel investments={investments} />}
                 </div>
 
