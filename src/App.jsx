@@ -10,6 +10,7 @@ import Withdraw from "./pages/Withdraw";
 import Invest from "./pages/Invest";
 import Product from "./pages/Product";
 import NotFound from "./pages/NotFound";
+import AddInvestmentProduct from "./pages/addinvestment";
 
 function App() {
   return (
@@ -25,6 +26,9 @@ function App() {
         <Route path="/transact/withdraw" element={<Withdraw />} />
         <Route path="/invest" element={<Invest />} />
         <Route path="/product/:id" element={<Product />} />
+
+        <Route path="/add" element={<AddInvestmentProduct />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

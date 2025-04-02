@@ -37,7 +37,7 @@ const Product = () => {
 
         try {
             // Get product details from Firestore
-            const productRef = doc(db, "investmentProducts ", product.id);
+            const productRef = doc(db, "investmentProducts", product.id);
             const productSnap = await getDoc(productRef);
 
             if (!productSnap.exists()) {
@@ -54,11 +54,11 @@ const Product = () => {
                 return;
             }
 
-            const investmentAmount = Number(product.unitPrice * investmentUnits)
+            const investmentAmount = Number(product.unitPrice * investmentUnits);
             if (investmentAmount < product.minimumInvestment) {
-                toast.error(`Minimum investment unit is ${product.minimumInvestment / product.unitPrice}`)
-                setLoading(false)
-                return
+                toast.error(`Minimum investment unit is ${product.minimumInvestment / product.unitPrice}`);
+                setLoading(false);
+                return;
             }
 
             // Update available units in Firestore
@@ -66,13 +66,11 @@ const Product = () => {
                 availableUnits: availableUnits - investmentUnits,
             });
 
-            // Track the user's investment in Firestore
-            const userRef = doc(db, "users", user.uid);
-            const investmentRef = collection(db, "investmentProducts ", product.id, "investors");
-            const userInvestmentRef = collection(db, "users", user.uid, "investors");
+            // Track the user's investment in Firestore (create a new entry instead of overwriting)
+            const userInvestmentRef = collection(db, "users", user.uid, "investments");
+            const investmentRef = collection(db, "investmentProducts", product.id, "investors");
 
-
-            await setDoc(doc(userInvestmentRef, user.uid), {
+            await addDoc(userInvestmentRef, {
                 uid: user.uid,
                 productName: product.name,
                 unitsInvested: investmentUnits,
@@ -80,7 +78,7 @@ const Product = () => {
                 investmentDate: new Date().toISOString(),
             });
 
-            await setDoc(doc(investmentRef, user.uid), {
+            await addDoc(investmentRef, {
                 uid: user.uid,
                 productName: product.name,
                 unitsInvested: investmentUnits,
@@ -88,6 +86,7 @@ const Product = () => {
                 investmentDate: new Date().toISOString(),
             });
 
+            // Add transaction record
             await addDoc(collection(db, "transactions"), {
                 userId: user.uid,
                 email: user.email,
@@ -99,6 +98,7 @@ const Product = () => {
             });
 
             // Fetch current user data
+            const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
             const userData = userDoc.data();
 
@@ -107,19 +107,17 @@ const Product = () => {
                 balance: Number(userData.balance) - investmentAmount,
             });
 
-            toast.success("Investmet successul🎉")
+            toast.success("Investment successful 🎉");
             setTimeout(() => {
                 navigate("/dashboard"); // Navigate back to the dashboard
             }, 2000);
         } catch (error) {
             console.error("Error making investment:", error);
-            toast.error("An error occured. Please try again.")
+            toast.error("An error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
     };
-
-    // if (loading) return <div className="flex justify-center py-10"><LoaderIcon className="animate-spin" /></div>;
 
     if (!product) {
         return (
