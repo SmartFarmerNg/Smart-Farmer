@@ -152,7 +152,7 @@ const Dashboard = () => {
                                         onClick={() => setShowBalance(() => !showBalance)}
                                         className="p-1 rounded-full hover:bg-gray-200 cursor-pointer z-50"
                                     >
-                                        {showBalance ? <EyeClosed size={12} /> : <Eye size={12} />}
+                                        {showBalance ? <Eye size={12} /> : <EyeOff size={12} />}
                                     </button>
                                 </p>
                             </div>
