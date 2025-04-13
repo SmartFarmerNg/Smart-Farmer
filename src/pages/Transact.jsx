@@ -5,14 +5,13 @@ import Footer from "../components/component/Footer";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import TransactionList from "../components/component/TransactionList";
 
 const Transact = () => {
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const transactionsPerPage = 5;
 
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -22,6 +21,10 @@ const Transact = () => {
             if (currentUser) {
                 setUser(currentUser);
                 fetchTransactions(currentUser.uid);
+                const userDoc = doc(db, "users", currentUser.uid);
+                onSnapshot(userDoc, (doc) => {
+                    setBalance(doc.data().balance);
+                });
             } else {
                 navigate("/sign-in");
             }
@@ -38,33 +41,23 @@ const Transact = () => {
             const txnList = snapshot.docs.map(doc => {
                 const data = doc.data();
                 if (data.type === "Deposit") totalBalance += data.amount;
-                if (data.type === "Withdraw") totalBalance -= data.amount;
+                if (data.type === "Withdraw") {
+                    const withdrawalFee = data.amount * 0.05;
+                    totalBalance -= (data.amount + withdrawalFee);
+                }
                 if (data.type === "Invest") totalBalance -= data.amount;
                 return { id: doc.id, ...data };
             });
 
             setTransactions(txnList);
-            setBalance(totalBalance);
             setLoading(false);
         });
 
         return unsubscribe;
     };
-    // Sort transactions by timestamp (newest first)
-    const sortedTransactions = transactions
-        .slice()
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-    // Get transactions for the current page
-    const startIndex = (currentPage - 1) * transactionsPerPage;
-    const paginatedTransactions = sortedTransactions.slice(startIndex, startIndex + transactionsPerPage);
-
-    // Calculate total pages
-    const totalPages = Math.ceil(transactions.length / transactionsPerPage);
-
     return (
-        <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans min-h-screen flex flex-col items-center pb-20'>
-            <div className='w-full max-w-2xl px-4 pt-6'>
+        <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans overflow-scroll h-screen flex flex-col items-center pb-20'>
+            <div className='w-full max-w-2xl px-4 pt-6 z-50'>
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -78,7 +71,7 @@ const Transact = () => {
                 </motion.div>
 
                 {/* Quick Actions */}
-                <div className="mt-4 w-full grid grid-cols-2 gap-4">
+                <div className="mt-4 w-full grid grid-cols-2 gap-4 z-50">
                     {["Deposit", "Withdraw"].map((action, index) => (
                         <motion.button
                             key={index}
@@ -94,63 +87,8 @@ const Transact = () => {
                 </div>
 
                 {/* Transaction History */}
-                <div className="mt-4 w-full">
-                    <h2 className="text-lg font-semibold text-white mb-4">Recent Transactions</h2>
-                    {loading ? (
-                        <div className="flex justify-center py-4">
-                            <Loader className="animate-spin text-white w-8 h-8" />
-                        </div>
-                    ) : transactions.length === 0 ? (
-                        <p className="text-white text-center">No transactions yet.</p>
-                    ) : (
-                        <div className="flex flex-col gap-3">
-                            {paginatedTransactions.map((txn, index) => (
-                                <motion.div
-                                    key={txn.id}
-                                    initial={{ opacity: 0, x: 50 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    className="bg-gray-100 shadow-md rounded-xl p-4 py-2 flex items-center gap-4 overflow-hidden"
-                                >
-                                    <div className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${txn.type === "Deposit" ? "bg-green-400" : txn.type === "Invest" ? "bg-blue-400" : "bg-red-400"}`}>
-                                        {txn.type === "Deposit" ? <ArrowDownLeft className="w-5 h-5" /> : txn.type === "Invest" ? <Wallet className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
-                                    </div>
-                                    <div className="z-10">
-                                        <h1 className="font-semibold text-gray-900 sm:text-lg">{txn.type}</h1>
-                                        <span className="text-xs sm:text-sm text-gray-800">{new Date(txn.timestamp).toLocaleString()}</span>
-                                    </div>
-                                    <div className="ml-auto font-bold text-gray-900">NGN {txn.amount.toLocaleString()}</div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Pagination Controls */}
-                    {transactions.length > transactionsPerPage && (
-                        <div className="flex justify-center items-center space-x-4 mt-6">
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1}
-                                className="rounded-full shadow-md"
-                            >
-                                <ChevronLeftCircle className={`${currentPage === 1 ? "text-gray-300 cursor-not-allowed" : "text-white"}`} />
-                            </button>
-                            <span className="font-semibold text-white">
-                                Page {currentPage} of {totalPages}
-                            </span>
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages}
-                                className="rounded-full shadow-md"
-                            >
-                                <ChevronRightCircle className={`${currentPage === totalPages ? "text-gray-300 cursor-not-allowed" : "text-white"}`} />
-                            </button>
-                        </div>
-                    )}
-                </div>
+                <TransactionList transactions={transactions} loading={loading} />
             </div>
-            {/* Footer */}
-            <Footer page="transact" />
         </div>
     );
 };

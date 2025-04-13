@@ -1,25 +1,28 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 const InvestmentsCarousel = ({ investments }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const containerRef = useRef(null);
 
     const nextSlide = () => {
-        if (currentIndex < investments.length - 1) {
-            setCurrentIndex((prev) => prev + 1);
-        } else {
-            setCurrentIndex(0); // Loop back to the first item
-        }
+        setCurrentIndex((prev) => (prev < investments.length - 1 ? prev + 1 : 0));
     };
 
     const prevSlide = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex((prev) => prev - 1);
-        } else {
-            setCurrentIndex(investments.length - 1); // Loop back to the last item
-        }
+        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : investments.length - 1));
+    };
+
+    const getProgress = (investment) => {
+        const start = investment.startDate?.toDate?.() || new Date(investment.startDate) || new Date();
+        const now = new Date();
+        const duration = investment.investmentPeriod * 30 * 24 * 60 * 60 * 1000;
+        const elapsed = now - start;
+        const progress = (elapsed / duration) * 100;
+        return Math.min(Math.max(progress, 0), 100);
     };
 
     return (
@@ -31,22 +34,41 @@ const InvestmentsCarousel = ({ investments }) => {
                 <motion.div
                     ref={containerRef}
                     className="flex gap-4"
-                    animate={{ x: -currentIndex * 295 }} // Moves the slider
+                    animate={{ x: -currentIndex * 295 }}
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 >
-                    {investments.map((investment, index) => (
-                        <div
-                            key={index}
-                            className="bg-white shadow-md rounded-xl p-4 min-w-[280px]"
-                        >
-                            <p className="font-semibold">{investment.productName}</p>
-                            <p className="text-sm">Units Invested: {investment.unitsInvested}</p>
-                            <p className="text-sm">Investment Amount: NGN {investment.investmentAmount.toLocaleString()}</p>
-                            <p className="text-sm">Date: {new Date(investment.investmentDate).toLocaleDateString()}</p>
-                        </div>
-                    ))}
+                    {investments.map((investment, index) => {
+                        const progress = getProgress(investment);
+                        return (
+                            <div
+                                key={index}
+                                className="bg-white shadow-md rounded-xl p-4 min-w-[280px] flex justify-between"
+                            >
+                                <div>
+                                    <p className="font-semibold text-gray-800">{investment.productName}</p>
+                                    <p className="text-sm text-gray-600">Units: {investment.unitsBought}</p>
+                                    <p className="text-sm text-gray-600">Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
+                                    <p className="text-sm text-gray-600">Start: {new Date(investment.startDate?.seconds ? investment.startDate.toDate() : investment.startDate).toLocaleDateString()}</p>
+                                </div>
+
+                                <div className="w-20 h-20 mt-4 self-center">
+                                    <CircularProgressbar
+                                        value={progress}
+                                        text={`${Math.round(progress)}%`}
+                                        styles={buildStyles({
+                                            textSize: "28px",
+                                            textColor: "#0FA280",
+                                            pathColor: "#0FA280",
+                                            trailColor: "#e6e6e6",
+                                        })}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
                 </motion.div>
             </div>
+
             {/* Navigation Buttons */}
             <div className="absolute top-1/2 -left-12">
                 <button onClick={prevSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
@@ -59,7 +81,6 @@ const InvestmentsCarousel = ({ investments }) => {
                     <ChevronRight className="w-5 h-5" />
                 </button>
             </div>
-
         </div>
     );
 };

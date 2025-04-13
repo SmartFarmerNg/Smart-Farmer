@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,6 +31,8 @@ const Login = () => {
 
       if (!user.emailVerified) {
         toast.error('Please verify your email before logging in.');
+        await sendEmailVerification(user);
+
         await auth.signOut();
         setIsLoading(false);
         return;

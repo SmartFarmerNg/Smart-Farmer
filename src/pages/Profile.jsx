@@ -55,7 +55,7 @@ const Profile = () => {
 
     return (
         <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans'>
-            <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto pb-14'>
+            <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto pb-14 z-50'>
                 {isLoggingOut || loading && <Barloader />}
                 <div className='w-full max-w-2xl mx-auto py-5 flex flex-col flex-grow'>
                     <header className='w-full flex items-center gap-3 mb-6'>
@@ -84,7 +84,7 @@ const Profile = () => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.9 }}
                                     className='mt-4 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow-md w-full cursor-pointer'
-                                    onClick={() => navigate('/deposit')}
+                                    onClick={() => navigate('/transact/deposit')}
                                 >
                                     Fund account
                                 </motion.button>
@@ -93,7 +93,6 @@ const Profile = () => {
                         </div>
                     </section>
                 </div>
-                <Footer page='profile' />
             </div>
         </div>
     );

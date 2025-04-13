@@ -15,7 +15,8 @@ const Deposit = () => {
     const [email, setEmail] = useState("");
     const [balance, setBalance] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [td, setTd] = useState(false);
+    const [td, setTd] = useState(null);
+    const [isProcessing, setIsProcessing] = useState(false);  // Track payment status
 
     const publicKey = "pk_test_1a3a0ace0098f205c173a84c35960a794793ff87";
 
@@ -43,6 +44,9 @@ const Deposit = () => {
     }, [navigate]);
 
     const handleSuccess = async (reference) => {
+        if (isProcessing) return; // Prevent multiple submissions
+
+        setIsProcessing(true); // Start processing
         console.log("Payment successful", reference);
         setShowSuccess(true);
 
@@ -52,27 +56,34 @@ const Deposit = () => {
         const newBalance = balance + depositAmount;
         const userRef = doc(db, "users", user.uid);
 
-        // Add transaction record
-        await addDoc(collection(db, "transactions"), {
-            userId: user.uid,
-            email: user.email,
-            amount: depositAmount,
-            status: "successful",
-            type: "Deposit",
-            transactionId: reference.reference,
-            timestamp: new Date().toISOString(),
-        });
+        try {
+            // Add transaction record
+            await addDoc(collection(db, "transactions"), {
+                userId: user.uid,
+                email: user.email,
+                amount: depositAmount,
+                status: "successful",
+                type: "Deposit",
+                transactionId: reference.reference,
+                timestamp: new Date().toISOString(),
+            });
 
-        setTd(reference.reference);
+            setTd(reference.reference);
 
-        // Update Firestore user balance
-        await setDoc(userRef, { balance: newBalance }, { merge: true });
-        setBalance(newBalance);
+            // Update Firestore user balance
+            await setDoc(userRef, { balance: newBalance }, { merge: true });
+            setBalance(newBalance);
+        } catch (error) {
+            console.error("Transaction failed", error);
+            setShowSuccess(false); // Handle failure
+        } finally {
+            setIsProcessing(false); // Stop processing
+        }
     };
 
     const paystackConfig = {
         email,
-        amount: amount * 100,
+        amount: amount * 100, // Paystack expects the amount in kobo (NGN * 100)
         publicKey,
         currency: "NGN",
         channels: ["card", "bank", "ussd"],
@@ -99,13 +110,17 @@ const Deposit = () => {
                         <h1 className="text-2xl font-bold text-white mx-auto">Deposit</h1>
                     </header>
 
-                    <p className="text-lg text-white mb-4">Current Balance: <span className="font-semibold">NGN {balance}</span></p>
+                    <p className="text-lg text-white mb-4">Current Balance: <span className="font-semibold">NGN {balance.toLocaleString()}</span></p>
 
                     <div className="flex flex-col gap-5 text-white">
                         <input type="email" value={email} disabled className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]" />
-                        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Enter deposit amount" className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]" />
-                        <PaystackButton {...paystackConfig} className="bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition cursor-pointer">
-                            Deposit Now
+                        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))} placeholder="Enter deposit amount" className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]" />
+                        <PaystackButton
+                            {...paystackConfig}
+                            className={`bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition cursor-pointer ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? 'Processing...' : 'Deposit Now'}
                         </PaystackButton>
                     </div>
                 </div>

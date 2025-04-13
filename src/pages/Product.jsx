@@ -24,6 +24,8 @@ const Product = () => {
                     displayName: currentUser.displayName || 'User',
                     photoURL: currentUser.photoURL,
                 });
+                console.log(product);
+
             } else {
                 navigate('/sign-in');
             }
@@ -56,7 +58,7 @@ const Product = () => {
 
             const investmentAmount = Number(product.unitPrice * investmentUnits);
             if (investmentAmount < product.minimumInvestment) {
-                toast.error(`Minimum investment unit is ${product.minimumInvestment / product.unitPrice}`);
+                toast.error(`Minimum investment unit is ${Math.ceil(product.minimumInvestment / product.unitPrice)}`);
                 setLoading(false);
                 return;
             }
@@ -73,17 +75,31 @@ const Product = () => {
             await addDoc(userInvestmentRef, {
                 uid: user.uid,
                 productName: product.name,
-                unitsInvested: investmentUnits,
                 investmentAmount: investmentAmount,
-                investmentDate: new Date().toISOString(),
+                investmentPeriod: product.investmentPeriod,
+                expectedROI: product.expectedROI,
+                status: "Pending",
+                unitPrice: product.unitPrice,
+                unitsBought: investmentUnits,
+                startDate: product.startDate,
+                endDate: new Date(new Date().getTime() + product.investmentPeriod * 24 * 60 * 60 * 1000).toISOString(),
+                earningsSoFar: 0,
+                createdAt: new Date().toISOString(),
             });
 
             await addDoc(investmentRef, {
                 uid: user.uid,
                 productName: product.name,
-                unitsInvested: investmentUnits,
                 investmentAmount: investmentAmount,
-                investmentDate: new Date().toISOString(),
+                investmentPeriod: product.investmentPeriod,
+                expectedROI: product.expectedROI,
+                status: "Pending",
+                unitPrice: product.unitPrice,
+                unitsBought: investmentUnits,
+                startDate: product.startDate,
+                endDate: new Date(new Date().getTime() + product.investmentPeriod * 24 * 60 * 60 * 1000).toISOString(),
+                earningsSoFar: 0,
+                createdAt: new Date().toISOString(),
             });
 
             // Add transaction record
@@ -131,7 +147,7 @@ const Product = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen bg-gray-100 p-6 pb-20">
             <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-6">
                 <motion.h1
                     className="text-2xl font-bold text-[#0FA280]"
@@ -168,6 +184,14 @@ const Product = () => {
                     <div className="p-4 bg-gray-200 rounded-lg">
                         <p className="text-xs">Risk Level</p>
                         <p className="font-bold">{product.riskLevel}</p>
+                    </div>
+                    <div className="p-4 bg-gray-200 rounded-lg">
+                        <p className="text-xs">Start Date</p>
+                        <p className="font-bold">{new Date(product.startDate).toLocaleDateString()}</p>
+                    </div>
+                    <div className="p-4 bg-gray-200 rounded-lg">
+                        <p className="text-xs">End Date</p>
+                        <p className="font-bold">{new Date(product.endDate).toLocaleDateString()}</p>
                     </div>
                 </div>
 
