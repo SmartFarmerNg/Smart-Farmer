@@ -35,8 +35,7 @@ const InvestProductPage = () => {
 
     return (
         <div className=" min-h-screen flex flex-col items-center justify-center">
-
-            <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+            <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md z-50">
                 <h1 className="text-2xl font-bold text-center mb-4">{investment.productName}</h1>
 
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
