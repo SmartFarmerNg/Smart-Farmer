@@ -142,20 +142,21 @@ const Dashboard = () => {
                             key={index}
                             className='bg-gray-100 shadow-md w-full mx-auto flex gap-3 px-6 py-4 rounded-xl border border-gray-300 overflow-hidden relative'
                         >
-                            <div className='text-left'>
-                                <p className='text-xs'>{label}</p>
+                            <button className='text-left z-50' onClick={() => setShowBalance(() => !showBalance)}>
+                                <p className='text-xs flex items-center'>
+                                    {label}
+                                    <button
+                                        className="p-1 rounded-full hover:bg-gray-200 cursor-pointer z-50"
+                                    >
+                                        {showBalance ? <Eye size={14} className="font-bold" /> : <EyeOff size={14} className="font-bold" />}
+                                    </button>
+                                </p>
                                 <p className='text-sm font-bold flex items-center gap-1'>
                                     NGN {typeof amount === 'number' ?
                                         showBalance ? amount.toLocaleString() : '****'
                                         : <LoaderIcon className='animate-spin duration-1000 inline-flex w-4 h-4' />}
-                                    <button
-                                        onClick={() => setShowBalance(() => !showBalance)}
-                                        className="p-1 rounded-full hover:bg-gray-200 cursor-pointer z-50"
-                                    >
-                                        {showBalance ? <Eye size={12} /> : <EyeOff size={12} />}
-                                    </button>
                                 </p>
-                            </div>
+                            </button>
                             <Icon className='w-16 h-16 text-[#0FA280] scale-250 -rotate-20 opacity-20 absolute left-5 top-3' />
                             <CircleDollarSign className='w-16 h-16 text-[#0FA280] scale-250 rotate-20 opacity-20 absolute right-10 top-3' />
                         </div>
