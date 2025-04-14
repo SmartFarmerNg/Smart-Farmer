@@ -1,162 +1,195 @@
+import React, { useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebase";
-import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
+
+import { httpsCallable } from "firebase/functions";
+import { db, functions } from "../firebase"; // Add this if not already imported
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+
 const Withdraw = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [accountNumber, setAccountNumber] = useState("");
+    const [bankCode, setBankCode] = useState("");
+    const [accountName, setAccountName] = useState("");
     const [amount, setAmount] = useState("");
-    const [balance, setBalance] = useState(0);
-    const [processing, setProcessing] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const withdrawalFeePercentage = 5; // 5% fee
+    const [verifying, setVerifying] = useState(false);
+    const [verified, setVerified] = useState(false);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            if (currentUser) {
-                setUser({ uid: currentUser.uid, email: currentUser.email });
+    // Replace with actual list or fetch dynamically from Paystack
+    const banks = [
+        { name: "Access Bank", code: "044" },
+        { name: "GTBank", code: "058" },
+        { name: "UBA", code: "033" },
+        { name: "First Bank", code: "011" },
+        { name: "Zenith Bank", code: "057" },
+    ];
 
-                // Fetch user balance
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                if (userDoc.exists()) {
-                    setBalance(userDoc.data().balance || 0);
-                }
-            } else {
-                navigate("/sign-in");
-            }
-            setLoading(false);
-        });
-
-        return () => unsubscribe();
-    }, [navigate]);
-
-    const handleWithdraw = async (e) => {
-        e.preventDefault();
-
-        if (processing) return;
-
-        const withdrawAmount = Number(amount);
-        if (withdrawAmount <= 0 || !withdrawAmount) {
-            toast.error("Please enter a valid amount!");
+    const handleVerify = async () => {
+        if (!accountNumber || !bankCode) {
+            toast.error("Enter account number and select bank.");
             return;
         }
-        if (withdrawAmount > balance) {
-            toast.error("Insufficient balance!");
+
+        setVerifying(true);
+
+        try {
+            const verifyBankAccount = httpsCallable(functions, "verifyBankAccount");
+            const res = await verifyBankAccount({ accountNumber, bankCode });
+
+            if (res?.data?.status && res.data.data.account_name) {
+                setAccountName(res.data.data.account_name);
+                setVerified(true);
+                toast.success("Account verified successfully!");
+            } else {
+                toast.error("Verification failed.");
+            }
+        } catch (error) {
+            console.error("Verification error:", error);
+            toast.error("Error verifying account.");
+        } finally {
+            setVerifying(false);
+        }
+    };
+
+
+    const handleWithdraw = async () => {
+        if (!verified) {
+            toast.error("Please verify account first.");
+            return;
+        }
+
+        const withdrawAmount = Number(amount);
+        if (withdrawAmount <= 0) {
+            toast.error("Enter valid amount.");
             return;
         }
 
         setProcessing(true);
 
         try {
-            // Calculate withdrawal fee
-            const fee = (withdrawAmount * withdrawalFeePercentage) / 100;
-            const totalWithdrawAmount = withdrawAmount + fee; // Total amount to withdraw including fee
-            const newBalance = balance - totalWithdrawAmount;
-
-            if (newBalance < 0) {
-                toast.error("Insufficient balance to cover withdrawal fee!");
-                setProcessing(false);
-                return;
-            }
-
-            const userRef = doc(db, "users", user.uid);
-
-            // Update Firestore user balance
-            await setDoc(userRef, { balance: newBalance }, { merge: true });
-
-            // Add transaction record
-            await addDoc(collection(db, "transactions"), {
-                userId: user.uid,
-                email: user.email,
+            const initiateTransfer = httpsCallable(functions, "initiatePaystackTransfer");
+            const res = await initiateTransfer({
                 amount: withdrawAmount,
-                fee,
-                totalAmount: totalWithdrawAmount,
-                status: "successful",
-                type: "Withdraw",
-                timestamp: new Date().toISOString(),
+                bankCode,
+                accountNumber,
+                accountName,
+                userId: user?.uid,
+                email: user?.email,
             });
 
-            // Update local state
-            setBalance(newBalance);
-            setShowSuccess(true);
+            if (res.data.status === "success") {
+                // ✅ 1. Deduct balance in Firestore
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                const currentBalance = userSnap.data()?.balance || 0;
 
-            // Send email notification via Firebase Functions (You need to configure Firebase Functions separately)
-            // You'd call a cloud function here to send the email notification
+                if (currentBalance < withdrawAmount) {
+                    toast.error("Insufficient balance!");
+                    return;
+                }
 
-            // For demo purposes, we're using a toast for notification:
-            toast.success(`Withdrawal Successful! Fee: NGN ${fee.toFixed(2)}. New balance: NGN ${newBalance.toFixed(2)}`);
+                await updateDoc(userRef, {
+                    balance: currentBalance - withdrawAmount,
+                });
+
+                // ✅ 2. Save withdrawal transaction
+                await addDoc(collection(db, "transactions"), {
+                    userId: user.uid,
+                    email: user.email,
+                    amount: withdrawAmount,
+                    status: "pending", // you can update this later if needed
+                    type: "Withdraw",
+                    method: "Paystack",
+                    transferCode: res.data.transferCode,
+                    accountNumber,
+                    bankCode,
+                    accountName,
+                    timestamp: new Date().toISOString(),
+                });
+
+                toast.success("Withdrawal initiated and recorded.");
+                setAmount(""); // Clear input
+            }
         } catch (error) {
-            console.error("Withdrawal failed:", error);
-            toast.error("An error occurred. Please try again.");
+            console.error("Transfer Error:", error);
+            toast.error("Transfer failed. Try again.");
         } finally {
             setProcessing(false);
         }
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-blue-900 text-white">
-                <Loader2 className="animate-spin w-10 h-10" />
-            </div>
-        );
-    }
-
     return (
-        <div className="bg-gradient-to-br from-blue-950 to-blue-900 text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
-            {showSuccess ? (
-                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg text-center">
-                    <h1 className="text-2xl font-bold text-white">🎉 Withdrawal Successful!</h1>
-                    <p className="text-lg mt-2">Your new balance: <span className="font-semibold">NGN {balance}</span></p>
-                    <button className="bg-white text-black font-semibold px-6 py-3 rounded-xl mt-4 hover:bg-gray-300 transition" onClick={() => navigate("/dashboard")}>
-                        Go to Dashboard
+        <div className="bg-gradient-to-br from-blue-950 to-blue-900 text-white min-h-screen flex flex-col justify-center items-center p-6">
+            <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg z-50">
+                <header className="flex items-center mb-6">
+                    <button onClick={() => navigate(-1)} className="cursor-pointer p-2 bg-white/20 rounded-full hover:bg-white/30">
+                        <ArrowLeft className="text-white w-6 h-6" />
+                    </button>
+                    <h1 className="text-2xl font-bold text-white mx-auto">Withdraw via Paystack</h1>
+                </header>
+
+                <div className="flex flex-col gap-4">
+                    <input
+                        type="text"
+                        value={accountNumber}
+                        onChange={(e) => setAccountNumber(e.target.value)}
+                        placeholder="Account Number"
+                        className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <select
+                        value={bankCode}
+                        onChange={(e) => setBankCode(e.target.value)}
+                        className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">Select Bank</option>
+                        {banks.map((bank) => (
+                            <option key={bank.code} value={bank.code}>
+                                {bank.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button
+                        onClick={handleVerify}
+                        disabled={verifying}
+                        className="bg-white text-black font-semibold p-3 rounded-xl transition hover:bg-gray-200 flex items-center justify-center gap-2"
+                    >
+                        {verifying ? (
+                            <>
+                                <Loader2 className="animate-spin w-4 h-4" /> Verifying...
+                            </>
+                        ) : (
+                            "Verify Account"
+                        )}
+                    </button>
+
+                    {verified && (
+                        <p className="text-sm text-green-400">
+                            ✅ Account Name: <span className="font-semibold">{accountName}</span>
+                        </p>
+                    )}
+
+                    <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="Amount to withdraw"
+                        className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <button
+                        onClick={handleWithdraw}
+                        className="bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition"
+                    >
+                        Withdraw Now
                     </button>
                 </div>
-            ) : (
-                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg">
-                    <header className="flex items-center mb-6">
-                        <button onClick={() => navigate(-1)} className="cursor-pointer p-2 bg-white/20 rounded-full hover:bg-white/30">
-                            <ArrowLeft className="text-white w-6 h-6" />
-                        </button>
-                        <h1 className="text-2xl font-bold text-white mx-auto">Withdraw</h1>
-                    </header>
-
-                    <p className="text-lg text-white mb-4">
-                        Current Balance: <span className="font-semibold">NGN {balance}</span>
-                    </p>
-
-                    <form className="flex flex-col gap-5 text-white" onSubmit={handleWithdraw}>
-                        <input
-                            type="number"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            placeholder="Enter withdrawal amount"
-                            className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            disabled={processing}
-                        />
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className={`flex justify-center items-center gap-2 bg-white text-black font-semibold p-3 rounded-xl transition cursor-pointer ${processing ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-300"
-                                }`}
-                        >
-                            {processing ? (
-                                <>
-                                    <Loader2 className="animate-spin w-5 h-5" />
-                                    Processing...
-                                </>
-                            ) : (
-                                "Withdraw Now"
-                            )}
-                        </button>
-                    </form>
-                </div>
-            )}
+            </div>
             <ToastContainer />
         </div>
     );

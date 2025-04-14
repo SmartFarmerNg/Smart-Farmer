@@ -22,8 +22,6 @@ const LandingPage = () => {
     return (
         <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans relative overflow-hidden min-h-screen'>
             {isLoading && <Barloader />}
-            <FloatingBackground />
-
             <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center justify-center mx-auto py-6 pb-20 relative z-10'>
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}

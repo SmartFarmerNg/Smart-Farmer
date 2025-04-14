@@ -184,9 +184,9 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className='w-full bg-white shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-50 relative'
+              className='w-full bg-white/30 backdrop-blur-md shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-50 relative'
             >
-              <h2 className='text-xl font-bold mb-4 text-gray-900'>Investment Summary</h2>
+              <h2 className='text-xl font-bold mb-4 text-white'>Investment Summary</h2>
               <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 text-center'>
                 <div className='bg-gray-100 p-4 rounded-lg shadow-sm'>
                   <p className='text-sm text-gray-500'>Total Invested</p>
@@ -212,9 +212,9 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className='w-full bg-white shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-10'
+              className='w-full bg-white/30 backdrop-blur-md shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-10'
             >
-              <h2 className='text-xl font-bold mb-4 text-gray-900'>Your Investments</h2>
+              <h2 className='text-xl font-bold mb-4 text-white'>Your Investments</h2>
               {investments.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -353,7 +353,7 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className='w-full text-white shadow-md p-6 rounded-sm border-r border-l border-gray-300 z-10'
+              className='w-full text-white shadow-md rounded-sm border-r z-10'
             >
               <h2 className='text-xl font-bold mb-4'>Explore More Investments</h2>
               <CropsSection crops={crops} cropsLoading={cropsLoading} />

@@ -86,7 +86,6 @@ const Register = () => {
         <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 text-gray-900 font-sans bg-gradient-to-br from-[#0FA280] to-[#054D3B]'>
             {isLoading && <Barloader />}
             <ToastContainer position="top-right" autoClose={5000} />
-            <FloatingBackground />
 
             <motion.div
                 initial={{ opacity: 0, y: -20 }}

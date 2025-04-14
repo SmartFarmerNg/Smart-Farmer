@@ -93,16 +93,15 @@ const Deposit = () => {
 
     return (
         <div className="bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
-            <FloatingBackground />
             {showSuccess ? (
-                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg text-center">
+                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg text-center z-50">
                     <h1 className="text-2xl font-bold text-white">🎉 Deposit Successful!</h1>
                     <p className="text-lg mt-2">Your new balance: <span className="font-semibold">NGN {balance.toLocaleString()}</span></p>
                     <p className="text-lg mt-2">Your Transaction ID: <span className="font-semibold">{td}</span></p>
                     <button className="bg-white text-black font-semibold px-6 py-3 rounded-xl mt-4 hover:bg-gray-300 transition cursor-pointer" onClick={() => navigate("/invest")}>Start Investing Now!🚀</button>
                 </div>
             ) : (
-                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg">
+                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg z-50">
                     <header className="flex items-center mb-6">
                         <button onClick={() => navigate(-1)} className="cursor-pointer p-2 bg-white/20 rounded-full hover:bg-white/30">
                             <ArrowLeft className="text-white w-6 h-6" />
