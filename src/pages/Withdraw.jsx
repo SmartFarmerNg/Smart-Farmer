@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -7,8 +7,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 
 import { httpsCallable } from "firebase/functions";
-import { db, functions } from "../firebase"; // Add this if not already imported
+import { auth, db, functions } from "../firebase"; // Add this if not already imported
 import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Withdraw = () => {
     const navigate = useNavigate();
@@ -18,6 +19,34 @@ const Withdraw = () => {
     const [amount, setAmount] = useState("");
     const [verifying, setVerifying] = useState(false);
     const [verified, setVerified] = useState(false);
+    const [balance, setBalance] = useState(0);
+    const [user, setUser] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [loading, setLoading] = useState(null);
+
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                setUser({
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                });
+                setEmail(currentUser.email);
+
+
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (userDoc.exists()) {
+                    setBalance(userDoc.data().balance || 0);
+                }
+            } else {
+                navigate("/sign-in");
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, [navigate]);
 
     // Replace with actual list or fetch dynamically from Paystack
     const banks = [
@@ -173,7 +202,8 @@ const Withdraw = () => {
                             ✅ Account Name: <span className="font-semibold">{accountName}</span>
                         </p>
                     )}
-
+                    <br />
+                    <p>Available balance: NGN {balance.toLocaleString()}</p>
                     <input
                         type="number"
                         value={amount}

@@ -5,7 +5,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { PaystackButton } from "react-paystack";
 import { doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
-import FloatingBackground from "../components/component/FloatingBackground";
 
 const Deposit = () => {
     const navigate = useNavigate();
@@ -16,7 +15,7 @@ const Deposit = () => {
     const [balance, setBalance] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
     const [td, setTd] = useState(null);
-    const [isProcessing, setIsProcessing] = useState(false);  // Track payment status
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const publicKey = "pk_test_1a3a0ace0098f205c173a84c35960a794793ff87";
 
@@ -29,7 +28,7 @@ const Deposit = () => {
                 });
                 setEmail(currentUser.email);
 
-                // Fetch user balance
+
                 const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                 if (userDoc.exists()) {
                     setBalance(userDoc.data().balance || 0);
@@ -44,9 +43,9 @@ const Deposit = () => {
     }, [navigate]);
 
     const handleSuccess = async (reference) => {
-        if (isProcessing) return; // Prevent multiple submissions
+        if (isProcessing) return;
 
-        setIsProcessing(true); // Start processing
+        setIsProcessing(true);
         console.log("Payment successful", reference);
         setShowSuccess(true);
 
@@ -57,7 +56,7 @@ const Deposit = () => {
         const userRef = doc(db, "users", user.uid);
 
         try {
-            // Add transaction record
+
             await addDoc(collection(db, "transactions"), {
                 userId: user.uid,
                 email: user.email,
@@ -70,20 +69,20 @@ const Deposit = () => {
 
             setTd(reference.reference);
 
-            // Update Firestore user balance
+
             await setDoc(userRef, { balance: newBalance }, { merge: true });
             setBalance(newBalance);
         } catch (error) {
             console.error("Transaction failed", error);
-            setShowSuccess(false); // Handle failure
+            setShowSuccess(false);
         } finally {
-            setIsProcessing(false); // Stop processing
+            setIsProcessing(false);
         }
     };
 
     const paystackConfig = {
         email,
-        amount: amount * 100, // Paystack expects the amount in kobo (NGN * 100)
+        amount: amount * 100,
         publicKey,
         currency: "NGN",
         channels: ["card", "bank", "ussd"],
