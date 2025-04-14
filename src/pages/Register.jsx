@@ -60,6 +60,7 @@ const Register = () => {
             await setDoc(doc(db, 'users', user.uid), {
                 firstName,
                 lastName,
+                balance: 0,
                 uid: user.uid,
                 email: user.email,
                 phoneNumber,

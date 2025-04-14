@@ -65,9 +65,9 @@ const Transact = () => {
                     className="bg-white shadow-lg rounded-xl p-4 w-full text-center border border-gray-200 relative overflow-hidden"
                 >
                     <h2 className="text-sm font-semibold text-gray-600">Available Balance</h2>
-                    <p className="text-xl font-bold text-[#0FA280]">NGN {balance.toLocaleString()}</p>
+                    <p className="text-xl font-bold text-[#0FA280]">NGN {balance.toLocaleString() || 0}</p>
                     <CircleDollarSign className='text-[#0fa280] w-16 h-16 opacity-20 rotate-12 scale-200 absolute right-12 top-5 select-none pointer-events-none' />
-                    <Banknote className='text-[#0FA280] w-16 h-16 opacity-20 -rotate-12 scale-200 absolute left-12 top-5 select-none pointer-events-none' />                {/* Balance Section */}
+                    <Banknote className='text-[#0FA280] w-16 h-16 opacity-20 -rotate-12 scale-200 absolute left-12 top-5 select-none pointer-events-none' />
                 </motion.div>
 
                 {/* Quick Actions */}
