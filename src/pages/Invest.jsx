@@ -23,6 +23,13 @@ const Invest = () => {
   const [crops, setCrops] = useState([]);
   const [cropsLoading, setCropsLoading] = useState(true);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+
 
   const navigate = useNavigate();
 
@@ -260,6 +267,7 @@ const Invest = () => {
                       }
                       return 0;
                     })
+                    .slice(startIndex, endIndex)
                     .map((inv, index) => {
                       const progress = getProgress(inv);
                       const daysLeft = getDaysLeft(inv);
@@ -299,8 +307,43 @@ const Invest = () => {
                               })}
                             />
                           </div>
-                        </motion.div>);
+                        </motion.div>
+                      );
                     })}
+
+                  {/* Pagination Controls */}
+                  {investments && (
+                    <div className="flex justify-center gap-4 mt-6">
+                      <button
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-gray-200 rounded cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Previous
+                      </button>
+
+                      <span className="px-2 py-2 text-sm text-gray-700">
+                        Page {currentPage}
+                      </span>
+
+                      <button
+                        onClick={() => {
+                          const totalPages = Math.ceil(
+                            investments.filter(inv => statusFilter === 'All' || inv.status === statusFilter).length / itemsPerPage
+                          );
+                          setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                        }}
+                        disabled={
+                          currentPage >= Math.ceil(
+                            investments.filter(inv => statusFilter === 'All' || inv.status === statusFilter).length / itemsPerPage
+                          )
+                        }
+                        className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>

@@ -125,7 +125,7 @@ const Product = () => {
 
             toast.success("Investment successful 🎉");
             setTimeout(() => {
-                navigate("/dashboard"); // Navigate back to the dashboard
+                navigate("/invest"); // Navigate back to the dashboard
             }, 2000);
         } catch (error) {
             console.error("Error making investment:", error);
