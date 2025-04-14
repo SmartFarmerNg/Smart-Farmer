@@ -173,7 +173,7 @@ const Withdraw = () => {
                     <select
                         value={bankCode}
                         onChange={(e) => setBankCode(e.target.value)}
-                        className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="p-3 rounded-lg border bg-gray-500 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="">Select Bank</option>
                         {banks.map((bank) => (
