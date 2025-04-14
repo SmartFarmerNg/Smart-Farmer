@@ -10,7 +10,7 @@ exports.initiatePaystackTransfer = functions.https.onCall(
       );
     }
 
-    const PAYSTACK_SECRET = "YOUR_PAYSTACK_SECRET_KEY"; // Replace this
+    const PAYSTACK_SECRET = "sk_test_823c00f95a55e269a4cc676e4ca8dc220dafdde1"; // Replace this
 
     try {
       // 1. Create Transfer Recipient
