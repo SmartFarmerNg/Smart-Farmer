@@ -70,7 +70,7 @@ const Login = () => {
     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#0FA280] to-[#054D3B]">
       <ToastContainer position="top-right" autoClose={2300} />
       <motion.div
-        className=" bg-white/15 backdrop-blur-xs shadow-xl p-8 rounded-2xl w-[95%] sm:w-[60%] lg:w-[40%] flex flex-col items-center border border-gray-200"
+        className=" bg-white/15 backdrop-blur-xs shadow-xl p-8 rounded-2xl w-[95%] sm:w-[60%] lg:w-[40%] flex flex-col items-center border border-gray-200 z-10"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

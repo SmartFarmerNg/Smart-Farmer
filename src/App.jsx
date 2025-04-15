@@ -19,7 +19,7 @@ const AppContent = () => {
   const location = useLocation();
 
   // Routes where Footer should NOT show
-  const hideFooterRoutes = ['/', '/sign-in', '/sign-up'];
+  const hideFooterRoutes = ['/', '/sign-in', '/sign-up', '/transact/withdraw', '/transact/deposit'];
 
   const showFooter = !hideFooterRoutes.includes(location.pathname);
 

@@ -120,7 +120,8 @@ const Product = () => {
 
             // Update user balance
             await updateDoc(userRef, {
-                balance: Number(userData.balance) - investmentAmount,
+                availableBalance: Number(userData.availableBalance) - investmentAmount,
+                investmentBalance: Number(userData.investmentBalance || 0) + investmentAmount,
             });
 
             toast.success("Investment successful 🎉");

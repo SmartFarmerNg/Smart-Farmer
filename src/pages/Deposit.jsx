@@ -31,7 +31,7 @@ const Deposit = () => {
 
                 const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                 if (userDoc.exists()) {
-                    setBalance(userDoc.data().balance || 0);
+                    setBalance(userDoc.data().availableBalance || 0);
                 }
             } else {
                 navigate("/sign-in");
@@ -70,7 +70,7 @@ const Deposit = () => {
             setTd(reference.reference);
 
 
-            await setDoc(userRef, { balance: newBalance }, { merge: true });
+            await setDoc(userRef, { availableBalance: newBalance }, { merge: true });
             setBalance(newBalance);
         } catch (error) {
             console.error("Transaction failed", error);

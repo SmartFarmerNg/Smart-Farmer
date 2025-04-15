@@ -24,7 +24,7 @@ const Profile = () => {
                     const userRef = doc(db, 'users', currentUser.uid);
                     const userSnap = await getDoc(userRef);
                     if (userSnap.exists()) {
-                        setBalance(userSnap.data().balance || 0);
+                        setBalance(userSnap.data().availableBalance || 0);
                     } else {
                         setBalance(0);
                     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -37,7 +37,7 @@ const Withdraw = () => {
 
                 const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                 if (userDoc.exists()) {
-                    setBalance(userDoc.data().balance || 0);
+                    setBalance(userDoc.data().availableBalance || 0);
                 }
             } else {
                 navigate("/sign-in");
@@ -114,7 +114,7 @@ const Withdraw = () => {
                 // ✅ 1. Deduct balance in Firestore
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
-                const currentBalance = userSnap.data()?.balance || 0;
+                const currentBalance = userSnap.data()?.availableBalance || 0;
 
                 if (currentBalance < withdrawAmount) {
                     toast.error("Insufficient balance!");
@@ -122,7 +122,7 @@ const Withdraw = () => {
                 }
 
                 await updateDoc(userRef, {
-                    balance: currentBalance - withdrawAmount,
+                    availableBalance: currentBalance - withdrawAmount,
                 });
 
                 // ✅ 2. Save withdrawal transaction
@@ -161,6 +161,8 @@ const Withdraw = () => {
                     <h1 className="text-2xl font-bold text-white mx-auto">Withdraw via Paystack</h1>
                 </header>
 
+                <p className="text-amber-300 flex gap-2 items-center mb-2"> <AlertTriangle size={20} /> (Withdrawals are not unavailable at the moment)</p>
+
                 <div className="flex flex-col gap-4">
                     <input
                         type="text"
@@ -185,7 +187,8 @@ const Withdraw = () => {
 
                     <button
                         onClick={handleVerify}
-                        disabled={verifying}
+                        // disabled={verifying}
+                        disabled={true}
                         className="bg-white text-black font-semibold p-3 rounded-xl transition hover:bg-gray-200 flex items-center justify-center gap-2"
                     >
                         {verifying ? (
@@ -215,6 +218,7 @@ const Withdraw = () => {
                     <button
                         onClick={handleWithdraw}
                         className="bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition"
+                        disabled={true}
                     >
                         Withdraw Now
                     </button>

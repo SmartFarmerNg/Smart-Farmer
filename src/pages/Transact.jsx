@@ -23,7 +23,7 @@ const Transact = () => {
                 fetchTransactions(currentUser.uid);
                 const userDoc = doc(db, "users", currentUser.uid);
                 onSnapshot(userDoc, (doc) => {
-                    setBalance(doc.data().balance);
+                    setBalance(doc.data().availableBalance);
                 });
             } else {
                 navigate("/sign-in");
