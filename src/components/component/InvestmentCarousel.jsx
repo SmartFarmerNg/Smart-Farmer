@@ -30,7 +30,7 @@ const InvestmentsCarousel = ({ investments }) => {
             <h2 className="text-xl font-bold text-white text-center mb-4">Your Investments</h2>
 
             {/* Slider Container */}
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden rounded-xl">
                 <motion.div
                     ref={containerRef}
                     className="flex gap-4"
