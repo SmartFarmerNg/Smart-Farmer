@@ -56,9 +56,8 @@ const InvestProductPage = () => {
                         <p><strong>Units Bought:</strong> {investment.unitsBought}</p>
                         <p><strong>ROI:</strong> {investment.expectedROI}%</p>
                         <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === 'Fast Vegetables' ? 'days' : 'months'}</p>
-                        <p><strong>Status:</strong> {investment.status}</p>
-                        {investment.productName === 'Fast Vegetables'
-                            ? <p><strong>Start Date:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
+                        <p className={`${investment.status === 'Active' ? 'text-green-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-red-500'}`}><strong className="text-black">Status:</strong> {investment.status}</p>
+                        {investment.productName === 'Fast Vegetables' ? <p><strong>Start Date:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             : <>
                                 <p><strong>Start Date:</strong> {new Date(investment.startDate).toLocaleDateString()}</p>
                                 <p><strong>Created At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
@@ -88,7 +87,7 @@ const InvestProductPage = () => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

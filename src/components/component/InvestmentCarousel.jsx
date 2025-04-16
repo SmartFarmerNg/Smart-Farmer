@@ -52,7 +52,11 @@ const InvestmentsCarousel = ({ investments }) => {
                                     <p className="font-semibold text-gray-800">{investment.productName}</p>
                                     <p className="text-sm text-gray-600">Units: {investment.unitsBought}</p>
                                     <p className="text-sm text-gray-600">Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
-                                    <p className="text-sm text-gray-600">Start: {new Date(investment.startDate?.seconds ? investment.startDate.toDate() : investment.createdAt).toLocaleDateString()}</p>
+                                    {investment.productName === 'Fast Vegetables' ? <p className="text-sm text-gray-600">Start: {new Date(investment.createdAt).toLocaleDateString()}</p>
+                                        : <>
+                                            <p className="text-sm text-gray-600">Start: {new Date(investment.startDate).toLocaleDateString()}</p>
+                                        </>
+                                    }
                                 </div>
 
                                 <div className="w-20 h-20 mt-4 self-center">

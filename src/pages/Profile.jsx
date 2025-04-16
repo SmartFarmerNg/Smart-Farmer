@@ -1,5 +1,14 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { ArrowLeft, BadgeDollarSign, Bell, LogOut } from 'lucide-react';
+import {
+    ArrowLeft,
+    BadgeDollarSign,
+    Bell,
+    LogOut,
+    Pencil,
+    History,
+    Settings,
+    ChevronRight,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +28,6 @@ const Profile = () => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
-                console.log(currentUser); // Log currentUser instead of user
                 try {
                     const userRef = doc(db, 'users', currentUser.uid);
                     const userSnap = await getDoc(userRef);
@@ -41,7 +49,6 @@ const Profile = () => {
         return () => unsubscribe();
     }, [navigate]);
 
-
     const handleLogout = () => {
         setIsLoggingOut(true);
         setTimeout(() => {
@@ -50,14 +57,21 @@ const Profile = () => {
         }, 1000);
     };
 
-
-    // if (loading) return <><Barloader /><Footer page='profile' /></>;
+    const formatDate = (timestamp) => {
+        return new Date(timestamp).toLocaleDateString('en-NG', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
+    };
 
     return (
-        <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans'>
-            <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto pb-14 z-50'>
-                {isLoggingOut || loading && <Barloader />}
-                <div className='w-full max-w-2xl mx-auto py-5 flex flex-col flex-grow'>
+        <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans'>
+            <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto pb-20'>
+                {isLoggingOut || loading ? <Barloader /> : null}
+
+                <div className='w-full py-5 flex flex-col flex-grow z-50'>
+                    {/* Header */}
                     <header className='w-full flex items-center gap-3 mb-6'>
                         <button onClick={() => navigate('/dashboard')}>
                             <ArrowLeft className='text-white w-6 h-6 cursor-pointer' />
@@ -65,34 +79,79 @@ const Profile = () => {
                         <LogOut onClick={handleLogout} className='text-white w-6 h-6 ml-auto cursor-pointer' />
                         <Bell className='text-white w-6 h-6 cursor-pointer' />
                     </header>
-                    <div className='flex justify-between w-full items-center text-sm font-semibold bg-white shadow-md px-6 py-2 rounded-2xl'>
-                        <h1 className=''>
-                            Hi, {user?.displayName || 'User'}
-                        </h1>
-                        {user?.photoURL && (
-                            <img className='w-10 h-10 rounded-full' src={user.photoURL} alt="User Profile" />
-                        )}
+
+                    {/* User Info */}
+                    <div className='bg-white text-gray-800 shadow-lg px-6 py-4 rounded-2xl flex items-center justify-between'>
+                        <div>
+                            <h1 className='text-base font-semibold'>Hi, {user?.displayName || 'User'}</h1>
+                            <p className='text-xs text-gray-500'>{user?.email}</p>
+                            {user?.metadata?.creationTime && (
+                                <p className='text-xs text-gray-400'>
+                                    Joined: {formatDate(user.metadata.creationTime)}
+                                </p>
+                            )}
+                        </div>
+                        <img
+                            className='w-12 h-12 rounded-full border border-gray-300 object-cover'
+                            src={user?.photoURL || '/default-avatar.png'}
+                            alt='User Avatar'
+                        />
                     </div>
+
+                    {/* Balance Section */}
                     <section className='mt-6'>
-                        <div
-                            className='bg-gray-100 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center overflow-hidden'
-                        >
+                        <div className='bg-gray-100 text-gray-900 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center'>
                             <div>
-                                <h1 className='font-semibold text-gray-700 text-sm mt-2'>Available balance</h1>
-                                <p className='text-base font-bold'>NGN {balance?.toLocaleString() || '0'}</p>
+                                <h1 className='font-semibold text-sm text-gray-700'>Available Balance</h1>
+                                <p className='text-lg font-bold mt-1'>₦ {balance?.toLocaleString() || '0'}</p>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.9 }}
-                                    className='mt-4 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow-md w-full cursor-pointer'
+                                    className='mt-4 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow w-full'
                                     onClick={() => navigate('/transact/deposit')}
                                 >
-                                    Fund account
+                                    Fund Account
                                 </motion.button>
                             </div>
-                            <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12 scale-400' />
+                            <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12' />
                         </div>
                     </section>
+
+                    {/* More Options */}
+                    <section className='mt-8 space-y-3'>
+                        <motion.div
+                            whileTap={{ scale: 0.97 }}
+                            className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
+                            onClick={() => navigate('/profile/edit')}
+                        >
+                            <Pencil className='text-[#0FA280]' />
+                            <p className='text-sm font-semibold text-gray-800'>Edit Profile</p>
+                            <ChevronRight className='ml-auto text-gray-500' />
+                        </motion.div>
+
+                        <motion.div
+                            whileTap={{ scale: 0.97 }}
+                            className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
+                            onClick={() => navigate('/transactions')}
+                        >
+                            <History className='text-[#0FA280]' />
+                            <p className='text-sm font-semibold text-gray-800'>Transaction History</p>
+                            <ChevronRight className='ml-auto text-gray-500' />
+                        </motion.div>
+
+                        <motion.div
+                            whileTap={{ scale: 0.97 }}
+                            className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
+                            onClick={() => navigate('/settings')}
+                        >
+                            <Settings className='text-[#0FA280]' />
+                            <p className='text-sm font-semibold text-gray-800'>Settings</p>
+                            <ChevronRight className='ml-auto text-gray-500' />
+                        </motion.div>
+                    </section>
                 </div>
+
+                <Footer page='profile' />
             </div>
         </div>
     );

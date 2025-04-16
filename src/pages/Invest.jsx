@@ -126,18 +126,6 @@ const Invest = () => {
     sortedInvestments.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
   }
 
-  const displayedInvestments = useMemo(() => {
-    return sortedInvestments
-      .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
-      .sort((a, b) => {
-        if (sortBy === 'latest') {
-          return new Date(b.startDate) - new Date(a.startDate);
-        } else if (sortBy === 'progress') {
-          return getProgress(b) - getProgress(a);
-        }
-        return 0;
-      });
-  }, [sortedInvestments, statusFilter, sortBy]);
   const getProgress = (inv) => {
     const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
     const start = new Date(startRaw);
@@ -150,6 +138,19 @@ const Invest = () => {
     const percentage = (elapsed / duration) * 100;
     return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
   };
+
+  const displayedInvestments = useMemo(() => {
+    return sortedInvestments
+      .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
+      .sort((a, b) => {
+        if (sortBy === 'latest') {
+          return new Date(b.startDate) - new Date(a.startDate);
+        } else if (sortBy === 'progress') {
+          return getProgress(b) - getProgress(a);
+        }
+        return 0;
+      });
+  }, [sortedInvestments, statusFilter, sortBy]);
 
   const getDaysLeft = (inv) => {
     const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
