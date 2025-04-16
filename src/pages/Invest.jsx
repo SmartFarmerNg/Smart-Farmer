@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/component/Footer';
@@ -14,7 +14,6 @@ import CropsSection from '../components/component/cropsSection';
 
 
 const Invest = () => {
-  const [investmentOptions, setInvestmentOptions] = useState([]);
   const [user, setUser] = useState(null);
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +60,7 @@ const Invest = () => {
           const now = new Date();
 
           for (const docSnap of querySnapshot.docs) {
-            const inv = docSnap.data();
+            const inv = { id: docSnap.id, ...docSnap.data() };
             const start = inv.startDate?.toDate?.() || null;
 
             // If the startDate is reached and status is still "Pending", update it
@@ -76,6 +75,7 @@ const Invest = () => {
           }
 
           setInvestments(updatedInvestments);
+          // console.log(updatedInvestments);
         } catch (error) {
           console.error("Error fetching/updating investments:", error);
         }
@@ -110,10 +110,6 @@ const Invest = () => {
     fetchCrops();
   }, []);
 
-  useEffect(() => {
-    setInvestmentOptions(['Agro', 'Real Estate', 'Tech', 'Energy', 'Startups']);
-  }, []);
-
   let sortedInvestments = [...investments];
 
   if (sortBy === 'progress') {
@@ -130,23 +126,46 @@ const Invest = () => {
     sortedInvestments.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
   }
 
+  const displayedInvestments = useMemo(() => {
+    return sortedInvestments
+      .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
+      .sort((a, b) => {
+        if (sortBy === 'latest') {
+          return new Date(b.startDate) - new Date(a.startDate);
+        } else if (sortBy === 'progress') {
+          return getProgress(b) - getProgress(a);
+        }
+        return 0;
+      });
+  }, [sortedInvestments, statusFilter, sortBy]);
   const getProgress = (inv) => {
-    const start = inv.startDate?.toDate?.() || new Date();
+    const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
+    const start = new Date(startRaw);
     const now = new Date();
-    const duration = inv.investmentPeriod * 30 * 24 * 60 * 60 * 1000; // convert months to ms
+    const totalDays = inv.productName === 'Fast Vegetables'
+      ? inv.investmentPeriod
+      : inv.investmentPeriod * 30;
+    const duration = totalDays * 24 * 60 * 60 * 1000; // convert days to ms
     const elapsed = now - start;
     const percentage = (elapsed / duration) * 100;
     return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
   };
 
   const getDaysLeft = (inv) => {
-    const start = inv.startDate?.toDate?.() || new Date();
+    const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
+    const start = new Date(startRaw);
     const now = new Date();
-    const totalDays = inv.investmentPeriod * 30;
+
+    // console.log(`${inv.productName} Start: ${start.toISOString()}`);
+    // console.log(`Now: ${now.toISOString()}`);
+
+    const totalDays = inv.productName === 'Fast Vegetables'
+      ? inv.investmentPeriod
+      : inv.investmentPeriod * 30;
+
     const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
     return Math.max(0, Math.ceil(totalDays - daysElapsed));
   };
-
 
   const totalInvested = investments.reduce((sum, inv) => sum + inv.investmentAmount, 0);
 
@@ -219,13 +238,16 @@ const Invest = () => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className='text-center text-gray-500 py-8'
+                  className='text-center text-gray-100 py-8'
                 >
                   <img
-                    src='/assets/empty-box.svg' // Replace with your own empty illustration
+                    src='assets\empty-prevew.png'
                     alt='No investments'
-                    className='w-24 h-24 mx-auto mb-3 opacity-60'
+                    className='w-full mx-auto mb-3 '
                   />
+                  <p className='text-sm font-medium'>
+                    No {statusFilter === 'All' ? '' : statusFilter.toLowerCase()} investments found.
+                  </p>
                   <p className='text-sm font-medium'>You have no active investments yet.</p>
                   <p className='text-xs mt-1'>Explore investment options below to get started.</p>
                 </motion.div>
@@ -257,16 +279,7 @@ const Invest = () => {
                   </div>
 
 
-                  {investments
-                    .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
-                    .sort((a, b) => {
-                      if (sortBy === 'latest') {
-                        return b.timestamp?.toDate() - a.timestamp?.toDate();
-                      } else if (sortBy === 'progress') {
-                        return getProgress(b) - getProgress(a);
-                      }
-                      return 0;
-                    })
+                  {displayedInvestments
                     .slice(startIndex, endIndex)
                     .map((inv, index) => {
                       const progress = getProgress(inv);
@@ -283,14 +296,22 @@ const Invest = () => {
                         >
                           <div className='flex-1'>
                             <p className='font-semibold text-gray-800'>{inv.productName}</p>
-                            <p className='text-xs text-gray-500 mb-1'>
-                              Duration: {inv.investmentPeriod} months | ROI: {inv.expectedROI}%
-                            </p>
+                            {inv.productName !== "Fast Vegetables" ?
+
+                              <p className='text-xs text-gray-500 mb-1'>
+                                Duration: {inv.investmentPeriod} months | ROI: {inv.expectedROI}% monthly
+                              </p>
+                              :
+                              <p className='text-xs text-gray-500 mb-1'>
+                                Duration: {inv.investmentPeriod} days | ROI: {inv.expectedROI / inv.investmentPeriod}% daily
+                              </p>
+                            }
                             <p className='text-green-600 font-semibold'>₦{inv.investmentAmount.toLocaleString()}</p>
                             <p className={`text-xs font-bold mt-1 ${inv.status === 'Active' ? 'text-blue-600' : 'text-gray-500'}`}>
                               {inv.status}
                             </p>
                             {inv.status === 'Active' && (
+                              // {inv.productName === "Fast Vegetables" ? : }
                               <p className='text-xs text-gray-400'>⏳ {daysLeft} day{daysLeft !== 1 ? 's' : ''} left</p>
                             )}
                           </div>
@@ -322,10 +343,9 @@ const Invest = () => {
                         Previous
                       </button>
 
-                      <span className="px-2 py-2 text-sm text-gray-700">
-                        Page {currentPage}
+                      <span className="px-2 py-2 text-sm text-white font-semibold">
+                        Page {currentPage} of {Math.ceil(displayedInvestments.length / itemsPerPage)}
                       </span>
-
                       <button
                         onClick={() => {
                           const totalPages = Math.ceil(

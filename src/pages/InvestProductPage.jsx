@@ -22,33 +22,49 @@ const InvestProductPage = () => {
         );
     }
 
-    const getProgress = () => {
-        const start = investment.startDate?.toDate?.() || new Date(investment.startDate);
+    // const getProgress = () => {
+    //     const start = investment.startDate?.toDate?.() || new Date(investment.startDate);
+    //     const now = new Date();
+    //     const duration = investment.investmentPeriod * 30 * 24 * 60 * 60 * 1000;
+    //     const elapsed = now - start;
+    //     const progress = (elapsed / duration) * 100;
+    //     return Math.min(Math.max(progress, 0), 100);
+    // };
+
+    const getProgress = (inv) => {
+        const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
+        const start = new Date(startRaw);
         const now = new Date();
-        const duration = investment.investmentPeriod * 30 * 24 * 60 * 60 * 1000;
+        const totalDays = inv.productName === 'Fast Vegetables'
+            ? inv.investmentPeriod
+            : inv.investmentPeriod * 30;
+        const duration = totalDays * 24 * 60 * 60 * 1000; // convert days to ms
         const elapsed = now - start;
-        const progress = (elapsed / duration) * 100;
-        return Math.min(Math.max(progress, 0), 100);
+        const percentage = (elapsed / duration) * 100;
+        return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
     };
 
-    const progress = getProgress();
+    const progress = getProgress(investment);
 
     return (
-        <div className=" min-h-screen flex flex-col items-center justify-center">
-            <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md z-50">
+        <div className=" min-h-screen flex flex-col items-center justify-center px-6">
+            <div className="w-full max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md z-50">
                 <h1 className="text-2xl font-bold text-center mb-4">{investment.productName}</h1>
-
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
                     <div className="flex-1 space-y-2">
                         <p><strong>Amount:</strong> ₦{investment.investmentAmount.toLocaleString()}</p>
                         <p><strong>Units Bought:</strong> {investment.unitsBought}</p>
                         <p><strong>ROI:</strong> {investment.expectedROI}%</p>
-                        <p><strong>Duration:</strong> {investment.investmentPeriod} months</p>
+                        <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === 'Fast Vegetables' ? 'days' : 'months'}</p>
                         <p><strong>Status:</strong> {investment.status}</p>
-                        <p><strong>Start Date:</strong> {new Date(investment.startDate?.seconds ? investment.startDate.toDate() : investment.startDate).toLocaleDateString()}</p>
-                        <p><strong>Created At:</strong> {new Date(investment.createdAt?.seconds ? investment.createdAt.toDate() : investment.createdAt).toLocaleDateString()}</p>
+                        {investment.productName === 'Fast Vegetables'
+                            ? <p><strong>Start Date:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
+                            : <>
+                                <p><strong>Start Date:</strong> {new Date(investment.startDate).toLocaleDateString()}</p>
+                                <p><strong>Created At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
+                            </>
+                        }
                     </div>
-
                     <div className="w-32 h-32 mx-auto sm:mx-0">
                         <CircularProgressbar
                             value={progress}

@@ -28,6 +28,7 @@ const Login = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      localStorage.setItem('user', JSON.stringify(user));
 
       if (!user.emailVerified) {
         toast.error('Please verify your email before logging in.');

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import Footer from '../components/component/Footer';
 import Barloader from '../components/component/Barloader';
 import { motion } from 'framer-motion';
@@ -12,6 +12,7 @@ import InvestmentsCarousel from '../components/component/InvestmentCarousel';
 import CropsSection from '../components/component/cropsSection';
 import { toast } from 'react-toastify';
 import { Eye, EyeOff } from 'lucide-react';
+import QuickInvestCard from '../components/component/QuickInvestCard';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Dashboard = () => {
     const [crops, setCrops] = useState([]);
     const [cropsLoading, setCropsLoading] = useState(true);
 
+    const [quickInvestments, setQuickInvestments] = useState([]);
     const viewBalance = localStorage.getItem('showBalance') === 'true';
     const [showBalance, setShowBalance] = useState(viewBalance);
 
@@ -123,10 +125,51 @@ const Dashboard = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        const fetchQuickInvestments = async () => {
+            try {
+                const quickInvestmentsRef = collection(db, "quickInvestments");
+                const querySnapshot = await getDocs(quickInvestmentsRef);
+                const quickInvestmentsData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setQuickInvestments(quickInvestmentsData);
+                // console.log(quickInvestmentsData); // ✅ fixed variable name
+            } catch (error) {
+                console.error("Error fetching quick investments:", error);
+                setQuickInvestments([]);
+            }
+        };
+
+        if (user?.uid) {
+            fetchQuickInvestments();
+        }
+    }, [user]);
+
+
+    const openQuickInvestments = useMemo(
+        () => quickInvestments.filter(inv => inv.status === "open"),
+        [quickInvestments]
+    );
+
+
+
     const financeData = useMemo(() => [
-        { label: 'Available Balance', amount: availableBalance, Icon: Banknote },
-        { label: 'Total Balance', amount: availableBalance + investmentBalance, Icon: Banknote }
-    ], [availableBalance]);
+        {
+            label: 'Available Balance',
+            amount: typeof availableBalance === 'number' ? availableBalance : 0,
+            Icon: Banknote,
+        },
+        {
+            label: 'Total Balance',
+            amount:
+                (typeof availableBalance === 'number' ? availableBalance : 0) +
+                (typeof investmentBalance === 'number' ? investmentBalance : 0),
+            Icon: Banknote,
+        },
+    ], [availableBalance, investmentBalance]);
+
 
     return (
         <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans overflow-scroll h-screen'>
@@ -175,7 +218,9 @@ const Dashboard = () => {
                 <div className="mt-6 mx-auto z-10 w-[90%] max-w-2xl px-2">
                     {investments.length > 0 && <InvestmentsCarousel investments={investments} />}
                 </div>
-
+                {openQuickInvestments.length > 0 && (
+                    <QuickInvestCard investment={openQuickInvestments[0]} />
+                )}
                 <CropsSection crops={crops} cropsLoading={cropsLoading} />
             </div>
         </div>

@@ -158,7 +158,7 @@ const Withdraw = () => {
                     <button onClick={() => navigate(-1)} className="cursor-pointer p-2 bg-white/20 rounded-full hover:bg-white/30">
                         <ArrowLeft className="text-white w-6 h-6" />
                     </button>
-                    <h1 className="text-2xl font-bold text-white mx-auto">Withdraw via Paystack</h1>
+                    <h1 className="text-xl sm:text-2xl font-bold text-white mx-auto">Withdraw via Paystack</h1>
                 </header>
 
                 <p className="text-amber-300 flex gap-2 items-center mb-2"> <AlertTriangle size={20} /> (Withdrawals are not unavailable at the moment)</p>

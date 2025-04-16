@@ -14,6 +14,7 @@ import AddInvestmentProduct from "./pages/addinvestment";
 import Footer from "./components/component/Footer";
 import FloatingBackground from "./components/component/FloatingBackground";
 import InvestProductPage from "./pages/InvestProductPage";
+import QuickInvestPage from "./pages/QuickInvestPage";
 
 const AppContent = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ const AppContent = () => {
         <Route path="/invest" element={<Invest />} />
         <Route path="/product/:id" element={<Product />} />
         <Route path="/invest/product/:id" element={<InvestProductPage />} />
+        <Route path="/invest/quick-invest/fast-vegetable/:id" element={<QuickInvestPage />} />
         <Route path="/add" element={<AddInvestmentProduct />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -16,13 +16,17 @@ const InvestmentsCarousel = ({ investments }) => {
         setCurrentIndex((prev) => (prev > 0 ? prev - 1 : investments.length - 1));
     };
 
-    const getProgress = (investment) => {
-        const start = investment.startDate?.toDate?.() || new Date(investment.startDate) || new Date();
+    const getProgress = (inv) => {
+        const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
+        const start = new Date(startRaw);
         const now = new Date();
-        const duration = investment.investmentPeriod * 30 * 24 * 60 * 60 * 1000;
+        const totalDays = inv.productName === 'Fast Vegetables'
+            ? inv.investmentPeriod
+            : inv.investmentPeriod * 30;
+        const duration = totalDays * 24 * 60 * 60 * 1000; // convert days to ms
         const elapsed = now - start;
-        const progress = (elapsed / duration) * 100;
-        return Math.min(Math.max(progress, 0), 100);
+        const percentage = (elapsed / duration) * 100;
+        return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
     };
 
     return (
@@ -48,7 +52,7 @@ const InvestmentsCarousel = ({ investments }) => {
                                     <p className="font-semibold text-gray-800">{investment.productName}</p>
                                     <p className="text-sm text-gray-600">Units: {investment.unitsBought}</p>
                                     <p className="text-sm text-gray-600">Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
-                                    <p className="text-sm text-gray-600">Start: {new Date(investment.startDate?.seconds ? investment.startDate.toDate() : investment.startDate).toLocaleDateString()}</p>
+                                    <p className="text-sm text-gray-600">Start: {new Date(investment.startDate?.seconds ? investment.startDate.toDate() : investment.createdAt).toLocaleDateString()}</p>
                                 </div>
 
                                 <div className="w-20 h-20 mt-4 self-center">
