@@ -59,7 +59,10 @@ const CropsSection = ({ crops, cropsLoading, theme, accent }) => {
                                 </div>
                                 <button
                                     onClick={() => navigate(`/product/${data.id}`, { state: { product: data } })}
-                                    className={`bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-all cursor-pointer`}
+                                    className={`${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-all cursor-pointer`}
+                                    style={{
+                                        background: `${accent}`,
+                                    }}
                                 >
                                     Invest Now
                                 </button>
@@ -74,13 +77,17 @@ const CropsSection = ({ crops, cropsLoading, theme, accent }) => {
                                 key={index}
                                 onClick={() => handlePageChange(index + 1)}
                                 className={`px-4 py-2 rounded-lg cursor-pointer ${currentPage === index + 1
-                                    ? `bg-[${accent}] text-white`
-                                    : theme === 'dark' ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'
+                                    ? `text-white`
+                                    : theme === 'dark'
+                                        ? 'bg-gray-600 text-gray-200'
+                                        : 'bg-gray-200 text-gray-700'
                                     }`}
+                                style={{
+                                    background: currentPage === index + 1 ? accent : '#4a5565'
+                                }}
                             >
                                 {index + 1}
-                            </button>
-                        ))}
+                            </button>))}
                     </div>
                 </>
             )}

@@ -311,8 +311,13 @@ const Invest = () => {
                         <button
                           key={status}
                           onClick={() => setStatusFilter(status)}
-                          className={`px-4 py-1 rounded-full text-sm font-medium transition cursor-pointer ${statusFilter === status ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold` : 'bg-gray-200 text-gray-800'
+                          className={`px-4 py-1 rounded-full text-sm font-medium transition cursor-pointer'
                             }`}
+                          style={{
+                            backgroundColor: statusFilter === status ? accent : '#e5e7eb',
+                            color: statusFilter === status ? (accent === '#ECF87F' || accent === '#75E6DA' ? 'black' : 'white') : '#1e2939',
+                            fontWeight: statusFilter === status ? 'bold' : 'normal',
+                          }}
                         >
                           {status}
                         </button>

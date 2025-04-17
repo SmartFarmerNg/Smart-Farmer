@@ -56,9 +56,12 @@ const QuickInvestCard = ({ investment, theme, accent }) => {
                 onClick={handleInvest}
                 disabled={status !== "open"}
                 className={`mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition ${status === "open"
-                    ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
+                    ? `${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
                     : "bg-gray-300 cursor-not-allowed"
                     }`}
+                style={{
+                    background: `${accent}`,
+                }}
             >
                 <BadgePercent size={18} />
                 Invest Now
