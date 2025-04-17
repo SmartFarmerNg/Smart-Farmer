@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import AccountSettings from '../components/component/Settings/AccountSettings';
 import SecuritySettings from '../components/component/Settings/SecuritySettings';
 import AppearanceSettings from '../components/component/Settings/AppearanceSettings';
 import NotificationSettings from '../components/component/Settings/NotificationSettings';
