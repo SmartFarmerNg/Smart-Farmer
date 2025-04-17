@@ -58,9 +58,12 @@ const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
             onClick={() => handleTabChange(tab.key)}
             className={`text-left px-4 py-5 rounded-sm transition-all duration-200 font-medium
               ${activeTab === tab.key
-                ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
+                ? `${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
                 : 'bg-white/10 text-white hover:bg-white/20'
               }`}
+            style={{
+              backgroundColor: activeTab === tab.key ? accent : '',
+            }}
           >
             <div className="flex items-center space-x-2">
               {tab.icon}
