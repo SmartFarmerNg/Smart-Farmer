@@ -35,19 +35,19 @@ const QuickInvestCard = ({ investment, theme, accent }) => {
 
             <div className={`grid grid-cols-2 gap-3 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                 <div>
-                    <p className="font-medium">ROI</p>
+                    <p className="font-bold">ROI</p>
                     <p>{expectedROI}% {ROIFrequency}</p>
                 </div>
                 <div>
-                    <p className="font-medium">Investment Period</p>
+                    <p className="font-bold">Investment Period</p>
                     <p>{minimumInvestmentPeriod} days</p>
                 </div>
                 <div>
-                    <p className="font-medium">Min Withdrawal</p>
+                    <p className="font-bold">Min Withdrawal</p>
                     <p>{minWithdrawalDays} days</p>
                 </div>
                 <div>
-                    <p className="font-medium">Min Investment</p>
+                    <p className="font-bold">Min Investment</p>
                     <p>₦{minimumInvestment.toLocaleString()}</p>
                 </div>
             </div>
@@ -56,7 +56,7 @@ const QuickInvestCard = ({ investment, theme, accent }) => {
                 onClick={handleInvest}
                 disabled={status !== "open"}
                 className={`mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition ${status === "open"
-                    ? `${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
+                    ? `${accent === '#D4F1F4' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
                     : "bg-gray-300 cursor-not-allowed"
                     }`}
                 style={{

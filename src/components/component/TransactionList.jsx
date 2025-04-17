@@ -42,10 +42,11 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
                             setSelectedType(type);
                             setCurrentPage(1);
                         }}
-                        className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${selectedType === type
-                            ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'}`
-                            : "bg-gray-800 text-white hover:bg-gray-700"
-                            }`}
+                        className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all`}
+                        style={{
+                            backgroundColor: selectedType === type ? accent : '#d1d5dc',
+                            color: selectedType === type ? '#fff' : '#333',
+                        }}
                     >
                         {type}
                     </button>

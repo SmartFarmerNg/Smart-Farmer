@@ -8,7 +8,7 @@ const WithdrawalSettings = () => {
     const [user, setUser] = useState('');
     const [bankAccount, setBankAccount] = useState('');
     const [transactions, setTransactions] = useState([]);
-    const [bankName, setBankName] = useState('');
+    const [bankCode, setBankCode] = useState('');
     const [withdrawalLimit, setWithdrawalLimit] = useState('5000');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -17,7 +17,7 @@ const WithdrawalSettings = () => {
     const navigate = useNavigate();
 
     const handleUpdateBankAccount = (e) => setBankAccount(e.target.value);
-    const handleUpdateBankName = (e) => setBankName(e.target.value);
+    const handleUpdateBankCode = (e) => setBankCode(e.target.value);
     const handleUpdateWithdrawalLimit = (e) => setWithdrawalLimit(e.target.value);
 
     useEffect(() => {
@@ -41,7 +41,7 @@ const WithdrawalSettings = () => {
             if (doc.exists()) {
                 const userData = doc.data();
                 setBankAccount(userData.bankAccount || '');
-                setBankName(userData.bankName || '');
+                setBankCode(userData.bankCode || '');
                 setWithdrawalLimit(userData.withdrawalLimit || '5000');
             }
             setLoading(false);
@@ -75,6 +75,28 @@ const WithdrawalSettings = () => {
 
         return unsubscribe;
     };
+    // Replace with actual list or fetch dynamically from Paystack
+    const [banks, setBanks] = useState([]);
+
+    useEffect(() => {
+        const fetchBanks = async () => {
+            try {
+                const response = await fetch('https://api.paystack.co/bank');
+                const data = await response.json();
+                if (data.status) {
+                    setBanks(data.data.map(bank => ({
+                        name: bank.name,
+                        code: bank.code
+                    })));
+                }
+            } catch (error) {
+                console.error('Error fetching banks:', error);
+                toast.error('Failed to load banks');
+            }
+        };
+
+        fetchBanks();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -82,7 +104,7 @@ const WithdrawalSettings = () => {
         setError('');
         setSuccess('');
 
-        if (!bankAccount || !bankName) {
+        if (!bankAccount || !bankCode) {
             setError('Please fill in all fields.');
             return;
         }
@@ -91,7 +113,7 @@ const WithdrawalSettings = () => {
             const userRef = doc(db, "users", user.uid);
             await updateDoc(userRef, {
                 bankAccount: bankAccount,
-                bankName: bankName,
+                bankCode: bankCode,
                 withdrawalLimit: withdrawalLimit
             });
 
@@ -125,18 +147,15 @@ const WithdrawalSettings = () => {
                     <label className="block mb-1 text-sm font-medium">Bank Name</label>
                     <select
                         className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        value={bankName}
-                        onChange={handleUpdateBankName}
+                        value={bankCode}
+                        onChange={handleUpdateBankCode}
                         required
                     >
-                        <option className=' text-black' value="">Select your bank</option>
-                        <option className=' text-black' value="access">Access Bank</option>
-                        <option className=' text-black' value="gtb">Guaranty Trust Bank</option>
-                        <option className=' text-black' value="zenith">Zenith Bank</option>
-                        <option className=' text-black' value="firstbank">First Bank</option>
-                        <option className=' text-black' value="uba">United Bank for Africa</option>
-                        <option className=' text-black' value="opay">Opay</option>
-                        <option className=' text-black' value="plmpay">PalmPay</option>
+                        {banks.map((bank) => (
+                            <option key={bank.name} value={bank.code} className='text-gray-800'>
+                                {bank.name}
+                            </option>
+                        ))}
                     </select>
                 </div>
 

@@ -3,11 +3,14 @@ import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const themes = ['light', 'dark'];
-const accents = ['#05445E', '#0FA280', '#189AB4', '#75E6DA', '#3D550C', '#81B622', '#ECF87F', '#59981A'];
+const darkAccents = ['#0FA280', '#F79009', '#38BDF8', '#A855F7', '#22C55E', '#F43F5E', '#05445E', '#001C30'];
+// const accents = ['#05445E', '#0FA280', '#189AB4', '#75E6DA', '#3D550C', '#81B622', '#ECF87F', '#59981A'];
+const lightAccents = ['#0FA280', '#101828', '#F79009', '#F43F5E', '#22C55E', '#FACC15', '#A855F7', '#38BDF8', '#344054'];
 
 const AppearanceSettings = () => {
   const [theme, setTheme] = useState('light');
   const [accent, setAccent] = useState('#0FA280');
+  const [accents, setAccents] = useState([]);
   const [glass, setGlass] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
   const [status, setStatus] = useState('');
@@ -78,6 +81,14 @@ const AppearanceSettings = () => {
     }
   };
 
+  useEffect(() => {
+    if (theme === 'dark') {
+      setAccents(darkAccents);
+    } else {
+      setAccents(lightAccents);
+    }
+  }, [theme]);
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold mb-4">Appearance Settings</h2>
@@ -87,7 +98,7 @@ const AppearanceSettings = () => {
         <label className="block mb-1 text-sm font-medium">Theme</label>
         <select
           value={theme}
-          onChange={(e) => setTheme(e.target.value)}
+          onChange={(e) => (setTheme(e.target.value), setAccent('#0FA280'))}
           className="bg-white/10 border border-white/10 p-3 rounded-lg text-white w-full"
         >
           {themes.map((option) => (
@@ -106,7 +117,7 @@ const AppearanceSettings = () => {
             <button
               key={color}
               onClick={() => setAccent(color)}
-              className={`w-8 h-8 rounded-full border-2 transition-all ${accent === color ? 'ring-2 ring-white' : ''}`}
+              className={`w-8 h-8 rounded-full border-2 transition-all ${accent === color ? 'ring-3 ring-white' : ''}`}
               style={{ backgroundColor: color }}
             />
           ))}
@@ -137,7 +148,7 @@ const AppearanceSettings = () => {
         </button>
         {status && <p className="text-sm text-white">{status}</p>}
       </div>
-    </div>
+    </div >
   );
 };
 

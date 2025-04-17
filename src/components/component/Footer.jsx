@@ -42,16 +42,15 @@ const Footer = ({ page }) => {
 
     return (
         <footer
-            className={`fixed bottom-2 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-                } rounded-full flex items-center justify-around px-2 py-3 w-[90%] max-w-3xl backdrop-blur-sm border border-gray-200 z-50`}
+            className={`fixed bottom-2 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-full flex items-center justify-around px-2 py-3 w-[90%] max-w-3xl backdrop-blur-sm border border-gray-200 z-50`}
         >
             {menuItems.map(({ name, icon: Icon, route, key }) => (
                 <motion.button
                     key={key}
                     onClick={() => navigate(route)}
                     whileTap={{ scale: 0.7 }}
-                    className={`flex flex-col items-center text-xs sm:text-sm transition-all cursor-pointer ${page === key
-                        ? 'scale-125 font-bold'
+                    className={`flex flex-col items-center text-xs transition-all cursor-pointer ${page === key
+                        ? 'scale-110 font-bold'
                         : theme === 'dark'
                             ? 'text-white'
                             : 'text-gray-600'

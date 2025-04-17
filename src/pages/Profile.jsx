@@ -117,7 +117,7 @@ const Profile = () => {
                                     style={
                                         {
                                             backgroundColor: accent,
-                                            color: accent === '#ECF87F' || accent === '#75E6DA' ? 'black' : 'white',
+                                            color: accent === '#D4F1F4' || accent === '#75E6DA' ? 'black' : 'white',
                                         }
                                     }
                                     onClick={() => navigate('/transact/deposit')}

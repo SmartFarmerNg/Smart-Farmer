@@ -26,7 +26,7 @@ const Transact = () => {
                 const userDoc = doc(db, "users", currentUser.uid);
                 onSnapshot(userDoc, (doc) => {
                     setBalance(doc.data().availableBalance);
-                    setThemee(doc.data().theme);
+                    setTheme(doc.data().theme);
                     setAccent(doc.data().accent);
                 });
             } else {

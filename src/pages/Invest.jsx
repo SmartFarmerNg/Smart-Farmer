@@ -314,8 +314,8 @@ const Invest = () => {
                           className={`px-4 py-1 rounded-full text-sm font-medium transition cursor-pointer'
                             }`}
                           style={{
-                            backgroundColor: statusFilter === status ? accent : '#e5e7eb',
-                            color: statusFilter === status ? (accent === '#ECF87F' || accent === '#75E6DA' ? 'black' : 'white') : '#1e2939',
+                            backgroundColor: statusFilter === status ? accent : '#d1d5dc',
+                            color: statusFilter === status ? '#fff' : '#333',
                             fontWeight: statusFilter === status ? 'bold' : 'normal',
                           }}
                         >
@@ -375,10 +375,10 @@ const Invest = () => {
                               value={progress}
                               text={`${Math.round(progress)}%`}
                               styles={buildStyles({
-                                textSize: '28px',
-                                textColor: accent,
-                                pathColor: accent,
-                                trailColor: theme === "dark" ? '#4a5565' : '#e6e6e6',
+                                textSize: "28px",
+                                textColor: theme === "dark" ? 'white' : "#0FA280",
+                                pathColor: theme === "dark" ? 'white' : "#0FA280",
+                                trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                               })}
                             />
                           </div>

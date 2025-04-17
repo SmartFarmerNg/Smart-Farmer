@@ -38,6 +38,8 @@ const Withdraw = () => {
                 const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                 if (userDoc.exists()) {
                     setBalance(userDoc.data().availableBalance || 0);
+                    setBankCode(userDoc.data().bankCode || "");
+                    setAccountNumber(userDoc.data().bankAccount || "");
                 }
             } else {
                 navigate("/sign-in");
@@ -49,14 +51,27 @@ const Withdraw = () => {
     }, [navigate]);
 
     // Replace with actual list or fetch dynamically from Paystack
-    const banks = [
-        { name: "Access Bank", code: "044" },
-        { name: "GTBank", code: "058" },
-        { name: "UBA", code: "033" },
-        { name: "First Bank", code: "011" },
-        { name: "Zenith Bank", code: "057" },
-    ];
+    const [banks, setBanks] = useState([]);
 
+    useEffect(() => {
+        const fetchBanks = async () => {
+            try {
+                const response = await fetch('https://api.paystack.co/bank');
+                const data = await response.json();
+                if (data.status) {
+                    setBanks(data.data.map(bank => ({
+                        name: bank.name,
+                        code: bank.code
+                    })));
+                }
+            } catch (error) {
+                console.error('Error fetching banks:', error);
+                toast.error('Failed to load banks');
+            }
+        };
+
+        fetchBanks();
+    }, []);
     const handleVerify = async () => {
         if (!accountNumber || !bankCode) {
             toast.error("Enter account number and select bank.");
@@ -179,7 +194,7 @@ const Withdraw = () => {
                     >
                         <option value="">Select Bank</option>
                         {banks.map((bank) => (
-                            <option key={bank.code} value={bank.code}>
+                            <option key={bank.name} value={bank.code}>
                                 {bank.name}
                             </option>
                         ))}

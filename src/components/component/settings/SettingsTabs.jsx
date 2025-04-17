@@ -35,11 +35,11 @@ const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
             className={`flex-shrink-0 px-4 py-2 rounded-full transition-all duration-200 whitespace-nowrap text-sm font-medium
               ${activeTab === tab.key
                 ? 'font-semibold'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'hover:bg-white/20'
               }`}
             style={{
-              backgroundColor: activeTab === tab.key ? accent : 'transparent',
-              color: activeTab === tab.key ? (accent === '#ECF87F' || accent === '#75E6DA' ? 'black' : 'white') : 'white',
+              backgroundColor: activeTab === tab.key ? accent : '#ffffff1a',
+              color: activeTab === tab.key ? '#fff' : '#fff',
             }}
           >
             <div className="flex items-center space-x-2">
@@ -58,12 +58,17 @@ const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
             onClick={() => handleTabChange(tab.key)}
             className={`text-left px-4 py-5 rounded-sm transition-all duration-200 font-medium
               ${activeTab === tab.key
-                ? `${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
-                : 'bg-white/10 text-white hover:bg-white/20'
+                ? 'font-semibold'
+                : 'hover:bg-white/20'
               }`}
             style={{
-              backgroundColor: activeTab === tab.key ? accent : '',
+              backgroundColor: activeTab === tab.key ? accent : '#ffffff1a',
+              color: activeTab === tab.key ? '#fff' : '#fff',
             }}
+          //   style={{
+          //     background: currentPage === index + 1 ? accent : '#d1d5dc',
+          //     color: currentPage === index + 1 ? '#fff' : '#333',
+          // }}
           >
             <div className="flex items-center space-x-2">
               {tab.icon}

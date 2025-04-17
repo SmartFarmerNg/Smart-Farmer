@@ -59,7 +59,7 @@ const CropsSection = ({ crops, cropsLoading, theme, accent }) => {
                                 </div>
                                 <button
                                     onClick={() => navigate(`/product/${data.id}`, { state: { product: data } })}
-                                    className={`${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-all cursor-pointer`}
+                                    className={`${accent === '#D4F1F4' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition-all cursor-pointer`}
                                     style={{
                                         background: `${accent}`,
                                     }}
@@ -80,10 +80,11 @@ const CropsSection = ({ crops, cropsLoading, theme, accent }) => {
                                     ? `text-white`
                                     : theme === 'dark'
                                         ? 'bg-gray-600 text-gray-200'
-                                        : 'bg-gray-200 text-gray-700'
+                                        : 'bg-gray-400 text-gray-700'
                                     }`}
                                 style={{
-                                    background: currentPage === index + 1 ? accent : '#4a5565'
+                                    background: currentPage === index + 1 ? accent : '#d1d5dc',
+                                    color: currentPage === index + 1 ? '#fff' : '#333',
                                 }}
                             >
                                 {index + 1}

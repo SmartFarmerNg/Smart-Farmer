@@ -65,8 +65,8 @@ const InvestmentsCarousel = ({ investments, theme, accent }) => {
                                         text={`${Math.round(progress)}%`}
                                         styles={buildStyles({
                                             textSize: "28px",
-                                            textColor: theme === "dark" ? accent : "#0FA280",
-                                            pathColor: theme === "dark" ? accent : "#0FA280",
+                                            textColor: theme === "dark" ? 'white' : "#0FA280",
+                                            pathColor: theme === "dark" ? 'white' : "#0FA280",
                                             trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                                         })}
                                     />
