@@ -50,27 +50,29 @@ const Settings = () => {
     };
 
     return (
-        <div className={`min-h-screen p-4 sm:p-6 text-white max-w-6xl mx-auto rounded-lg shadow-lg ${theme === 'dark' ? ' bg-gray-900' : ''}`}>
-            <button className='flex items-center mb-4' onClick={() => navigate('/profile')}>
-                <ArrowLeft className="mr-2" />
-                <span className="text-2xl font-semibold">Account Settings</span>
-            </button>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                {/* Tabs: full width on mobile, sidebar on desktop */}
-                <div className="w-full sm:w-1/4">
-                    <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} theme={theme} accent={accent} />
-                </div>
+        <div className={`min-h-screen p-4 sm:p-6 text-white w-full mx-auto shadow-lg ${theme === 'dark' ? ' bg-gray-900' : ''}`}>
+            <div className=' max-w-5xl mx-auto'>
+                <button className='flex items-center mb-4' onClick={() => navigate('/profile')}>
+                    <ArrowLeft className="mr-2" />
+                    <span className="text-2xl font-semibold">Account Settings</span>
+                </button>
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                    {/* Tabs: full width on mobile, sidebar on desktop */}
+                    <div className="w-full sm:w-1/4 sm:sticky sm:top-4">
+                        <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} theme={theme} accent={accent} />
+                    </div>
 
-                {/* Content Panel */}
-                <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full sm:flex-1 backdrop-blur-md bg-white/5 rounded-2xl p-4 sm:p-6 shadow-xl border border-white/10"
-                >
-                    {renderTab()}
-                </motion.div>
+                    {/* Content Panel */}
+                    <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="w-full sm:flex-1 backdrop-blur-md bg-white/5 rounded-2xl p-4 sm:p-6 shadow-xl border border-white/10"
+                    >
+                        {renderTab()}
+                    </motion.div>
+                </div>
             </div>
         </div>
     );
