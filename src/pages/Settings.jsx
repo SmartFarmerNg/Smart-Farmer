@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import SecuritySettings from '../components/component/Settings/SecuritySettings.jsx';
-import AppearanceSettings from '../components/component/Settings/AppearanceSettings.jsx';
-import NotificationSettings from '../components/component/Settings/NotificationSettings.jsx';
-import SettingsTabs from '../components/component/Settings/SettingsTabs.jsx';
-import WithdrawalSettings from '../components/component/Settings/WithdrawalSettings.jsx';
-import DangerZone from '../components/component/Settings/DangerZone.jsx';
+import SecuritySettings from '../components/component/settings/SecuritySettings.jsx';
+import AppearanceSettings from '../components/component/settings/AppearanceSettings.jsx';
+import NotificationSettings from '../components/component/settings/NotificationSettings.jsx';
+import SettingsTabs from '../components/component/settings/SettingsTabs.jsx';
+import WithdrawalSettings from '../components/component/settings/WithdrawalSettings.jsx';
+import DangerZone from '../components/component/settings/DangerZone.jsx';
 import { ArrowLeft, Edit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import EditProfile from './EditProfile';
