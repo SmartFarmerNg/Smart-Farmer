@@ -15,6 +15,8 @@ const Transact = () => {
 
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+    const [accent, setAccent] = useState(localStorage.getItem("accent") || "#0FA280");
 
     useEffect(() => {
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
@@ -24,6 +26,8 @@ const Transact = () => {
                 const userDoc = doc(db, "users", currentUser.uid);
                 onSnapshot(userDoc, (doc) => {
                     setBalance(doc.data().availableBalance);
+                    setThemee(doc.data().theme);
+                    setAccent(doc.data().accent);
                 });
             } else {
                 navigate("/sign-in");
@@ -56,13 +60,13 @@ const Transact = () => {
         return unsubscribe;
     };
     return (
-        <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans overflow-scroll h-screen flex flex-col items-center pb-20'>
-            <div className='w-full max-w-2xl px-4 pt-6 z-50'>
+        <div className={`${theme === 'dark' ? ' bg-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'} text-gray-900 font-sans overflow-scroll h-screen flex flex-col items-center pb-20`}>
+            <div className='w-full max-w-3xl px-4 pt-6 z-50'>
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="bg-white shadow-lg rounded-xl p-4 w-full text-center border border-gray-200 relative overflow-hidden"
+                    className={`${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200 border border-gray-300'} shadow-lg rounded-xl p-4 w-full text-center relative overflow-hidden`}
                 >
                     <h2 className="text-sm font-semibold text-gray-600">Available Balance</h2>
                     <p className="text-xl font-bold text-[#0FA280]">NGN {balance.toLocaleString() || 0}</p>
@@ -77,7 +81,7 @@ const Transact = () => {
                             key={index}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="flex flex-col items-center bg-white p-3 rounded-lg shadow-md hover:shadow-xl transition"
+                            className={`flex flex-col items-center p-3 rounded-lg shadow-md hover:shadow-xl transition ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white'}`}
                             onClick={() => navigate(`/transact/${action.toLowerCase()}`)}
                         >
                             {action === "Deposit" ? <ArrowDownLeft className="text-green-600 w-5 h-5" /> : <ArrowUpRight className="text-red-600 w-5 h-5" />}
@@ -87,7 +91,7 @@ const Transact = () => {
                 </div>
 
                 {/* Transaction History */}
-                <TransactionList transactions={transactions} loading={loading} />
+                <TransactionList transactions={transactions} loading={loading} theme={theme} accent={accent} />
             </div>
         </div>
     );

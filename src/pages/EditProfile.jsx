@@ -94,74 +94,67 @@ const EditProfile = () => {
     };
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white px-4 py-6 font-sans'>
+        <div className=''>
             <ToastContainer position="top-right" autoClose={2300} />
-            <div className='max-w-md mx-auto pb-20'>
-                <div className='flex items-center gap-4 mb-6'>
-                    <ArrowLeft onClick={() => navigate(-1)} className='cursor-pointer w-6 h-6' />
-                    <h1 className='text-xl font-semibold'>Edit Profile</h1>
+            <div className='text-gray-200 rounded-xl p-5 space-y-4 z-50'>
+                <div className='flex flex-col items-center relative w-24 h-24 mx-auto'>
+                    <img
+                        src={previewImage || 'https://via.placeholder.com/150'}
+                        alt='Profile'
+                        className='w-24 h-24 object-cover rounded-full border shadow'
+                    />
+                    <input
+                        type='file'
+                        accept='image/*'
+                        onChange={handleImageChange}
+                        className='absolute inset-0 opacity-0 cursor-pointer'
+                        title='Change Profile Image'
+                    />
                 </div>
 
-                <div className='bg-white/15 backdrop-blur-2xl text-gray-200 rounded-xl shadow p-5 space-y-4 z-50'>
-                    <div className='flex flex-col items-center relative w-24 h-24 mx-auto'>
-                        <img
-                            src={previewImage || 'https://via.placeholder.com/150'}
-                            alt='Profile'
-                            className='w-24 h-24 object-cover rounded-full border shadow'
-                        />
+                {/* Form Fields */}
+                <div className='flex flex-col gap-4 text-sm'>
+                    <label>
+                        First Name
                         <input
-                            type='file'
-                            accept='image/*'
-                            onChange={handleImageChange}
-                            className='absolute inset-0 opacity-0 cursor-pointer'
-                            title='Change Profile Image'
+                            type='text'
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className='w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-white'
                         />
-                    </div>
+                    </label>
 
-                    {/* Form Fields */}
-                    <div className='flex flex-col gap-4 text-sm'>
-                        <label>
-                            First Name
-                            <input
-                                type='text'
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                className='w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-white'
-                            />
-                        </label>
+                    <label>
+                        Last Name
+                        <input
+                            type='text'
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className='w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-white'
+                        />
+                    </label>
 
-                        <label>
-                            Last Name
-                            <input
-                                type='text'
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                className='w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-white'
-                            />
-                        </label>
-
-                        <label>
-                            Phone Number
-                            <input
-                                type='tel'
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                className='w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-white'
-                            />
-                        </label>
-                    </div>
-
-                    <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleSave}
-                        disabled={loading}
-                        className='w-full flex items-center justify-center gap-2 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow hover:bg-[#0c8a6a]'
-                    >
-                        <Save className='w-5 h-5' />
-                        {loading ? 'Saving...' : 'Save Changes'}
-                    </motion.button>
+                    <label>
+                        Phone Number
+                        <input
+                            type='tel'
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className='w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-white'
+                        />
+                    </label>
                 </div>
+
+                <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleSave}
+                    disabled={loading}
+                    className='w-full flex items-center justify-center gap-2 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow hover:bg-[#0c8a6a]'
+                >
+                    <Save className='w-5 h-5' />
+                    {loading ? 'Saving...' : 'Save Changes'}
+                </motion.button>
             </div>
         </div>
     );

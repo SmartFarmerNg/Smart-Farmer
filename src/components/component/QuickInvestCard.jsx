@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BadgePercent } from "lucide-react";
 
-const QuickInvestCard = ({ investment }) => {
+const QuickInvestCard = ({ investment, theme, accent }) => {
     const navigate = useNavigate();
 
     const {
@@ -20,9 +20,9 @@ const QuickInvestCard = ({ investment }) => {
     };
 
     return (
-        <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col gap-4 hover:shadow-xl transition duration-300 ease-in-out w-full my-5 z-10">
+        <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} shadow-lg rounded-2xl p-6 flex flex-col gap-4 hover:shadow-xl transition duration-300 ease-in-out w-full my-5 z-10`}>
             <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">{productName}</h2>
+                <h2 className="text-xl font-bold">{productName}</h2>
                 <span
                     className={`text-sm font-semibold px-3 py-1 rounded-full ${status === "open"
                         ? "bg-green-100 text-green-700"
@@ -33,7 +33,7 @@ const QuickInvestCard = ({ investment }) => {
                 </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
+            <div className={`grid grid-cols-2 gap-3 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                 <div>
                     <p className="font-medium">ROI</p>
                     <p>{expectedROI}% {ROIFrequency}</p>
@@ -55,8 +55,8 @@ const QuickInvestCard = ({ investment }) => {
             <button
                 onClick={handleInvest}
                 disabled={status !== "open"}
-                className={`mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 text-white font-semibold rounded-xl transition ${status === "open"
-                    ? "bg-[#0FA280] hover:bg-[#0d8b6d]"
+                className={`mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition ${status === "open"
+                    ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
                     : "bg-gray-300 cursor-not-allowed"
                     }`}
             >

@@ -4,9 +4,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const InvestmentsCarousel = ({ investments }) => {
+const InvestmentsCarousel = ({ investments, theme, accent }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const containerRef = useRef(null);
+
 
     const nextSlide = () => {
         setCurrentIndex((prev) => (prev < investments.length - 1 ? prev + 1 : 0));
@@ -32,7 +33,6 @@ const InvestmentsCarousel = ({ investments }) => {
     return (
         <div className="relative w-[90%] max-w-xl mx-auto">
             <h2 className="text-xl font-bold text-white text-center mb-4">Your Investments</h2>
-
             {/* Slider Container */}
             <div className="relative overflow-hidden rounded-xl">
                 <motion.div
@@ -46,15 +46,15 @@ const InvestmentsCarousel = ({ investments }) => {
                         return (
                             <div
                                 key={index}
-                                className="bg-white shadow-md rounded-xl p-4 min-w-[280px] flex justify-between"
+                                className={`${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200'} text-white font-sans shadow-md rounded-xl p-4 min-w-[280px] flex justify-between`}
                             >
                                 <div>
-                                    <p className="font-semibold text-gray-800">{investment.productName}</p>
-                                    <p className="text-sm text-gray-600">Units: {investment.unitsBought}</p>
-                                    <p className="text-sm text-gray-600">Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
-                                    {investment.productName === 'Fast Vegetables' ? <p className="text-sm text-gray-600">Start: {new Date(investment.createdAt).toLocaleDateString()}</p>
+                                    <p className={`font-semibold ${theme === "dark" ? 'text-white' : 'text-gray-800'}`}>{investment.productName}</p>
+                                    <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Units: {investment.unitsBought}</p>
+                                    <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
+                                    {investment.productName === 'Fast Vegetables' ? <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.createdAt).toLocaleDateString()}</p>
                                         : <>
-                                            <p className="text-sm text-gray-600">Start: {new Date(investment.startDate).toLocaleDateString()}</p>
+                                            <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.startDate).toLocaleDateString()}</p>
                                         </>
                                     }
                                 </div>
@@ -65,9 +65,9 @@ const InvestmentsCarousel = ({ investments }) => {
                                         text={`${Math.round(progress)}%`}
                                         styles={buildStyles({
                                             textSize: "28px",
-                                            textColor: "#0FA280",
-                                            pathColor: "#0FA280",
-                                            trailColor: "#e6e6e6",
+                                            textColor: theme === "dark" ? accent : "#0FA280",
+                                            pathColor: theme === "dark" ? accent : "#0FA280",
+                                            trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                                         })}
                                     />
                                 </div>
@@ -79,14 +79,14 @@ const InvestmentsCarousel = ({ investments }) => {
 
             {/* Navigation Buttons */}
             <div className="absolute top-1/2 -left-12">
-                <button onClick={prevSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
-                    <ChevronLeft className="w-5 h-5" />
+                <button onClick={prevSlide} className={`${theme === "dark" ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} p-2 rounded-full shadow transition cursor-pointer`}>
+                    <ChevronLeft className={`w-5 h-5 ${theme === "dark" ? 'text-white' : 'text-gray-800'}`} />
                 </button>
             </div>
 
             <div className="absolute top-1/2 -right-12">
-                <button onClick={nextSlide} className="bg-gray-200 p-2 rounded-full shadow hover:bg-gray-300 transition cursor-pointer">
-                    <ChevronRight className="w-5 h-5" />
+                <button onClick={nextSlide} className={`${theme === "dark" ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} p-2 rounded-full shadow transition cursor-pointer`}>
+                    <ChevronRight className={`w-5 h-5 ${theme === "dark" ? 'text-white' : 'text-gray-800'}`} />
                 </button>
             </div>
         </div>

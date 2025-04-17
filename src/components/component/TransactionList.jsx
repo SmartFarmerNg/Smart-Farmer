@@ -9,7 +9,7 @@ import {
     Loader,
 } from "lucide-react";
 
-const TransactionList = ({ transactions, loading }) => {
+const TransactionList = ({ transactions, loading, theme, accent }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedType, setSelectedType] = useState("All");
     const transactionsPerPage = 5;
@@ -43,7 +43,7 @@ const TransactionList = ({ transactions, loading }) => {
                             setCurrentPage(1);
                         }}
                         className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${selectedType === type
-                            ? "bg-white text-gray-900 shadow-md"
+                            ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'}`
                             : "bg-gray-800 text-white hover:bg-gray-700"
                             }`}
                     >
@@ -67,7 +67,7 @@ const TransactionList = ({ transactions, loading }) => {
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-gray-100 shadow-md border-b px-4 py-2 flex items-center gap-2 overflow-hidden"
+                            className={`${theme === "dark" ? 'bg-gray-800 text-gray-200' : 'bg-gray-200 border border-gray-300'} shadow-md border-b px-4 py-2 flex items-center gap-2 overflow-hidden`}
                         >
                             <div
                                 className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${txn.type === "Deposit"
@@ -86,12 +86,12 @@ const TransactionList = ({ transactions, loading }) => {
                                 )}
                             </div>
                             <div className="z-10">
-                                <h1 className="font-semibold text-gray-900 sm:text-lg">{txn.type}</h1>
-                                <span className="text-xs sm:text-sm text-gray-800">
+                                <h1 className="font-semibold sm:text-lg">{txn.type}</h1>
+                                <span className="text-xs sm:text-sm ">
                                     {new Date(txn.timestamp).toLocaleString()}
                                 </span>
                             </div>
-                            <div className="ml-auto font-bold text-gray-900">
+                            <div className="ml-auto font-bold ">
                                 NGN {txn.amount.toLocaleString()}
                             </div>
                         </motion.div>

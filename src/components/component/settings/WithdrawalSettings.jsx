@@ -124,19 +124,19 @@ const WithdrawalSettings = () => {
                 <div>
                     <label className="block mb-1 text-sm font-medium">Bank Name</label>
                     <select
-                        className="w-full bg-gray-900 border border-white/10 p-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         value={bankName}
                         onChange={handleUpdateBankName}
                         required
                     >
-                        <option value="">Select your bank</option>
-                        <option value="access">Access Bank</option>
-                        <option value="gtb">Guaranty Trust Bank</option>
-                        <option value="zenith">Zenith Bank</option>
-                        <option value="firstbank">First Bank</option>
-                        <option value="uba">United Bank for Africa</option>
-                        <option value="opay">Opay</option>
-                        <option value="plmpay">PalmPay</option>
+                        <option className=' text-black' value="">Select your bank</option>
+                        <option className=' text-black' value="access">Access Bank</option>
+                        <option className=' text-black' value="gtb">Guaranty Trust Bank</option>
+                        <option className=' text-black' value="zenith">Zenith Bank</option>
+                        <option className=' text-black' value="firstbank">First Bank</option>
+                        <option className=' text-black' value="uba">United Bank for Africa</option>
+                        <option className=' text-black' value="opay">Opay</option>
+                        <option className=' text-black' value="plmpay">PalmPay</option>
                     </select>
                 </div>
 
@@ -155,7 +155,7 @@ const WithdrawalSettings = () => {
             {/* Submit Button */}
             <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+                className="bg-white hover:bg-white/80 transition-colors text-black py-2 px-4 rounded-lg font-medium"
                 onClick={handleSubmit}
                 disabled={loading}
             >
@@ -172,7 +172,7 @@ const WithdrawalSettings = () => {
                 {loading ? (
                     <p>Loading transactions...</p>
                 ) : (
-                    <table className="w-full table-auto border-collapse">
+                    <table className="w-full table-auto border-collapse bg-white/10">
                         <thead>
                             <tr className="text-left">
                                 <th className="px-4 py-2 text-sm font-medium">Date</th>
@@ -185,8 +185,8 @@ const WithdrawalSettings = () => {
                             {transactions.map((transaction, index) => (
                                 <tr key={index} className="border-b border-white/10">
                                     <td className="px-4 py-2 text-sm">{new Date(transaction.timestamp).toLocaleDateString()}</td>
-                                    <td className={`px-4 py-2 text-sm ${transaction.type === 'Deposit' ? 'text-green-500' : transaction.type === 'Withdrawal' ? 'text-red-500' : 'text-blue-500'}`}>NGN {transaction.type === 'Deposit' ? '+' : '-'}{transaction.amount.toLocaleString()}</td>
-                                    <td className={`px-4 py-2 text-sm ${transaction.type === 'Deposit' ? 'text-green-500' : transaction.type === 'Withdrawal' ? 'text-red-500' : 'text-blue-500'}`}>{transaction.type}</td>
+                                    <td className={"px-4 py-2 text-sm"}>NGN {transaction.type === 'Deposit' ? '+' : '-'}{transaction.amount.toLocaleString()}</td>
+                                    <td className={`px-4 py-2 text-sm ${transaction.type === 'Deposit' ? 'text-green-400' : transaction.type === 'Withdrawal' ? 'text-red-400' : ''}`}>{transaction.type}</td>
                                     <td className="px-4 py-2 text-sm">{transaction.status}</td>
                                 </tr>
                             ))}

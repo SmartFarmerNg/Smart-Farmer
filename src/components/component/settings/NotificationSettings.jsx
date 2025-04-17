@@ -50,7 +50,7 @@ const NotificationSettings = () => {
 
       <button
         onClick={handleSave}
-        className="bg-indigo-600 hover:bg-indigo-700 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+        className="bg-white hover:bg-white/80 transition-colors text-black py-2 px-4 rounded-lg font-medium"
       >
         Save Preferences
       </button>

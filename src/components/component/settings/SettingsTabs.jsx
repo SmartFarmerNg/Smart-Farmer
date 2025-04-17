@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { FaUser, FaShieldAlt, FaPaintBrush, FaBell, FaCreditCard, FaExclamationTriangle } from 'react-icons/fa';
+import { FaShieldAlt, FaPaintBrush, FaBell, FaCreditCard, FaExclamationTriangle, FaEdit, FaPencilAlt } from 'react-icons/fa';
 
 const tabs = [
-  { key: 'account', label: 'Account', icon: <FaUser /> },
+  { key: 'editProfile', label: 'Edit Profile', icon: <FaPencilAlt /> },
   { key: 'security', label: 'Security', icon: <FaShieldAlt /> },
   { key: 'appearance', label: 'Appearance', icon: <FaPaintBrush /> },
   { key: 'notifications', label: 'Notifications', icon: <FaBell /> },
@@ -10,7 +10,7 @@ const tabs = [
   { key: 'danger', label: 'Danger Zone', icon: <FaExclamationTriangle /> },
 ];
 
-const SettingsTabs = ({ activeTab, setActiveTab }) => {
+const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
   useEffect(() => {
     // Load the active tab from localStorage if available
     const storedTab = localStorage.getItem('activeTab');
@@ -34,7 +34,7 @@ const SettingsTabs = ({ activeTab, setActiveTab }) => {
             onClick={() => handleTabChange(tab.key)}
             className={`flex-shrink-0 px-4 py-2 rounded-full transition-all duration-200 whitespace-nowrap text-sm font-medium
               ${activeTab === tab.key
-                ? 'bg-white text-black font-semibold'
+                ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
                 : 'bg-white/10 text-white hover:bg-white/20'
               }`}
           >
@@ -54,7 +54,7 @@ const SettingsTabs = ({ activeTab, setActiveTab }) => {
             onClick={() => handleTabChange(tab.key)}
             className={`text-left px-4 py-5 rounded-sm transition-all duration-200 font-medium
               ${activeTab === tab.key
-                ? 'bg-white text-black font-semibold'
+                ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold`
                 : 'bg-white/10 text-white hover:bg-white/20'
               }`}
           >

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../components/component/Footer';
 import { motion } from 'framer-motion';
 import FloatingBackground from '../components/component/FloatingBackground';
-import { collection, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, onSnapshot, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -31,6 +31,10 @@ const Invest = () => {
   const endIndex = startIndex + itemsPerPage;
 
 
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [accent, setAccent] = useState(localStorage.getItem('accent') || '#0FA280');
+
+
 
   const navigate = useNavigate();
 
@@ -50,6 +54,17 @@ const Invest = () => {
     });
     return () => unsubscribe();
   }, [navigate]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "users", auth.currentUser?.uid), (doc) => {
+      if (doc.exists()) {
+        setTheme(doc.data().theme || 'light');
+        setAccent(doc.data().accent || '#0FA280');
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchInvestments = async () => {
@@ -214,19 +229,20 @@ const Invest = () => {
 
 
   return (
-    <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-gray-900 font-sans overflow-scroll h-screen'>
-      <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto py-6 pb-20'>
+
+    <div className={`${theme === "dark" ? 'bg-gray-900' : ''} text-gray-200 font-sans`}>
+      <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto py-6 pb-20'>
         <header className='w-full mx-auto flex items-center gap-3 mb-6'>
           <button onClick={() => navigate(-1)}>
-            <ArrowLeft className='text-white w-6 h-6' />
+            <ArrowLeft className={`w-6 h-6`} />
           </button>
-          <h1 className='text-lg font-semibold text-white'>Investment</h1>
+          <h1 className={`text-lg font-semibold`}>Investment</h1>
         </header>
 
         {loading ? (
-          <div className='text-center py-10 text-white'>
-            <div className='animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full mx-auto mb-3' />
-            <p>Loading investments...</p>
+          <div className='text-center py-10'>
+            <div className={`animate-spin h-6 w-6 border-4 ${theme === "dark" ? 'border-white border-t-transparent' : 'border-gray-800 border-t-transparent'} rounded-full mx-auto mb-3`} />
+            <p >Loading investments...</p>
           </div>
         ) : (
           <>
@@ -234,9 +250,9 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className='w-full bg-white/30 backdrop-blur-md shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-50 relative'
+              className={`w-full ${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200 text-gray-900'} shadow-md p-6 rounded-2xl ${theme === "dark" ? '' : 'border border-gray-300'} mb-6 z-50 relative`}
             >
-              <h2 className='text-xl font-bold mb-4 text-white'>Investment Summary</h2>
+              <h2 className={`text-xl font-bold mb-4`}>Investment Summary</h2>
               <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 text-center'>
                 <div className='bg-gray-100 p-4 rounded-lg shadow-sm'>
                   <p className='text-sm text-gray-500'>Total Invested</p>
@@ -258,7 +274,7 @@ const Invest = () => {
             </motion.div>
 
             {openQuickInvestments.length > 0 && (
-              <QuickInvestCard investment={openQuickInvestments[0]} />
+              <QuickInvestCard investment={openQuickInvestments[0]} theme={theme} accent={accent} />
             )}
 
             {/* Your Investment Tracking */}
@@ -266,19 +282,19 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className='w-full bg-white/30 backdrop-blur-md shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-10'
+              className={`w-full ${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200 text-gray-900'} shadow-md p-6 rounded-2xl border border-gray-300 mb-6 z-10`}
             >
-              <h2 className='text-xl font-bold mb-4 text-white'>Your Investments</h2>
+              <h2 className={`text-xl font-bold mb-4`}>Your Investments</h2>
               {investments.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className='text-center text-gray-100 py-8'
+                  className={`text-center py-8 ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}
                 >
                   <img
                     src='assets\empty-prevew.png'
                     alt='No investments'
-                    className='w-full mx-auto mb-3 '
+                    className='w-full mx-auto mb-3'
                   />
                   <p className='text-sm font-medium'>
                     No {statusFilter === 'All' ? '' : statusFilter.toLowerCase()} investments found.
@@ -295,7 +311,7 @@ const Invest = () => {
                         <button
                           key={status}
                           onClick={() => setStatusFilter(status)}
-                          className={`px-4 py-1 rounded-full text-sm font-medium transition cursor-pointer ${statusFilter === status ? 'bg-[#0FA280] text-white' : 'bg-gray-200 text-gray-800'
+                          className={`px-4 py-1 rounded-full text-sm font-medium transition cursor-pointer ${statusFilter === status ? `bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'} font-semibold` : 'bg-gray-200 text-gray-800'
                             }`}
                         >
                           {status}
@@ -326,27 +342,26 @@ const Invest = () => {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.05 }}
                           onClick={() => navigate(`/invest/product/${inv.id}`, { state: { investment: inv } })}
-                          className='bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm flex justify-between items-center gap-4 cursor-pointer hover:bg-gray-100 transition-colors'
+                          className={`${theme === "dark" ? 'bg-gray-700 border-gray-700 hover:bg-gray-700' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'} border rounded-xl p-4 shadow-sm flex justify-between items-center gap-4 cursor-pointer transition-colors`}
                         >
                           <div className='flex-1'>
-                            <p className='font-semibold text-gray-800'>{inv.productName}</p>
+                            <p className={`font-semibold ${theme === "dark" ? 'text-white' : 'text-gray-800'}`}>{inv.productName}</p>
                             {inv.productName !== "Fast Vegetables" ?
 
-                              <p className='text-xs text-gray-500 mb-1'>
+                              <p className={`text-xs ${theme === "dark" ? 'text-gray-400' : 'text-gray-500'} mb-1`}>
                                 Duration: {inv.investmentPeriod} months | ROI: {inv.expectedROI}% monthly
                               </p>
                               :
-                              <p className='text-xs text-gray-500 mb-1'>
+                              <p className={`text-xs ${theme === "dark" ? 'text-gray-400' : 'text-gray-500'} mb-1`}>
                                 Duration: {inv.investmentPeriod} days | ROI: {inv.expectedROI / inv.investmentPeriod}% daily
                               </p>
                             }
                             <p className='text-green-600 font-semibold'>₦{inv.investmentAmount.toLocaleString()}</p>
-                            <p className={`text-xs font-bold mt-1 ${inv.status === 'Active' ? 'text-blue-600' : 'text-gray-500'}`}>
+                            <p className={`text-xs font-bold mt-1 ${inv.status === 'Active' ? 'text-blue-600' : theme === "dark" ? 'text-gray-400' : 'text-gray-500'}`}>
                               {inv.status}
                             </p>
                             {inv.status === 'Active' && (
-                              // {inv.productName === "Fast Vegetables" ? : }
-                              <p className='text-xs text-gray-400'>⏳ {daysLeft} day{daysLeft !== 1 ? 's' : ''} left</p>
+                              <p className={`text-xs ${theme === "dark" ? 'text-gray-400' : 'text-gray-400'}`}>⏳ {daysLeft} day{daysLeft !== 1 ? 's' : ''} left</p>
                             )}
                           </div>
 
@@ -356,9 +371,9 @@ const Invest = () => {
                               text={`${Math.round(progress)}%`}
                               styles={buildStyles({
                                 textSize: '28px',
-                                textColor: '#0FA280',
-                                pathColor: '#0FA280',
-                                trailColor: '#e6e6e6',
+                                textColor: accent,
+                                pathColor: accent,
+                                trailColor: theme === "dark" ? '#4a5565' : '#e6e6e6',
                               })}
                             />
                           </div>
@@ -372,12 +387,12 @@ const Invest = () => {
                       <button
                         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 bg-gray-200 rounded cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                        className="px-4 py-2 bg-gray-200 rounded cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed text-gray-900 disabled:bg-gray-300 disabled:text-gray-500"
                       >
                         Previous
                       </button>
 
-                      <span className="px-2 py-2 text-sm text-white font-semibold">
+                      <span className={`px-2 py-2 text-sm font-semibold ${theme === "dark" ? 'text-white' : 'text-gray-800'}`}>
                         Page {currentPage} of {Math.ceil(displayedInvestments.length / itemsPerPage)}
                       </span>
                       <button
@@ -392,7 +407,7 @@ const Invest = () => {
                             investments.filter(inv => statusFilter === 'All' || inv.status === statusFilter).length / itemsPerPage
                           )
                         }
-                        className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-gray-200 rounded disabled:opacity-45 disabled:cursor-not-allowed text-gray-900 disabled:bg-gray-300 disabled:text-gray-500"
                       >
                         Next
                       </button>
@@ -407,10 +422,10 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className='w-full text-white shadow-md rounded-sm border-r z-10'
+              className={`w-full shadow-md rounded-sm border-r z-10`}
             >
               <h2 className='text-xl font-bold mb-4'>Explore More Investments</h2>
-              <CropsSection crops={crops} cropsLoading={cropsLoading} />
+              <CropsSection crops={crops} cropsLoading={cropsLoading} theme={theme} accent={accent} />
             </motion.div>
           </>
         )}

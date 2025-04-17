@@ -76,7 +76,7 @@ const SecuritySettings = () => {
           <label className="block mb-1 text-sm font-medium">Current Password</label>
           <input
             type={showCurrentPassword ? 'text' : 'password'}
-            className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter current password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -94,7 +94,7 @@ const SecuritySettings = () => {
           <label className="block mb-1 text-sm font-medium">New Password</label>
           <input
             type={showNewPassword ? 'text' : 'password'}
-            className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter new password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -112,7 +112,7 @@ const SecuritySettings = () => {
           <label className="block mb-1 text-sm font-medium">Confirm New Password</label>
           <input
             type={showConfirmNewPassword ? 'text' : 'password'}
-            className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Confirm new password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -128,11 +128,11 @@ const SecuritySettings = () => {
 
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
-        {success && <p className="text-green-400 text-sm">{success}</p>}
+        {success && <p className="text-blue-400 text-sm">{success}</p>}
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+          className="w-full bg-white hover:bg-white/70 transition-colors text-black py-2 px-4 rounded-lg font-medium"
         >
           Update Password
         </button>

@@ -47,7 +47,7 @@ const TwoFactorAuth = () => {
     return (
         <div className="mt-10">
             <h3 className="text-lg font-semibold mb-2">Two-Factor Authentication (2FA)</h3>
-            <p className="text-sm text-gray-400 mb-4">
+            <p className="text-sm text-gray-200 mb-4">
                 Add an extra layer of security to your account by enabling 2FA via your phone number.
             </p>
 
@@ -57,7 +57,7 @@ const TwoFactorAuth = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1234567890"
-                    className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-400"
+                    className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-200"
                 />
 
                 {otpSent && (
@@ -66,7 +66,7 @@ const TwoFactorAuth = () => {
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
                         placeholder="Enter OTP"
-                        className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-400"
+                        className="w-full bg-white/10 border border-white/10 p-3 rounded-lg text-white placeholder-gray-200"
                     />
                 )}
 
@@ -76,7 +76,7 @@ const TwoFactorAuth = () => {
                 {!otpSent ? (
                     <button
                         onClick={sendOTP}
-                        className="bg-indigo-600 hover:bg-indigo-700 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+                        className="bg-white hover:bg-white/70 transition-colors text-black py-2 px-4 rounded-lg font-medium"
                     >
                         Send OTP
                     </button>

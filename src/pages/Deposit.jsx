@@ -1,10 +1,10 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { PaystackButton } from "react-paystack";
-import { doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 
 const Deposit = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Deposit = () => {
     const [email, setEmail] = useState("");
     const [balance, setBalance] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [td, setTd] = useState(null);
+    const [transactionId, setTransactionId] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
     const publicKey = "pk_test_1a3a0ace0098f205c173a84c35960a794793ff87";
@@ -22,12 +22,8 @@ const Deposit = () => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
-                setUser({
-                    uid: currentUser.uid,
-                    email: currentUser.email,
-                });
+                setUser({ uid: currentUser.uid, email: currentUser.email });
                 setEmail(currentUser.email);
-
 
                 const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                 if (userDoc.exists()) {
@@ -44,11 +40,7 @@ const Deposit = () => {
 
     const handleSuccess = async (reference) => {
         if (isProcessing) return;
-
         setIsProcessing(true);
-        console.log("Payment successful", reference);
-        setShowSuccess(true);
-
         const depositAmount = parseFloat(amount);
         if (isNaN(depositAmount) || depositAmount <= 0) return;
 
@@ -56,7 +48,6 @@ const Deposit = () => {
         const userRef = doc(db, "users", user.uid);
 
         try {
-
             await addDoc(collection(db, "transactions"), {
                 userId: user.uid,
                 email: user.email,
@@ -67,11 +58,11 @@ const Deposit = () => {
                 timestamp: new Date().toISOString(),
             });
 
-            setTd(reference.reference);
-
-
             await setDoc(userRef, { availableBalance: newBalance }, { merge: true });
+
             setBalance(newBalance);
+            setTransactionId(reference.reference);
+            setShowSuccess(true);
         } catch (error) {
             console.error("Transaction failed", error);
             setShowSuccess(false);
@@ -82,7 +73,7 @@ const Deposit = () => {
 
     const paystackConfig = {
         email,
-        amount: amount * 100,
+        amount: parseFloat(amount || 0) * 100,
         publicKey,
         currency: "NGN",
         channels: ["card", "bank", "ussd"],
@@ -90,35 +81,80 @@ const Deposit = () => {
         onClose: () => alert("Payment window closed."),
     };
 
+    const isDisabled = !amount || parseFloat(amount) <= 0 || isProcessing;
+
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+        }).format(value);
+    };
+
     return (
-        <div className="bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
+        <div className="bg-gradient-to-br from-[#0FA280] to-[#054D3B] min-h-screen text-white font-sans flex items-center justify-center p-4">
             {showSuccess ? (
-                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg text-center z-50">
-                    <h1 className="text-2xl font-bold text-white">🎉 Deposit Successful!</h1>
-                    <p className="text-lg mt-2">Your new balance: <span className="font-semibold">NGN {balance.toLocaleString()}</span></p>
-                    <p className="text-lg mt-2">Your Transaction ID: <span className="font-semibold">{td}</span></p>
-                    <button className="bg-white text-black font-semibold px-6 py-3 rounded-xl mt-4 hover:bg-gray-300 transition cursor-pointer" onClick={() => navigate("/invest")}>Start Investing Now!🚀</button>
+                <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full text-center animate-fade-in z-50">
+                    <CheckCircle2 className="text-green-400 w-16 h-16 mx-auto mb-4" />
+                    <h2 className="text-3xl font-bold mb-2">Deposit Successful</h2>
+                    <p className="text-lg">Balance: <span className="font-semibold">{formatCurrency(balance)}</span></p>
+                    <p className="text-sm mt-1">Transaction ID: <span className="font-mono">{transactionId}</span></p>
+                    <button
+                        className="mt-6 px-6 py-3 bg-white text-black rounded-xl font-semibold hover:bg-gray-300 transition"
+                        onClick={() => navigate("/invest")}
+                    >
+                        Start Investing 🚀
+                    </button>
                 </div>
             ) : (
-                <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg z-50">
-                    <header className="flex items-center mb-6">
-                        <button onClick={() => navigate(-1)} className="cursor-pointer p-2 bg-white/20 rounded-full hover:bg-white/30">
-                            <ArrowLeft className="text-white w-6 h-6" />
+                <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6 animate-fade-in z-50">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="p-2 bg-white/20 rounded-full hover:bg-white/30"
+                        >
+                            <ArrowLeft className="w-5 h-5 text-white" />
                         </button>
-                        <h1 className="text-2xl font-bold text-white mx-auto">Deposit</h1>
-                    </header>
+                        <h1 className="text-2xl font-bold mx-auto">Make a Deposit</h1>
+                    </div>
 
-                    <p className="text-lg text-white mb-4">Current Balance: <span className="font-semibold">NGN {balance.toLocaleString()}</span></p>
+                    <div>
+                        <p className="text-white text-base">
+                            Available Balance: <span className="font-semibold">{formatCurrency(balance)}</span>
+                        </p>
+                    </div>
 
-                    <div className="flex flex-col gap-5 text-white">
-                        <input type="email" value={email} disabled className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]" />
-                        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))} placeholder="Enter deposit amount" className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]" />
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <label className="text-sm font-semibold">Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                disabled
+                                className="w-full mt-1 p-3 rounded-lg bg-white/10 text-white border border-white/30 placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-sm font-semibold">Amount (₦)</label>
+                            <input
+                                type="number"
+                                inputMode="numeric"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
+                                placeholder="Enter amount"
+                                className="w-full mt-1 p-3 rounded-lg bg-white/10 text-white border border-white/30 placeholder-white focus:outline-none focus:ring-2 focus:ring-[#0FA280]"
+                            />
+                        </div>
+
                         <PaystackButton
                             {...paystackConfig}
-                            className={`bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition cursor-pointer ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            disabled={isProcessing}
+                            disabled={isDisabled}
+                            className={`w-full text-center py-3 rounded-xl font-semibold transition ${isDisabled
+                                ? "bg-white/30 text-white cursor-not-allowed"
+                                : "bg-white text-black hover:bg-gray-300"
+                                }`}
                         >
-                            {isProcessing ? 'Processing...' : 'Deposit Now'}
+                            {isProcessing ? "Processing..." : `Deposit ${amount ? `₦${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` : ""}`}
                         </PaystackButton>
                     </div>
                 </div>

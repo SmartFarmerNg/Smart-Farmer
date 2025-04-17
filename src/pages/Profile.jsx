@@ -24,6 +24,10 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const [accent, setAccent] = useState(localStorage.getItem('accent') || '#0FA280');
+
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
@@ -33,6 +37,8 @@ const Profile = () => {
                     const userSnap = await getDoc(userRef);
                     if (userSnap.exists()) {
                         setBalance(userSnap.data().availableBalance || 0);
+                        setTheme(userSnap.data().theme || 'light');
+                        setAccent(userSnap.data().accent || '#0FA280');
                     } else {
                         setBalance(0);
                     }
@@ -66,11 +72,11 @@ const Profile = () => {
     };
 
     return (
-        <div className='bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white font-sans'>
-            <div className='min-h-screen max-w-2xl px-3 flex flex-col items-center mx-auto pb-20'>
+        <div className={`${theme === "dark" ? 'bg-gray-900' : 'bg-gradient-to-br'} ${theme === "dark" ? '' : `from-[${accent}] to-[${accent}]`} text-white font-sans`} style={{ filter: theme === "dark" ? 'none' : 'brightness(0.9)' }}>
+            <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto pb-20'>
                 {isLoggingOut || loading ? <Barloader /> : null}
 
-                <div className='w-full py-5 flex flex-col flex-grow z-50'>
+                <div className='w-full py-5 flex flex-col flex-grow'>
                     {/* Header */}
                     <header className='w-full flex items-center gap-3 mb-6'>
                         <button onClick={() => navigate('/dashboard')}>
@@ -81,12 +87,12 @@ const Profile = () => {
                     </header>
 
                     {/* User Info */}
-                    <div className='bg-white text-gray-800 shadow-lg px-6 py-4 rounded-2xl flex items-center justify-between'>
+                    <div className={`${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} shadow-lg px-6 py-4 rounded-2xl flex items-center justify-between`}>
                         <div>
-                            <h1 className='text-base font-semibold'>Hi, {user?.displayName || 'User'}</h1>
-                            <p className='text-xs text-gray-500'>{user?.email}</p>
+                            <h1 className='text-base sm:text-lg font-semibold'>Hi, {user?.displayName || 'User'}</h1>
+                            <p className={`text-xs sm:text-base ${theme === "dark" ? 'text-gray-400' : 'text-gray-500'}`}>{user?.email}</p>
                             {user?.metadata?.creationTime && (
-                                <p className='text-xs text-gray-400'>
+                                <p className={`text-xs sm:text-base ${theme === "dark" ? 'text-gray-500' : 'text-gray-400'}`}>
                                     Joined: {formatDate(user.metadata.creationTime)}
                                 </p>
                             )}
@@ -100,20 +106,20 @@ const Profile = () => {
 
                     {/* Balance Section */}
                     <section className='mt-4'>
-                        <div className='bg-gray-100 text-gray-900 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center overflow-hidden'>
+                        <div className={`${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'} shadow-md rounded-2xl p-5 border ${theme === "dark" ? 'border-gray-700' : 'border-gray-300'} flex justify-between items-center overflow-hidden`}>
                             <div>
-                                <h1 className='font-semibold text-sm text-gray-700'>Available Balance</h1>
+                                <h1 className={`font-semibold text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-700'}`}>Available Balance</h1>
                                 <p className='text-lg font-bold mt-1'>₦ {balance?.toLocaleString() || '0'}</p>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.9 }}
-                                    className='mt-4 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow w-full'
+                                    className={`mt-4 py-2 px-4 rounded-lg shadow w-full bg-[${accent}] ${accent === '#ECF87F' || accent === '#75E6DA' ? 'text-black' : 'text-white'}`}
                                     onClick={() => navigate('/transact/deposit')}
                                 >
                                     Fund Account
                                 </motion.button>
                             </div>
-                            <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12 scale-400' />
+                            <BadgeDollarSign style={{ color: accent }} className='w-16 h-16 opacity-20 rotate-12 scale-400' />
                         </div>
                     </section>
 
@@ -121,40 +127,29 @@ const Profile = () => {
                     <section className='mt-4 space-y-2'>
                         <motion.div
                             whileTap={{ scale: 0.97 }}
-                            className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
-                            onClick={() => navigate('/profile/edit')}
-                        >
-                            <Pencil className='text-[#0FA280]' />
-                            <p className='text-sm font-semibold text-gray-800'>Edit Profile</p>
-                            <ChevronRight className='ml-auto text-gray-500' />
-                        </motion.div>
-
-                        <motion.div
-                            whileTap={{ scale: 0.97 }}
-                            className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
+                            className={`${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer`}
                             onClick={() => navigate('/transactions')}
                         >
-                            <History className='text-[#0FA280]' />
-                            <p className='text-sm font-semibold text-gray-800'>Transaction History</p>
-                            <ChevronRight className='ml-auto text-gray-500' />
+                            <History style={{ color: accent }} />
+                            <p className='text-sm font-semibold'>Transaction History</p>
+                            <ChevronRight className={`ml-auto ${theme === "dark" ? 'text-gray-400' : 'text-gray-500'}`} />
                         </motion.div>
 
                         <motion.div
                             whileTap={{ scale: 0.97 }}
-                            className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
+                            className={`${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer`}
                             onClick={() => navigate('/settings')}
                         >
-                            <Settings className='text-[#0FA280]' />
-                            <p className='text-sm font-semibold text-gray-800'>Settings</p>
-                            <ChevronRight className='ml-auto text-gray-500' />
+                            <Settings style={{ color: accent }} />
+                            <p className='text-sm font-semibold'>Settings</p>
+                            <ChevronRight className={`ml-auto ${theme === "dark" ? 'text-gray-400' : 'text-gray-500'}`} />
                         </motion.div>
                     </section>
                 </div>
 
                 <Footer page='profile' />
             </div>
-        </div>
-    );
+        </div>);
 };
 
 export default Profile;
