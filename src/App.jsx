@@ -15,14 +15,18 @@ import Footer from "./components/component/Footer";
 import FloatingBackground from "./components/component/FloatingBackground";
 import InvestProductPage from "./pages/InvestProductPage";
 import QuickInvestPage from "./pages/QuickInvestPage";
+import EditProfile from "./pages/EditProfile";
+import Settings from "./pages/Settings";
 
 const AppContent = () => {
   const location = useLocation();
 
   // Routes where Footer should NOT show
-  const hideFooterRoutes = ['/', '/sign-in', '/sign-up', '/transact/withdraw', '/transact/deposit'];
+  const hideFooterRoutes = ['/', '/sign-in', '/sign-up', '/transact/withdraw', '/transact/deposit', '/settings'];
+  const hideFloatingBackground = ['/profile/edit', '/settings'];
 
   const showFooter = !hideFooterRoutes.includes(location.pathname);
+  const showFloatingBackground = !hideFloatingBackground.includes(location.pathname);
 
   // Define active page key for Footer highlight
   const getPageKey = (path) => {
@@ -41,6 +45,7 @@ const AppContent = () => {
         <Route path="/sign-up" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/transact" element={<Transact />} />
         <Route path="/transact/deposit" element={<Deposit />} />
         <Route path="/transact/withdraw" element={<Withdraw />} />
@@ -49,13 +54,14 @@ const AppContent = () => {
         <Route path="/invest/product/:id" element={<InvestProductPage />} />
         <Route path="/invest/quick-invest/fast-vegetable/:id" element={<QuickInvestPage />} />
         <Route path="/add" element={<AddInvestmentProduct />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
       {/* Conditionally render Footer */}
       {showFooter && <Footer page={getPageKey(location.pathname)} />}
-      <FloatingBackground />
       {/* <FloatingBackground /> */}
+      {showFloatingBackground && <FloatingBackground />}
     </>
   );
 };

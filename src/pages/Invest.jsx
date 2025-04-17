@@ -11,6 +11,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import CropsSection from '../components/component/cropsSection';
+import QuickInvestCard from '../components/component/QuickInvestCard';
 
 
 const Invest = () => {
@@ -21,6 +22,7 @@ const Invest = () => {
   const [sortBy, setSortBy] = useState('recent');
   const [crops, setCrops] = useState([]);
   const [cropsLoading, setCropsLoading] = useState(true);
+  const [quickInvestments, setQuickInvestments] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -87,6 +89,34 @@ const Invest = () => {
       fetchInvestments();
     }
   }, [user]);
+
+  useEffect(() => {
+    const fetchQuickInvestments = async () => {
+      try {
+        const quickInvestmentsRef = collection(db, "quickInvestments");
+        const querySnapshot = await getDocs(quickInvestmentsRef);
+        const quickInvestmentsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setQuickInvestments(quickInvestmentsData);
+        // console.log(quickInvestmentsData); // ✅ fixed variable name
+      } catch (error) {
+        console.error("Error fetching quick investments:", error);
+        setQuickInvestments([]);
+      }
+    };
+
+    if (user?.uid) {
+      fetchQuickInvestments();
+    }
+  }, [user]);
+
+
+  const openQuickInvestments = useMemo(
+    () => quickInvestments.filter(inv => inv.status === "open"),
+    [quickInvestments]
+  );
 
   useEffect(() => {
     const fetchCrops = async () => {
@@ -227,6 +257,10 @@ const Invest = () => {
               </div>
             </motion.div>
 
+            {openQuickInvestments.length > 0 && (
+              <QuickInvestCard investment={openQuickInvestments[0]} />
+            )}
+
             {/* Your Investment Tracking */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -278,7 +312,6 @@ const Invest = () => {
                       <option value="progress">Progress</option>
                     </select>
                   </div>
-
 
                   {displayedInvestments
                     .slice(startIndex, endIndex)

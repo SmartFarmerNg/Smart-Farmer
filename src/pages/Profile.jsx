@@ -99,8 +99,8 @@ const Profile = () => {
                     </div>
 
                     {/* Balance Section */}
-                    <section className='mt-6'>
-                        <div className='bg-gray-100 text-gray-900 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center'>
+                    <section className='mt-4'>
+                        <div className='bg-gray-100 text-gray-900 shadow-md rounded-2xl p-5 border border-gray-300 flex justify-between items-center overflow-hidden'>
                             <div>
                                 <h1 className='font-semibold text-sm text-gray-700'>Available Balance</h1>
                                 <p className='text-lg font-bold mt-1'>₦ {balance?.toLocaleString() || '0'}</p>
@@ -113,12 +113,12 @@ const Profile = () => {
                                     Fund Account
                                 </motion.button>
                             </div>
-                            <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12' />
+                            <BadgeDollarSign className='text-[#0FA280] w-16 h-16 opacity-20 rotate-12 scale-400' />
                         </div>
                     </section>
 
                     {/* More Options */}
-                    <section className='mt-8 space-y-3'>
+                    <section className='mt-4 space-y-2'>
                         <motion.div
                             whileTap={{ scale: 0.97 }}
                             className='bg-white shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer'
