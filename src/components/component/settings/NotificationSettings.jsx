@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 const defaultSettings = {
-  jobAlerts: true,
   accountActivity: true,
+  investment: true,
   promotions: false,
 };
 
