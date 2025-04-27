@@ -13,6 +13,7 @@ const SecuritySettings = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const accent = localStorage.getItem('accent') || '#0FA280';
   const toggleCurrentPasswordVisibility = () => setShowCurrentPassword(!showCurrentPassword);
   const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
   const toggleConfirmNewPasswordVisibility = () => setShowConfirmNewPassword(!showConfirmNewPassword);
@@ -132,7 +133,8 @@ const SecuritySettings = () => {
 
         <button
           type="submit"
-          className="w-full bg-white hover:bg-white/70 transition-colors text-black py-2 px-4 rounded-lg font-medium"
+          className="w-full bg-white hover:bg-white/70 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+          style={{ backgroundColor: accent }}
         >
           Update Password
         </button>

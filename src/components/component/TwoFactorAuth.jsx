@@ -9,6 +9,8 @@ const TwoFactorAuth = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
+    const accent = localStorage.getItem('accent') || '#0FA280';
+
     const auth = getAuth();
 
     const sendOTP = async () => {
@@ -76,7 +78,8 @@ const TwoFactorAuth = () => {
                 {!otpSent ? (
                     <button
                         onClick={sendOTP}
-                        className="bg-white hover:bg-white/70 transition-colors text-black py-2 px-4 rounded-lg font-medium"
+                        className="bg-white hover:bg-white/70 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+                        style={{ backgroundColor: accent }}
                     >
                         Send OTP
                     </button>

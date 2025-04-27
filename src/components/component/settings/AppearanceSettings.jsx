@@ -142,7 +142,8 @@ const AppearanceSettings = () => {
       <div className="flex items-center gap-3">
         <button
           onClick={saveToFirestore}
-          className="bg-white hover:bg-white/80 transition-colors text-black px-4 py-2 rounded-lg"
+          className="bg-white hover:bg-white/80 transition duration-500 text-white px-4 py-2 rounded-lg cursor-pointer"
+          style={{ backgroundColor: accent }}
         >
           Save Preferences
         </button>

@@ -3,7 +3,7 @@ import { updateProfile } from 'firebase/auth';
 import { auth, db, storage } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { color, motion } from 'framer-motion';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { toast, ToastContainer } from 'react-toastify';
@@ -24,6 +24,8 @@ const EditProfile = () => {
     const [photoFile, setPhotoFile] = useState(null);
     const [previewImage, setPreviewImage] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const [accent, setAccent] = useState(localStorage.getItem('accent') || '#0FA280');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -146,17 +148,18 @@ const EditProfile = () => {
                 </div>
 
                 <motion.button
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSave}
                     disabled={loading}
-                    className='w-full flex items-center justify-center gap-2 bg-[#0FA280] text-white py-2 px-4 rounded-lg shadow hover:bg-[#0c8a6a]'
+                    className='w-full flex items-center justify-center gap-2 text-white py-2 px-4 rounded-lg shadow hover:opacity-90 transition-all duration-300 ease-in-out'
+                    style={{ backgroundColor: accent }}
                 >
                     <Save className='w-5 h-5' />
                     {loading ? 'Saving...' : 'Save Changes'}
                 </motion.button>
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -23,7 +23,7 @@ const AppContent = () => {
 
   // Routes where Footer should NOT show
   const hideFooterRoutes = ['/', '/sign-in', '/sign-up', '/transact/withdraw', '/transact/deposit', '/settings'];
-  const hideFloatingBackground = ['/profile/edit', '/settings', '/profile'];
+  const hideFloatingBackground = ['/profile/edit', '/settings', '/product'];
 
   const showFooter = !hideFooterRoutes.includes(location.pathname);
   const showFloatingBackground = !hideFloatingBackground.includes(location.pathname);

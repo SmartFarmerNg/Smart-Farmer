@@ -6,6 +6,8 @@ const InvestProductPage = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
 
+    const accent = localStorage.getItem("accent") || "#0FA280";
+    const theme = localStorage.getItem("theme") || "light";
     const investment = state?.investment;
 
     if (!investment) {
@@ -21,15 +23,6 @@ const InvestProductPage = () => {
             </div>
         );
     }
-
-    // const getProgress = () => {
-    //     const start = investment.startDate?.toDate?.() || new Date(investment.startDate);
-    //     const now = new Date();
-    //     const duration = investment.investmentPeriod * 30 * 24 * 60 * 60 * 1000;
-    //     const elapsed = now - start;
-    //     const progress = (elapsed / duration) * 100;
-    //     return Math.min(Math.max(progress, 0), 100);
-    // };
 
     const getProgress = (inv) => {
         const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
@@ -47,32 +40,33 @@ const InvestProductPage = () => {
     const progress = getProgress(investment);
 
     return (
-        <div className=" min-h-screen flex flex-col items-center justify-center px-6">
-            <div className="w-full max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md z-50">
+        <div className={`min-h-screen flex flex-col items-center justify-center px-6 ${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-white'}`}>
+            <div className={`w-full max-w-2xl mx-auto mt-8 p-6 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md z-50`}>
                 <h1 className="text-2xl font-bold text-center mb-4">{investment.productName}</h1>
                 <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
                     <div className="flex-1 space-y-2">
                         <p><strong>Amount:</strong> ₦{investment.investmentAmount.toLocaleString()}</p>
-                        <p><strong>Units Bought:</strong> {investment.unitsBought}</p>
+                        {investment.productName !== 'Fast Vegetables' && <p><strong>Units Bought:</strong> {investment.unitsBought}</p>}
                         <p><strong>ROI:</strong> {investment.expectedROI}%</p>
                         <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === 'Fast Vegetables' ? 'days' : 'months'}</p>
-                        <p className={`${investment.status === 'Active' ? 'text-green-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-red-500'}`}><strong className="text-black">Status:</strong> {investment.status}</p>
+                        <p className={`${investment.status === 'Active' ? 'text-blue-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-green-500'} font-semibold`}><strong className={theme === 'dark' ? 'text-white' : 'text-black'}>Status:</strong> {investment.status}</p>
                         {investment.productName === 'Fast Vegetables' ? <p><strong>Start Date:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             : <>
                                 <p><strong>Start Date:</strong> {new Date(investment.startDate).toLocaleDateString()}</p>
                                 <p><strong>Created At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             </>
                         }
+                        <p><strong>{investment.status === 'Completed' ? 'Profit' : 'Expected Profit'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100).toLocaleString()}</p>
+                        <p><strong>{investment.status === 'Completed' ? 'Payout' : 'Expected Payout'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100 + investment.investmentAmount).toLocaleString()}</p>
                     </div>
                     <div className="w-32 h-32 mx-auto sm:mx-0">
                         <CircularProgressbar
                             value={progress}
-                            text={`${Math.round(progress)}%`}
+                            text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
                             styles={buildStyles({
-                                textSize: "24px",
-                                textColor: "#0FA280",
-                                pathColor: "#0FA280",
-                                trailColor: "#e6e6e6",
+                                textSize: "28px",
+                                textColor: progress === 100 ? '#22C55E' : theme === "dark" ? 'white' : "#0FA280",
+                                pathColor: progress === 100 ? '#22C55E' : theme === "dark" ? 'white' : "#0FA280", trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                             })}
                         />
                     </div>
@@ -80,15 +74,14 @@ const InvestProductPage = () => {
 
                 <div className="mt-6 text-center">
                     <button
-                        className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition"
+                        className={`px-4 py-2 ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-800 hover:bg-gray-700'} text-white rounded transition`}
                         onClick={() => navigate(-1)}
                     >
                         Back
                     </button>
                 </div>
             </div>
-        </div >
-    );
+        </div>);
 };
 
 export default InvestProductPage;

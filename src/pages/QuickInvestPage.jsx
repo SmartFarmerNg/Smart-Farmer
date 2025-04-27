@@ -18,6 +18,9 @@ const InvestProductPage = () => {
     const [calculatedProfit, setCalculatedProfit] = useState(0);
     const [isInvesting, setIsInvesting] = useState(false);
 
+
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const [accent, setAccent] = useState(localStorage.getItem('accent') || '#0FA280');
     // Fetch user balance from Firestore
     useEffect(() => {
         const fetchUserBalance = async () => {
@@ -28,6 +31,8 @@ const InvestProductPage = () => {
                 const userSnap = await getDoc(userRef);
                 setUserBalance(userSnap.exists() ? userSnap.data().availableBalance || 0 : 0);
                 setInvestmentBalance(userSnap.exists() ? userSnap.data().investmentBalance || 0 : 0);
+                setTheme(userSnap.exists() ? userSnap.data().theme || 'light' : 'light');
+                setAccent(userSnap.exists() ? userSnap.data().accent || '#0FA280' : '#0FA280');
             } else {
                 toast.error("Please log in to invest.");
                 navigate("/sign-in");
@@ -138,14 +143,20 @@ const InvestProductPage = () => {
         }
     };
     return (
-        <div className="bg-gradient-to-br from-[#0FA280] to-[#054D3B] text-white min-h-screen flex flex-col items-center pt-6 px-4 pb-20">
+        <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'} text-white min-h-screen flex flex-col items-center pt-6 px-4 pb-20`}>
             <ToastContainer position="top-right" autoClose={2300} />
 
-            <div className="max-w-xl w-full bg-white p-8 rounded-2xl shadow-lg z-10 relative">
-                <h2 className="text-3xl font-bold text-gray-800 mb-6">{investment?.productName}</h2>
-
+            <div className={`max-w-xl w-full ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} p-8 rounded-2xl shadow-lg z-10 relative`}>
+                <div className="flex items-center mb-6">
+                    <button onClick={() => navigate(-1)} className={`mr-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'} cursor-pointer`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </button>
+                    <h2 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{investment?.productName}</h2>
+                </div>
                 {/* Investment Details */}
-                <div className="mb-8 text-sm text-gray-700">
+                <div className={`mb-8 text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                     <p><strong>Expected ROI:</strong> {investment?.expectedROI}% {investment?.ROIFrequency}</p>
                     <p><strong>Minimum Investment Period:</strong> {investment?.minimumInvestmentPeriod} days</p>
                     {/* <p><strong>Minimum Withdrawal:</strong> {investment?.minWithdrawalDays} days</p> */}
@@ -155,7 +166,7 @@ const InvestProductPage = () => {
 
                 {/* Investment Amount and Days */}
                 <div className="mb-6">
-                    <label htmlFor="investmentAmount" className="block text-gray-700 font-medium mb-2">
+                    <label htmlFor="investmentAmount" className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}>
                         Enter Investment Amount (₦)
                     </label>
                     <input
@@ -163,13 +174,13 @@ const InvestProductPage = () => {
                         type="number"
                         value={investmentAmount}
                         onChange={handleInvestmentChange}
-                        className="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0FA280] transition"
+                        className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'} focus:ring-2 focus:ring-[#0FA280] transition`}
                         placeholder="Enter amount"
                     />
                 </div>
 
                 <div className="mb-6">
-                    <label htmlFor="investmentDays" className="block text-gray-700 font-medium mb-2">
+                    <label htmlFor="investmentDays" className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-2`}>
                         Investment Duration (Days)
                     </label>
                     <input
@@ -177,15 +188,15 @@ const InvestProductPage = () => {
                         type="number"
                         value={numberOfDays}
                         onChange={handleDaysChange}
-                        className="w-full px-4 py-3 text-black rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#0FA280] transition"
+                        className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-black'} focus:ring-2 focus:ring-[#0FA280] transition`}
                         placeholder="Enter number of days"
                     />
                 </div>
 
                 {/* Profit Calculation */}
-                <div className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
-                    <h3 className="text-lg font-semibold text-gray-800">Investment Profit</h3>
-                    <p className="text-sm text-gray-700 mt-2">Expected Profit for {numberOfDays} days:</p>
+                <div className={`mb-6 p-4 border rounded-lg ${theme === 'dark' ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-gray-50'}`}>
+                    <h3 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>Investment Profit</h3>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mt-2`}>Expected Profit for {numberOfDays} days:</p>
                     <div className="text-2xl font-semibold text-[#0FA280] mt-2">
                         ₦{calculatedProfit.toFixed(2)}
                     </div>
@@ -193,8 +204,8 @@ const InvestProductPage = () => {
 
                 {/* Available Balance */}
                 <div className="flex justify-between items-center mb-4">
-                    <p className="font-medium">Available Balance:</p>
-                    <p>₦{userBalance.toLocaleString()}</p>
+                    <p className={`font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Available Balance:</p>
+                    <p className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>₦{userBalance.toLocaleString()}</p>
                 </div>
 
                 {/* Invest Button */}
@@ -203,7 +214,7 @@ const InvestProductPage = () => {
                     disabled={isInvesting || investment?.status !== "open"}
                     className={`w-full py-3 px-6 text-white font-semibold rounded-lg transition ${isInvesting || investment?.status !== "open"
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-[#0FA280] hover:bg-[#0d8b6d]"
+                        : `${theme === 'dark' ? 'bg-[#0FA280] hover:bg-[#0d8b6d]' : 'bg-[#0FA280] hover:bg-[#0d8b6d]'}`
                         }`}
                 >
                     {isInvesting ? "Investing..." : "Invest Now"}

@@ -12,10 +12,11 @@ const tabs = [
 
 const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
   useEffect(() => {
-    // Load the active tab from localStorage if available
     const storedTab = localStorage.getItem('activeTab');
     if (storedTab) {
       setActiveTab(storedTab);
+    } else {
+      setActiveTab('editProfile');
     }
   }, [setActiveTab]);
 

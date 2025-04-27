@@ -6,6 +6,8 @@ const defaultSettings = {
   promotions: false,
 };
 
+const accent = localStorage.getItem('accent') || '#0FA280';
+
 const NotificationSettings = () => {
   const [notifications, setNotifications] = useState(defaultSettings);
 
@@ -50,7 +52,8 @@ const NotificationSettings = () => {
 
       <button
         onClick={handleSave}
-        className="bg-white hover:bg-white/80 transition-colors text-black py-2 px-4 rounded-lg font-medium"
+        className="bg-white hover:bg-white/80 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+        style={{ backgroundColor: accent }}
       >
         Save Preferences
       </button>

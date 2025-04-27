@@ -15,6 +15,9 @@ const Product = () => {
     const [loading, setLoading] = useState(false);
     const [investmentUnits, setInvestmentUnits] = useState(1); // Set default to 1 unit
 
+    const accent = localStorage.getItem("accent") || "#0FA280";
+    const theme = localStorage.getItem("theme") || "light";
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
@@ -148,10 +151,10 @@ const Product = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6 pb-20">
-            <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-6">
+        <div className={`min-h-screen bg-gradient-to-br ${theme === 'dark' ? ' from-gray-800 to-gray-900' : ' from-[#0FA280] to-[#054D3B]'} p-6 pb-20`}>
+            <div className={`max-w-3xl mx-auto ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} shadow-lg rounded-xl p-6 z-50 relative`}>
                 <motion.h1
-                    className="text-2xl font-bold text-[#0FA280]"
+                    className={`text-2xl font-bold ${theme === 'dark' ? 'text-[#12B28C]' : 'text-[#0FA280]'}`}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -159,38 +162,38 @@ const Product = () => {
                     {product.name}
                 </motion.h1>
 
-                <p className="text-gray-500 text-sm mt-2">{product.description}</p>
+                <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-sm mt-2`}>{product.description}</p>
 
-                <div className="mt-4 grid grid-cols-2 gap-4 text-gray-900">
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                <div className={`mt-4 grid grid-cols-2 gap-4 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Investment Period</p>
                         <p className="font-bold">{product.investmentPeriod} months</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Expected ROI</p>
                         <p className="font-bold">{product.expectedROI}%</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Minimum Investment</p>
                         <p className="font-bold">NGN {product.minimumInvestment.toLocaleString()}</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Price per unit</p>
                         <p className="font-bold">NGN {product.unitPrice.toLocaleString()}</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Available Units</p>
                         <p className="font-bold">{product.availableUnits.toLocaleString()}</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Risk Level</p>
                         <p className="font-bold">{product.riskLevel}</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">Start Date</p>
                         <p className="font-bold">{new Date(product.startDate).toLocaleDateString()}</p>
                     </div>
-                    <div className="p-4 bg-gray-200 rounded-lg">
+                    <div className={`p-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg`}>
                         <p className="text-xs">End Date</p>
                         <p className="font-bold">{new Date(product.endDate).toLocaleDateString()}</p>
                     </div>
@@ -198,7 +201,7 @@ const Product = () => {
 
                 {/* Investment Form */}
                 <div className="mt-6">
-                    <label htmlFor="units" className="text-gray-700">Enter the number of units you want to buy:</label>
+                    <label htmlFor="units" className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Enter the number of units you want to buy:</label>
                     <input
                         type="number"
                         id="units"
@@ -206,30 +209,30 @@ const Product = () => {
                         min="1"
                         max={product.availableUnits}
                         onChange={(e) => setInvestmentUnits(Number(e.target.value))}
-                        className="w-full p-3 px-6 mt-2 bg-gray-100 border border-gray-300 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280] transition-all"
+                        className={`w-full p-3 px-6 mt-2 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-900'} border rounded-full placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0FA280] transition-all`}
                         disabled={loading}
                     />
                 </div>
 
                 {/* ROI Calculator */}
-                <div className="mt-8 p-6 bg-gray-100 rounded-lg">
-                    <h3 className="text-lg font-bold mb-4">Return on Investment Calculator</h3>
+                <div className={`mt-8 p-6 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'} rounded-lg`}>
+                    <h3 className={`text-lg font-bold mb-4 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>Return on Investment Calculator</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <p className="text-sm text-gray-600">Investment Amount</p>
-                            <p className="font-bold text-lg">NGN {(investmentUnits * product.unitPrice).toLocaleString()}</p>
+                            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Investment Amount</p>
+                            <p className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>NGN {(investmentUnits * product.unitPrice).toLocaleString()}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600">Expected ROI</p>
-                            <p className="font-bold text-lg">{product.expectedROI}% for {product.investmentPeriod} months</p>
+                            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Expected ROI</p>
+                            <p className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>{product.expectedROI}% for {product.investmentPeriod} months</p>
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600">Expected Monthly Return</p>
-                            <p className="font-bold text-lg">NGN {((investmentUnits * product.unitPrice * (product.expectedROI / 100)) / product.investmentPeriod).toLocaleString()}</p>
+                            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Expected Monthly Return</p>
+                            <p className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>NGN {((investmentUnits * product.unitPrice * (product.expectedROI / 100)) / product.investmentPeriod).toLocaleString()}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-gray-600">Expected Total Return Amount</p>
-                            <p className="font-bold text-lg">NGN {((investmentUnits * product.unitPrice) + (investmentUnits * product.unitPrice * (product.expectedROI / 100))).toLocaleString()}</p>
+                            <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Expected Total Return Amount</p>
+                            <p className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>NGN {((investmentUnits * product.unitPrice) + (investmentUnits * product.unitPrice * (product.expectedROI / 100))).toLocaleString()}</p>
                         </div>
                     </div>
                 </div>
@@ -237,14 +240,15 @@ const Product = () => {
                 <div className="flex justify-between items-center mt-6">
                     <button
                         onClick={() => navigate("/dashboard")}
-                        className="text-[#0FA280] flex items-center gap-1 hover:underline cursor-pointer"
+                        className={`${theme === 'dark' ? 'text-[#12B28C]' : 'text-[#0FA280]'} flex items-center gap-1 hover:underline cursor-pointer`}
                         disabled={loading}
                     >
                         <ArrowLeft className="w-5 h-5" />
                         <p>Back to Dashboard</p>
                     </button>
                     <button
-                        onClick={handleInvest} className="bg-[#0FA280] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#0D8A6E] transition-all flex items-center gap-2"
+                        onClick={handleInvest}
+                        className={`${theme === 'dark' ? 'bg-[#12B28C] hover:bg-[#0F9A7A]' : 'bg-[#0FA280] hover:bg-[#0D8A6E]'} text-white px-4 py-2 rounded-lg shadow-md transition-all flex items-center gap-2`}
                         disabled={loading}
                     >
                         {loading && <LoaderIcon className="animate-spin w-4 h-4" />}

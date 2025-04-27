@@ -60,7 +60,7 @@ const Transact = () => {
         return unsubscribe;
     };
     return (
-        <div className={`${theme === 'dark' ? ' bg-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'} text-gray-900 font-sans overflow-scroll h-screen flex flex-col items-center pb-20`}>
+        <div className={`${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'} text-gray-900 font-sans overflow-scroll h-screen flex flex-col items-center pb-20`}>
             <div className='w-full max-w-3xl px-4 pt-6 z-50'>
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}

@@ -178,11 +178,11 @@ const Dashboard = () => {
 
 
   return (
-    <div className={`${theme === "dark" ? 'bg-gray-900' : ''} ${theme === "dark" ? 'text-white' : 'text-black'}  font-sans h-screen overflow-scroll`}>
+    <div className={`${theme === "dark" ? 'bg-gradient-to-br from-gray-800 to-gray-900 text-white' : 'text-black'} font-sans h-screen overflow-scroll`}>
       {loading && <Barloader />}
-      <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto py-6 pb-20 z-50'>
+      <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto py-6 pb-20 z-50 relative'>
         <motion.h1
-          className={`text-sm font-semibold ${theme === "dark" ? ' bg-gray-800' : 'bg-gray-200'} shadow-md px-8 py-4 rounded-xl w-full z-50`}
+          className={`text-sm font-semibold ${theme === "dark" ? ' bg-gray-800' : 'bg-gray-200'} shadow-md px-8 py-4 rounded-xl w-full`}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -190,18 +190,18 @@ const Dashboard = () => {
           Welcome, {user?.displayName || 'User'} 👋
         </motion.h1>
 
-        <div className='flex gap-6 mt-4 w-full mx-auto z-50'>
+        <div className='flex gap-6 mt-4 w-full mx-auto'>
           <div
             className={`${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200 border border-gray-300'} shadow-md w-full mx-auto flex flex-col gap-5 px-6 py-4 rounded-xl overflow-hidden relative`}
           >
             {financeData.map(({ label, amount, Icon }, index) => (
               <button
                 key={index}
-                className='text-left z-50 w-fit' onClick={() => {
+                className='text-left w-fit' onClick={() => {
                   setShowBalance(!showBalance)
                   localStorage.setItem('showBalance', !showBalance)
                 }}>
-                <p className='text-xs flex items-center z-50'>
+                <p className='text-xs flex items-center'>
                   {label}
                   <span
                     className="p-1 rounded-full hover:bg-gray-200 cursor-pointer"

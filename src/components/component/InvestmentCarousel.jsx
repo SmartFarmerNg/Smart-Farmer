@@ -50,7 +50,7 @@ const InvestmentsCarousel = ({ investments, theme, accent }) => {
                             >
                                 <div>
                                     <p className={`font-semibold ${theme === "dark" ? 'text-white' : 'text-gray-800'}`}>{investment.productName}</p>
-                                    <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Units: {investment.unitsBought}</p>
+                                    {investment.productName !== 'Fast Vegetables' && <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Units: {investment.unitsBought}</p>}
                                     <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
                                     {investment.productName === 'Fast Vegetables' ? <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.createdAt).toLocaleDateString()}</p>
                                         : <>
@@ -62,12 +62,11 @@ const InvestmentsCarousel = ({ investments, theme, accent }) => {
                                 <div className="w-20 h-20 mt-4 self-center">
                                     <CircularProgressbar
                                         value={progress}
-                                        text={`${Math.round(progress)}%`}
+                                        text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
                                         styles={buildStyles({
                                             textSize: "28px",
-                                            textColor: theme === "dark" ? 'white' : "#0FA280",
-                                            pathColor: theme === "dark" ? 'white' : "#0FA280",
-                                            trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                            textColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280",
+                                            pathColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280", trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                                         })}
                                     />
                                 </div>

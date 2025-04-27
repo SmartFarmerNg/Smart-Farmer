@@ -24,6 +24,9 @@ const Withdraw = () => {
     const [email, setEmail] = useState(null);
     const [loading, setLoading] = useState(null);
 
+    const accent = localStorage.getItem("accent") || "#0FA280";
+    const theme = localStorage.getItem("theme") || "light";
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -167,16 +170,16 @@ const Withdraw = () => {
     };
 
     return (
-        <div className="bg-gradient-to-br from-blue-950 to-blue-900 text-white min-h-screen flex flex-col justify-center items-center p-6">
-            <div className="w-full max-w-lg px-6 py-10 bg-white/20 backdrop-blur-md rounded-lg shadow-lg z-50">
+        <div className={`bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'} ${theme === 'dark' ? 'text-white' : 'text-gray-900'} min-h-screen flex flex-col justify-center items-center p-6`}>
+            <div className={`w-full max-w-lg px-6 py-10 ${theme === 'dark' ? 'bg-white/20' : 'bg-white/80'} backdrop-blur-md rounded-lg shadow-lg z-50`}>
                 <header className="flex items-center mb-6">
-                    <button onClick={() => navigate(-1)} className="cursor-pointer p-2 bg-white/20 rounded-full hover:bg-white/30">
-                        <ArrowLeft className="text-white w-6 h-6" />
+                    <button onClick={() => navigate(-1)} className={`cursor-pointer p-2 ${theme === 'dark' ? 'bg-white/20 hover:bg-white/30' : 'bg-gray-200 hover:bg-gray-300'} rounded-full`}>
+                        <ArrowLeft className={`${theme === 'dark' ? 'text-white' : 'text-gray-900'} w-6 h-6`} />
                     </button>
-                    <h1 className="text-xl sm:text-2xl font-bold text-white mx-auto">Withdraw via Paystack</h1>
+                    <h1 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mx-auto`}>Make a Withdrawal</h1>
                 </header>
 
-                <p className="text-amber-300 flex gap-2 items-center mb-2"> <AlertTriangle size={20} /> (Withdrawals are not unavailable at the moment)</p>
+                <p className='text-amber-300 flex gap-2 items-center mb-2'> <AlertTriangle size={20} /> (Withdrawals are not unavailable at the moment)</p>
 
                 <div className="flex flex-col gap-4">
                     <input
@@ -184,13 +187,13 @@ const Withdraw = () => {
                         value={accountNumber}
                         onChange={(e) => setAccountNumber(e.target.value)}
                         placeholder="Account Number"
-                        className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`p-3 rounded-lg border ${theme === 'dark' ? 'bg-white/20 text-white placeholder-white' : 'bg-white text-gray-900 placeholder-gray-500'} focus:outline-none focus:ring-2 focus:ring-[${accent}]`}
                     />
 
                     <select
                         value={bankCode}
                         onChange={(e) => setBankCode(e.target.value)}
-                        className="p-3 rounded-lg border bg-gray-500 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`p-3 rounded-lg border ${theme === 'dark' ? 'bg-gray-500 text-white placeholder-white' : 'bg-white text-gray-900'} focus:outline-none focus:ring-2 focus:ring-[${accent}]`}
                     >
                         <option value="">Select Bank</option>
                         {banks.map((bank) => (
@@ -202,9 +205,9 @@ const Withdraw = () => {
 
                     <button
                         onClick={handleVerify}
-                        // disabled={verifying}
                         disabled={true}
-                        className="bg-white text-black font-semibold p-3 rounded-xl transition hover:bg-gray-200 flex items-center justify-center gap-2"
+                        className='text-white font-semibold p-3 rounded-xl transition flex items-center justify-center gap-2'
+                        style={{ backgroundColor: accent }}
                     >
                         {verifying ? (
                             <>
@@ -227,12 +230,13 @@ const Withdraw = () => {
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         placeholder="Amount to withdraw"
-                        className="p-3 rounded-lg border bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`p-3 rounded-lg border ${theme === 'dark' ? 'bg-white/20 text-white placeholder-white' : 'bg-white text-gray-900 placeholder-gray-500'} focus:outline-none focus:ring-2 focus:ring-[${accent}]`}
                     />
 
                     <button
                         onClick={handleWithdraw}
-                        className="bg-white text-black font-semibold p-3 rounded-xl hover:bg-gray-300 transition"
+                        className='font-semibold p-3 rounded-xl transition text-white'
+                        style={{ backgroundColor: accent }}
                         disabled={true}
                     >
                         Withdraw Now

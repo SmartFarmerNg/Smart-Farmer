@@ -186,12 +186,11 @@ const Invest = () => {
   const getProgress = (inv) => {
     const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
     const start = new Date(startRaw);
-    const now = new Date();
     const totalDays = inv.productName === 'Fast Vegetables'
       ? inv.investmentPeriod
       : inv.investmentPeriod * 30;
     const duration = totalDays * 24 * 60 * 60 * 1000; // convert days to ms
-    const elapsed = now - start;
+    const elapsed = Date.now() - start;
     const percentage = (elapsed / duration) * 100;
     return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
   };
@@ -225,9 +224,9 @@ const Invest = () => {
     return Math.max(0, Math.ceil(totalDays - daysElapsed));
   };
 
-  const totalInvested = investments.reduce((sum, inv) => sum + inv.investmentAmount, 0);
+  const totalInvested = investments.filter(inv => inv.status === 'Active').reduce((sum, inv) => sum + inv.investmentAmount, 0);
 
-  const totalExpectedReturn = investments.reduce((sum, inv) => {
+  const totalExpectedReturn = investments.filter(inv => inv.status === 'Active').reduce((sum, inv) => {
     const roi = (inv.investmentAmount * inv.expectedROI) / 100;
     return sum + roi;
   }, 0);
@@ -242,8 +241,8 @@ const Invest = () => {
 
   return (
 
-    <div className={`${theme === "dark" ? 'bg-gray-900' : ''} text-gray-200 font-sans`}>
-      <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto py-6 pb-20'>
+    <div className={`${theme === "dark" ? 'bg-gradient-to-br from-gray-800 to-gray-900' : ''} text-gray-200 font-sans h-screen overflow-y-scroll`}>
+      <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto py-6 pb-20 z-50 relative'>
         <header className='w-full mx-auto flex items-center gap-3 mb-6'>
           <button onClick={() => navigate(-1)}>
             <ArrowLeft className={`w-6 h-6`} />
@@ -262,7 +261,7 @@ const Invest = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className={`w-full ${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200 text-gray-900'} shadow-md p-6 rounded-2xl ${theme === "dark" ? '' : 'border border-gray-300'} mb-6 z-50 relative`}
+              className={`w-full ${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200 text-gray-900'} shadow-md p-6 rounded-2xl ${theme === "dark" ? '' : 'border border-gray-300'} mb-6`}
             >
               <h2 className={`text-xl font-bold mb-4`}>Investment Summary</h2>
               <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 text-center'>
@@ -389,12 +388,11 @@ const Invest = () => {
                           <div className='w-16 h-16'>
                             <CircularProgressbar
                               value={progress}
-                              text={`${Math.round(progress)}%`}
+                              text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
                               styles={buildStyles({
                                 textSize: "28px",
-                                textColor: theme === "dark" ? 'white' : "#0FA280",
-                                pathColor: theme === "dark" ? 'white' : "#0FA280",
-                                trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                textColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280",
+                                pathColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280", trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                               })}
                             />
                           </div>

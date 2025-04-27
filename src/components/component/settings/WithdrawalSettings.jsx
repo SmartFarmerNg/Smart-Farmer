@@ -14,6 +14,8 @@ const WithdrawalSettings = () => {
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(true);
 
+    const accent = localStorage.getItem('accent') || '#0FA280';
+
     const navigate = useNavigate();
 
     const handleUpdateBankAccount = (e) => setBankAccount(e.target.value);
@@ -174,7 +176,8 @@ const WithdrawalSettings = () => {
             {/* Submit Button */}
             <button
                 type="submit"
-                className="bg-white hover:bg-white/80 transition-colors text-black py-2 px-4 rounded-lg font-medium"
+                className="bg-white hover:bg-white/80 transition-colors text-white py-2 px-4 rounded-lg font-medium"
+                style={{ backgroundColor: accent }}
                 onClick={handleSubmit}
                 disabled={loading}
             >

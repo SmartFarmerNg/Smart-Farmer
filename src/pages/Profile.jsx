@@ -72,8 +72,8 @@ const Profile = () => {
     };
 
     return (
-        <div className={`${theme === "dark" ? 'bg-gray-900' : 'bg-gradient-to-br'} ${theme === "dark" ? '' : `from-[${accent}] to-[${accent}]`} text-white font-sans`} style={{ filter: theme === "dark" ? 'none' : 'brightness(0.9)' }}>
-            <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto pb-20'>
+        <div className={`${theme === "dark" ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br'} ${theme === "dark" ? '' : `from-[${accent}] to-[${accent}]`} text-white font-sans`} style={{ filter: theme === "dark" ? 'none' : 'brightness(0.9)' }}>
+            <div className='min-h-screen max-w-3xl px-3 flex flex-col items-center mx-auto pb-20 relative z-50'>
                 {isLoggingOut || loading ? <Barloader /> : null}
 
                 <div className='w-full py-5 flex flex-col flex-grow'>
