@@ -171,7 +171,7 @@ const Withdraw = () => {
 
     return (
         <div className={`bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'} ${theme === 'dark' ? 'text-white' : 'text-gray-900'} min-h-screen flex flex-col justify-center items-center p-6`}>
-            <div className={`w-full max-w-lg px-6 py-10 ${theme === 'dark' ? 'bg-white/20' : 'bg-white/80'} backdrop-blur-md rounded-lg shadow-lg z-50`}>
+            <div className={`w-full max-w-lg px-6 py-10 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md rounded-lg shadow-lg z-50`}>
                 <header className="flex items-center mb-6">
                     <button onClick={() => navigate(-1)} className={`cursor-pointer p-2 ${theme === 'dark' ? 'bg-white/20 hover:bg-white/30' : 'bg-gray-200 hover:bg-gray-300'} rounded-full`}>
                         <ArrowLeft className={`${theme === 'dark' ? 'text-white' : 'text-gray-900'} w-6 h-6`} />
@@ -179,7 +179,7 @@ const Withdraw = () => {
                     <h1 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mx-auto`}>Make a Withdrawal</h1>
                 </header>
 
-                <p className='text-amber-300 flex gap-2 items-center mb-2'> <AlertTriangle size={20} /> (Withdrawals are not unavailable at the moment)</p>
+                <p className='text-red-600 font-semibold flex gap-2 items-center mb-2'> <AlertTriangle size={20} /><span>(Withdrawals are unavailable at the moment)</span></p>
 
                 <div className="flex flex-col gap-4">
                     <input

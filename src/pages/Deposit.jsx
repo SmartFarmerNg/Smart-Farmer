@@ -96,7 +96,7 @@ const Deposit = () => {
     return (
         <div className={`min-h-screen text-white font-sans flex items-center justify-center p-4 ${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'}`}>
             {showSuccess ? (
-                <div className={`${theme === 'dark' ? 'bg-white/20' : 'bg-black/20'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full text-center animate-fade-in z-50`}>
+                <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full text-center animate-fade-in z-50`}>
                     <CheckCircle2 className="text-green-400 w-16 h-16 mx-auto mb-4" />
                     <h2 className="text-3xl font-bold mb-2">Deposit Successful</h2>
                     <p className="text-lg">Balance: <span className="font-semibold">{formatCurrency(balance)}</span></p>
@@ -109,7 +109,7 @@ const Deposit = () => {
                     </button>
                 </div>
             ) : (
-                <div className={`${theme === 'dark' ? 'bg-white/20' : 'bg-black/20'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6 animate-fade-in z-50`}>
+                <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6 animate-fade-in z-50`}>
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => navigate(-1)}
@@ -121,7 +121,7 @@ const Deposit = () => {
                     </div>
 
                     <div>
-                        <p className="text-white text-base">
+                        <p className="text-base">
                             Available Balance: <span className="font-semibold">{formatCurrency(balance)}</span>
                         </p>
                     </div>
@@ -133,7 +133,7 @@ const Deposit = () => {
                                 type="email"
                                 value={email}
                                 disabled
-                                className={`w-full mt-1 p-3 rounded-lg text-white border placeholder-white focus:outline-none focus:ring-2 focus:ring-[accent] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                                className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[accent] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
                             />
                         </div>
 
@@ -145,7 +145,7 @@ const Deposit = () => {
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
                                 placeholder="Enter amount"
-                                className={`w-full mt-1 p-3 rounded-lg text-white border placeholder-white focus:outline-none focus:ring-2 focus:ring-[accent] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                                className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[accent] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
                             />
                         </div>
 
@@ -153,7 +153,7 @@ const Deposit = () => {
                             {...paystackConfig}
                             disabled={isDisabled}
                             className={`w-full text-center py-3 rounded-xl font-semibold transition ${isDisabled
-                                ? `${theme === 'dark' ? 'bg-white/30' : 'bg-black/30'} text-white cursor-not-allowed`
+                                ? `${theme === 'dark' ? 'bg-white/30' : 'bg-black/30'} cursor-not-allowed`
                                 : theme === 'dark' ? 'bg-white text-black hover:bg-gray-300' : 'bg-black text-white hover:bg-gray-900'
                                 }`}
                         >
