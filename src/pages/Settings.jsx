@@ -50,7 +50,7 @@ const Settings = () => {
     };
 
     return (
-        <div className={`min-h-screen p-4 sm:p-6 text-white w-full mx-auto shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : ''} transition duration-500`}>
+        <div className={`min-h-screen p-4 sm:p-6 text-white w-full mx-auto shadow-lg bg-gradient-to-br  ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'} transition duration-500`}>
             <div className=' max-w-5xl mx-auto'>
                 <button className='flex items-center mb-4' onClick={() => {
                     localStorage.removeItem('activeTab')
