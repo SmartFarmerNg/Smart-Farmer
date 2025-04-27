@@ -146,12 +146,11 @@ const Invest = () => {
   );
 
   useEffect(() => {
-    const fetchCrops = async () => {
+    const cropsRef = collection(db, 'investmentProducts');
+    const unsubscribe = onSnapshot(cropsRef, (snapshot) => {
       setCropsLoading(true);
       try {
-        const cropsRef = collection(db, 'investmentProducts');
-        const cropsSnapshot = await getDocs(cropsRef);
-        const cropsData = cropsSnapshot.docs.map(doc => ({
+        const cropsData = snapshot.docs.map(doc => ({
           id: doc.id,
           name: doc.data().name || doc.id,
           ...doc.data()
@@ -163,8 +162,9 @@ const Invest = () => {
       } finally {
         setCropsLoading(false);
       }
-    };
-    fetchCrops();
+    });
+
+    return () => unsubscribe();
   }, []);
 
   let sortedInvestments = [...investments];
@@ -183,14 +183,25 @@ const Invest = () => {
     sortedInvestments.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
   }
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const getProgress = (inv) => {
     const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
     const start = new Date(startRaw);
+
     const totalDays = inv.productName === 'Fast Vegetables'
       ? inv.investmentPeriod
       : inv.investmentPeriod * 30;
     const duration = totalDays * 24 * 60 * 60 * 1000; // convert days to ms
-    const elapsed = Date.now() - start;
+    const elapsed = currentTime - start;
     const percentage = (elapsed / duration) * 100;
     return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
   };
@@ -212,9 +223,6 @@ const Invest = () => {
     const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
     const start = new Date(startRaw);
     const now = new Date();
-
-    // console.log(`${inv.productName} Start: ${start.toISOString()}`);
-    // console.log(`Now: ${now.toISOString()}`);
 
     const totalDays = inv.productName === 'Fast Vegetables'
       ? inv.investmentPeriod

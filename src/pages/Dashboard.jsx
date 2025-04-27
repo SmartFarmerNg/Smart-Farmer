@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import Footer from '../components/component/Footer';
 import Barloader from '../components/component/Barloader';
 import { motion } from 'framer-motion';
@@ -55,11 +55,13 @@ const Dashboard = () => {
   const fetchUserBalance = async (uid) => {
     try {
       const userRef = doc(db, 'users', uid);
-      const userSnap = await getDoc(userRef);
-      setAvailableBalance(userSnap.exists() ? userSnap.data().availableBalance || 0 : 0);
-      setInvestmentBalance(userSnap.exists() ? userSnap.data().investmentBalance || 0 : 0)
-      setTheme(userSnap.data().theme || 'light');
-      setAccent(userSnap.data().accent || '#0FA280');
+      const unsubscribe = onSnapshot(userRef, (userSnap) => {
+        setAvailableBalance(userSnap.exists() ? userSnap.data().availableBalance || 0 : 0);
+        setInvestmentBalance(userSnap.exists() ? userSnap.data().investmentBalance || 0 : 0);
+        setTheme(userSnap.data().theme || 'light');
+        setAccent(userSnap.data().accent || '#0FA280');
+      });
+      return unsubscribe;
     } catch (error) {
       if (error.code?.includes("offline")) {
         toast.error("You are offline. Please check your internet connection.");
@@ -69,79 +71,83 @@ const Dashboard = () => {
       setInvestmentBalance(0);
     }
   };
-
   // Fetch crops data
   useEffect(() => {
     const fetchCrops = async () => {
       setCropsLoading(true);
       try {
         const cropsRef = collection(db, 'investmentProducts');
-        const cropsSnapshot = await getDocs(cropsRef);
-        const cropsData = cropsSnapshot.docs.map(doc => ({
-          id: doc.id,
-          name: doc.data().name || doc.id,
-          ...doc.data()
-        }));
-        setCrops(cropsData);
+        const unsubscribe = onSnapshot(cropsRef, (snapshot) => {
+          const cropsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            name: doc.data().name || doc.id,
+            ...doc.data()
+          }));
+          setCrops(cropsData);
+          setCropsLoading(false);
+        });
+        return unsubscribe;
       } catch (error) {
         console.error('Error fetching investment products:', error);
         setCrops([]);
-      } finally {
         setCropsLoading(false);
       }
     };
-    fetchCrops();
+    const unsubscribe = fetchCrops();
+    return () => unsubscribe;
   }, []);
+
 
   useEffect(() => {
     const fetchInvestments = async () => {
       if (user?.uid) {
         try {
           const investmentsRef = collection(db, "users", user.uid, "investments");
-          const querySnapshot = await getDocs(investmentsRef);
-          const updatedInvestments = [];
+          const unsubscribe = onSnapshot(investmentsRef, async (snapshot) => {
+            const updatedInvestments = [];
+            const now = new Date();
 
-          const now = new Date();
+            for (const docSnap of snapshot.docs) {
+              const inv = docSnap.data();
+              const start = inv.startDate?.toDate?.() || null;
 
-          for (const docSnap of querySnapshot.docs) {
-            const inv = docSnap.data();
-            const start = inv.startDate?.toDate?.() || null;
+              // If the startDate is reached and status is still "Pending", update it
+              if (start && now >= start && inv.status === 'Pending') {
+                await updateDoc(docSnap.ref, {
+                  status: 'Active',
+                });
+                inv.status = 'Active'; // reflect change locally too
+              }
 
-            // If the startDate is reached and status is still "Pending", update it
-            if (start && now >= start && inv.status === 'Pending') {
-              await updateDoc(docSnap.ref, {
-                status: 'Active',
-              });
-              inv.status = 'Active'; // reflect change locally too
+              updatedInvestments.push(inv);
             }
 
-            updatedInvestments.push(inv);
-          }
-
-          setInvestments(updatedInvestments);
+            setInvestments(updatedInvestments);
+          });
+          return unsubscribe;
         } catch (error) {
           console.error("Error fetching/updating investments:", error);
         }
       }
     };
 
-
-    if (user?.uid) {
-      fetchInvestments();
-    }
+    const unsubscribe = fetchInvestments();
+    return () => unsubscribe;
   }, [user]);
+
 
   useEffect(() => {
     const fetchQuickInvestments = async () => {
       try {
         const quickInvestmentsRef = collection(db, "quickInvestments");
-        const querySnapshot = await getDocs(quickInvestmentsRef);
-        const quickInvestmentsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setQuickInvestments(quickInvestmentsData);
-        // console.log(quickInvestmentsData); // ✅ fixed variable name
+        const unsubscribe = onSnapshot(quickInvestmentsRef, (snapshot) => {
+          const quickInvestmentsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setQuickInvestments(quickInvestmentsData);
+        });
+        return unsubscribe;
       } catch (error) {
         console.error("Error fetching quick investments:", error);
         setQuickInvestments([]);
@@ -149,10 +155,10 @@ const Dashboard = () => {
     };
 
     if (user?.uid) {
-      fetchQuickInvestments();
+      const unsubscribe = fetchQuickInvestments();
+      return () => unsubscribe;
     }
   }, [user]);
-
 
   const openQuickInvestments = useMemo(
     () => quickInvestments.filter(inv => inv.status === "open"),
@@ -222,7 +228,7 @@ const Dashboard = () => {
         </div>
 
         <div className="mt-6 mx-auto z-10 w-[90%] max-w-3xl px-2">
-          {investments.length > 0 && <InvestmentsCarousel investments={investments} theme={theme} accent={accent} />}
+          {investments.length > 0 && <InvestmentsCarousel investments={investments} theme={theme} accent={accent} userId={user.uid} />}
         </div>
         {openQuickInvestments.length > 0 && (
           <QuickInvestCard investment={openQuickInvestments[0]} theme={theme} accent={accent} />
