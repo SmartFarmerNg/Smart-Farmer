@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../components/component/Footer';
 import { motion } from 'framer-motion';
 import FloatingBackground from '../components/component/FloatingBackground';
-import { collection, doc, getDocs, onSnapshot, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, increment, onSnapshot, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -19,7 +19,7 @@ const Invest = () => {
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('All');
-  const [sortBy, setSortBy] = useState('recent');
+  const [sortBy, setSortBy] = useState('latest');
   const [crops, setCrops] = useState([]);
   const [cropsLoading, setCropsLoading] = useState(true);
   const [quickInvestments, setQuickInvestments] = useState([]);
@@ -67,65 +67,77 @@ const Invest = () => {
   }, []);
 
   useEffect(() => {
-    const fetchInvestments = async () => {
-      if (user?.uid) {
-        try {
-          const investmentsRef = collection(db, "users", user.uid, "investments");
-          const querySnapshot = await getDocs(investmentsRef);
-          const updatedInvestments = [];
+    if (!user?.uid) return;
 
-          const now = new Date();
+    const investmentsRef = collection(db, "users", user.uid, "investments");
+    const userRef = doc(db, "users", user.uid);
 
-          for (const docSnap of querySnapshot.docs) {
-            const inv = { id: docSnap.id, ...docSnap.data() };
-            const start = inv.startDate?.toDate?.() || null;
+    const unsubscribe = onSnapshot(investmentsRef, async (querySnapshot) => {
+      const updatedInvestments = [];
+      const now = new Date();
 
-            // If the startDate is reached and status is still "Pending", update it
-            if (start && now >= start && inv.status === 'Pending') {
-              await updateDoc(docSnap.ref, {
-                status: 'Active',
-              });
-              inv.status = 'Active'; // reflect change locally too
-            }
+      for (const docSnap of querySnapshot.docs) {
+        const inv = { id: docSnap.id, ...docSnap.data() };
+        const start = inv.startDate?.toDate?.() || null;
 
-            updatedInvestments.push(inv);
-          }
-
-          setInvestments(updatedInvestments);
-          // console.log(updatedInvestments);
-        } catch (error) {
-          console.error("Error fetching/updating investments:", error);
+        if (start && now >= start && inv.status === 'Pending') {
+          await updateDoc(docSnap.ref, { status: 'Active' });
+          inv.status = 'Active';
         }
+
+        const progress = getProgress(inv);
+        const daysLeft = getDaysLeft(inv);
+
+        if (
+          progress >= 100 &&
+          daysLeft === 0 &&
+          inv.status === 'Active' &&
+          typeof inv.investmentAmount === 'number' &&
+          typeof inv.expectedROI === 'number'
+        ) {
+          const roi = (inv.investmentAmount * inv.expectedROI) / 100;
+          const totalReturn = inv.investmentAmount + roi;
+
+          // Update balances first to avoid race conditions
+          await updateDoc(userRef, {
+            availableBalance: increment(totalReturn),
+            investmentBalance: increment(-inv.investmentAmount),
+          });
+
+          await updateDoc(docSnap.ref, {
+            status: 'Completed',
+            completedAt: new Date(),
+          });
+
+          inv.status = 'Completed';
+        }
+
+        updatedInvestments.push(inv);
       }
-    };
 
+      setInvestments(updatedInvestments);
+    });
 
-    if (user?.uid) {
-      fetchInvestments();
-    }
+    return () => unsubscribe();
   }, [user]);
+
+
 
   useEffect(() => {
-    const fetchQuickInvestments = async () => {
-      try {
-        const quickInvestmentsRef = collection(db, "quickInvestments");
-        const querySnapshot = await getDocs(quickInvestmentsRef);
-        const quickInvestmentsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setQuickInvestments(quickInvestmentsData);
-        // console.log(quickInvestmentsData); // ✅ fixed variable name
-      } catch (error) {
-        console.error("Error fetching quick investments:", error);
-        setQuickInvestments([]);
-      }
-    };
+    if (!user?.uid) return;
 
-    if (user?.uid) {
-      fetchQuickInvestments();
-    }
+    const quickInvestmentsRef = collection(db, "quickInvestments");
+    const unsubscribe = onSnapshot(quickInvestmentsRef, (querySnapshot) => {
+      const quickInvestmentsData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setQuickInvestments(quickInvestmentsData);
+    });
+
+    return () => unsubscribe();
   }, [user]);
+
 
 
   const openQuickInvestments = useMemo(
@@ -189,7 +201,7 @@ const Invest = () => {
       .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
       .sort((a, b) => {
         if (sortBy === 'latest') {
-          return new Date(b.startDate) - new Date(a.startDate);
+          return new Date(b.createdAt) - new Date(a.createdAt);
         } else if (sortBy === 'progress') {
           return getProgress(b) - getProgress(a);
         }
@@ -222,10 +234,10 @@ const Invest = () => {
 
   const activeCount = investments.filter(inv => inv.status === 'Active').length;
   const pendingCount = investments.filter(inv => inv.status === 'Pending').length;
+  const completedCount = investments.filter(inv => inv.status === 'Completed').length;
 
 
   const formatCurrency = (amount) => `₦${amount.toLocaleString()}`;
-
 
 
   return (
@@ -269,6 +281,10 @@ const Invest = () => {
                 <div className='bg-gray-100 p-4 rounded-lg shadow-sm'>
                   <p className='text-sm text-gray-500'>Pending Investments</p>
                   <p className='text-lg font-bold text-blue-600'>{pendingCount}</p>
+                </div>
+                <div className='bg-gray-100 p-4 rounded-lg shadow-sm'>
+                  <p className='text-sm text-gray-500'>Completed Investments</p>
+                  <p className='text-lg font-bold text-green-600'>{completedCount}</p>
                 </div>
               </div>
             </motion.div>

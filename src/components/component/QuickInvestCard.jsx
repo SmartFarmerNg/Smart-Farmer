@@ -39,15 +39,11 @@ const QuickInvestCard = ({ investment, theme, accent }) => {
                     <p>{expectedROI}% {ROIFrequency}</p>
                 </div>
                 <div>
-                    <p className="font-bold">Investment Period</p>
+                    <p className="font-bold">Min. Investment Period</p>
                     <p>{minimumInvestmentPeriod} days</p>
                 </div>
                 <div>
-                    <p className="font-bold">Min Withdrawal</p>
-                    <p>{minWithdrawalDays} days</p>
-                </div>
-                <div>
-                    <p className="font-bold">Min Investment</p>
+                    <p className="font-bold">Min. Investment Amount</p>
                     <p>₦{minimumInvestment.toLocaleString()}</p>
                 </div>
             </div>

@@ -214,8 +214,8 @@ const Dashboard = () => {
                     showBalance ? amount.toLocaleString() : '****'
                     : <LoaderIcon className='animate-spin duration-2000 inline-flex w-4 h-4' />}
                 </p>
-                <Icon className='w-16 h-16 text-[#0FA280] scale-250 -rotate-20 opacity-20 absolute left-5 top-3' />
-                <CircleDollarSign className='w-16 h-16 text-[#0FA280] scale-250 rotate-20 opacity-20 absolute right-10 top-3' />
+                <Icon style={{ color: accent }} className={`w-16 h-16 scale-250 -rotate-20 opacity-20 absolute left-5 top-3`} />
+                <CircleDollarSign style={{ color: accent }} className={`w-16 h-16 scale-250 rotate-20 opacity-20 absolute right-10 top-3`} />
               </button>
             ))}
           </div>
