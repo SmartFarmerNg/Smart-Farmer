@@ -239,12 +239,12 @@ const Product = () => {
 
                 <div className="flex justify-between items-center mt-6">
                     <button
-                        onClick={() => navigate("/dashboard")}
+                        onClick={() => navigate(-1)}
                         className={`${theme === 'dark' ? 'text-[#12B28C]' : 'text-[#0FA280]'} flex items-center gap-1 hover:underline cursor-pointer`}
                         disabled={loading}
                     >
                         <ArrowLeft className="w-5 h-5" />
-                        <p>Back to Dashboard</p>
+                        <p>Go back</p>
                     </button>
                     <button
                         onClick={handleInvest}
