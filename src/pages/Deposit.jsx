@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { PaystackButton } from "react-paystack";
 import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 
 const Deposit = () => {
@@ -12,6 +11,7 @@ const Deposit = () => {
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState("");
     const [email, setEmail] = useState("");
+    const [fullName, setFullName] = useState("");
     const [balance, setBalance] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
     const [transactionId, setTransactionId] = useState(null);
@@ -20,7 +20,10 @@ const Deposit = () => {
     const accent = localStorage.getItem("accent") || "#0FA280";
     const theme = localStorage.getItem("theme") || "light";
 
-    const publicKey = "pk_test_1a3a0ace0098f205c173a84c35960a794793ff87";
+    const ERCASPAY_SECRET_KEY = import.meta.env.VITE_ERCAS_PAY_SECRET_KEY;
+    // const ERCASPAY_API_KEY = import.meta.env.VITE_ERCASPAY_API_KEY;
+    // console.log(ERCASPAY_SECRET_KEY);
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -31,6 +34,7 @@ const Deposit = () => {
                 const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                 if (userDoc.exists()) {
                     setBalance(userDoc.data().availableBalance || 0);
+                    setFullName(userDoc.data().lastName + ' ' + userDoc.data().firstName || "");
                 }
             } else {
                 navigate("/sign-in");
@@ -41,50 +45,56 @@ const Deposit = () => {
         return () => unsubscribe();
     }, [navigate]);
 
-    const handleSuccess = async (reference) => {
+    const handleErcaspayDeposit = async () => {
         if (isProcessing) return;
         setIsProcessing(true);
-        const depositAmount = parseFloat(amount);
-        if (isNaN(depositAmount) || depositAmount <= 0) return;
-
-        const newBalance = balance + depositAmount;
-        const userRef = doc(db, "users", user.uid);
 
         try {
-            await addDoc(collection(db, "transactions"), {
-                userId: user.uid,
-                email: user.email,
-                amount: depositAmount,
-                status: "successful",
-                type: "Deposit",
-                transactionId: reference.reference,
-                timestamp: new Date().toISOString(),
+            const depositData = {
+                amount: parseFloat(amount),
+                paymentReference: user.uid + Date.now(),
+                paymentMethods: "card,bank-transfer,ussd,qrcode",
+                customerName: fullName,
+                customerEmail: email,
+                currency: "NGN",
+                callback_url: window.location.origin + "/transact/deposit-success",
+            };
+
+            console.log("Deposit data to send:", depositData);
+
+            const response = await fetch("https://api-staging.ercaspay.com/api/v1/payment/initiate", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${ERCASPAY_SECRET_KEY}`,
+                },
+                body: JSON.stringify(depositData),
+                redirect: 'follow'
             });
 
-            await setDoc(userRef, { availableBalance: newBalance }, { merge: true });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
 
-            setBalance(newBalance);
-            setTransactionId(reference.reference);
-            setShowSuccess(true);
+            const data = await response.json();
+
+            console.log("Response from ERCASPAY:", data);
+
+            if (data.responseMessage === "success") {
+                window.location.href = data.responseBody.checkoutUrl;
+            } else {
+                console.error("ERCASPAY Error", data.message);
+                alert("Payment initialization failed: " + data.message);
+            }
         } catch (error) {
-            console.error("Transaction failed", error);
-            setShowSuccess(false);
+            console.error("Error initializing payment", error);
+            alert("Error initializing payment");
         } finally {
             setIsProcessing(false);
         }
     };
 
-    const paystackConfig = {
-        email,
-        amount: parseFloat(amount || 0) * 100,
-        publicKey,
-        currency: "NGN",
-        channels: ["card", "bank", "ussd"],
-        onSuccess: handleSuccess,
-        onClose: () => alert("Payment window closed."),
-    };
-
-    const isDisabled = !amount || parseFloat(amount) <= 0 || isProcessing;
 
     const formatCurrency = (value) => {
         return new Intl.NumberFormat("en-NG", {
@@ -93,75 +103,62 @@ const Deposit = () => {
         }).format(value);
     };
 
+    const isDisabled = !amount || parseFloat(amount) <= 0 || isProcessing;
+
     return (
         <div className={`min-h-screen text-white font-sans flex items-center justify-center p-4 ${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'}`}>
-            {showSuccess ? (
-                <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full text-center animate-fade-in z-50`}>
-                    <CheckCircle2 className="text-green-400 w-16 h-16 mx-auto mb-4" />
-                    <h2 className="text-3xl font-bold mb-2">Deposit Successful</h2>
-                    <p className="text-lg">Balance: <span className="font-semibold">{formatCurrency(balance)}</span></p>
-                    <p className="text-sm mt-1">Transaction ID: <span className="font-mono">{transactionId}</span></p>
+            <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6 animate-fade-in z-50`}>
+                <div className="flex items-center gap-4">
                     <button
-                        className={`mt-6 px-6 py-3 rounded-xl font-semibold transition ${theme === 'dark' ? 'bg-white text-black hover:bg-gray-300' : 'bg-black text-white hover:bg-gray-900'}`}
-                        onClick={() => navigate("/invest")}
+                        onClick={() => navigate(-1)}
+                        className={`p-2 rounded-full ${theme === 'dark' ? 'bg-white/20 hover:bg-white/30' : 'bg-black/20 hover:bg-black/30'}`}
                     >
-                        Start Investing 🚀
+                        <ArrowLeft className="w-5 h-5 text-white" />
                     </button>
+                    <h1 className="text-2xl font-bold mx-auto">Make a Deposit</h1>
                 </div>
-            ) : (
-                <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6 animate-fade-in z-50`}>
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => navigate(-1)}
-                            className={`p-2 rounded-full ${theme === 'dark' ? 'bg-white/20 hover:bg-white/30' : 'bg-black/20 hover:bg-black/30'}`}
-                        >
-                            <ArrowLeft className="w-5 h-5 text-white" />
-                        </button>
-                        <h1 className="text-2xl font-bold mx-auto">Make a Deposit</h1>
+
+                <div>
+                    <p className="text-base">
+                        Available Balance: <span className="font-semibold">{formatCurrency(balance)}</span>
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                    <div>
+                        <label className="text-sm font-semibold">Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            disabled
+                            className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                        />
                     </div>
 
                     <div>
-                        <p className="text-base">
-                            Available Balance: <span className="font-semibold">{formatCurrency(balance)}</span>
-                        </p>
+                        <label className="text-sm font-semibold">Amount (₦)</label>
+                        <input
+                            type="number"
+                            inputMode="numeric"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
+                            placeholder="Enter amount"
+                            className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                        />
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                        <div>
-                            <label className="text-sm font-semibold">Email</label>
-                            <input
-                                type="email"
-                                value={email}
-                                disabled
-                                className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[accent] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="text-sm font-semibold">Amount (₦)</label>
-                            <input
-                                type="number"
-                                inputMode="numeric"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
-                                placeholder="Enter amount"
-                                className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[accent] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
-                            />
-                        </div>
-
-                        <PaystackButton
-                            {...paystackConfig}
-                            disabled={isDisabled}
-                            className={`w-full text-center py-3 rounded-xl font-semibold transition ${isDisabled
-                                ? `${theme === 'dark' ? 'bg-white/30' : 'bg-black/30'} cursor-not-allowed`
-                                : theme === 'dark' ? 'bg-white text-black hover:bg-gray-300' : 'bg-black text-white hover:bg-gray-900'
-                                }`}
-                        >
-                            {isProcessing ? "Processing..." : `Deposit ${amount ? `₦${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` : ""}`}
-                        </PaystackButton>
-                    </div>
+                    <button
+                        onClick={handleErcaspayDeposit}
+                        disabled={isDisabled}
+                        className={`w-full text-center py-3 rounded-xl font-semibold transition ${isDisabled
+                            ? `${theme === 'dark' ? 'bg-white/30' : 'bg-black/30'} cursor-not-allowed`
+                            : theme === 'dark' ? 'bg-white text-black hover:bg-gray-300' : 'bg-black text-white hover:bg-gray-900'
+                            }`}
+                    >
+                        {isProcessing ? "Processing..." : `Deposit ${amount ? `₦${amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` : ""}`}
+                    </button>
                 </div>
-            )}
+            </div>
         </div>
     );
 };

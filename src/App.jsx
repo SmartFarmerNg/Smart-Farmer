@@ -17,6 +17,7 @@ import InvestProductPage from "./pages/InvestProductPage";
 import QuickInvestPage from "./pages/QuickInvestPage";
 import EditProfile from "./pages/EditProfile";
 import Settings from "./pages/Settings";
+import DepositSuccess from "./pages/DepositSuccess";
 
 const AppContent = () => {
   const location = useLocation();
@@ -48,6 +49,7 @@ const AppContent = () => {
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/transact" element={<Transact />} />
         <Route path="/transact/deposit" element={<Deposit />} />
+        <Route path="/transact/deposit-success" element={<DepositSuccess />} />
         <Route path="/transact/withdraw" element={<Withdraw />} />
         <Route path="/invest" element={<Invest />} />
         <Route path="/product/:id" element={<Product />} />
