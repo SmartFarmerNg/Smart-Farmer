@@ -124,14 +124,23 @@ const Deposit = () => {
                     </p>
                 </div>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                    <div>
+                        <label className="text-sm font-semibold">Full name</label>
+                        <input
+                            type="email"
+                            placeholder={fullName}
+                            disabled
+                            className={`w-full mt-2 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                        />
+                    </div>
                     <div>
                         <label className="text-sm font-semibold">Email</label>
                         <input
                             type="email"
-                            value={email}
+                            placeholder={email}
                             disabled
-                            className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                            className={`w-full mt-2 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
                         />
                     </div>
 
@@ -142,8 +151,7 @@ const Deposit = () => {
                             inputMode="numeric"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}
-                            placeholder="Enter amount"
-                            className={`w-full mt-1 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
+                            className={`w-full mt-2 p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[${accent}] ${theme === 'dark' ? 'bg-white/10 border-white/30' : 'bg-black/10 border-black/30'}`}
                         />
                     </div>
 
