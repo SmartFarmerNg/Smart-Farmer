@@ -15,7 +15,7 @@ const DepositSuccess = () => {
 
         const verifyPayment = async (user) => {
             const urlParams = new URLSearchParams(window.location.search);
-            const reference = urlParams.get("reference");
+            const reference = urlParams.get("paymentReference");
 
             if (!reference) {
                 navigate("/dashboard");
@@ -23,7 +23,7 @@ const DepositSuccess = () => {
             }
 
             try {
-                const response = await fetch(`https://api.ercaspay.com/v1/verify/${reference}`, {
+                const response = await fetch(`https://api.ercaspay.com/api/v1/payment/transaction/verify//${reference}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -32,8 +32,11 @@ const DepositSuccess = () => {
                 });
 
                 const data = await response.json();
+                console.log("Response from ERCASPAY:", data);
 
-                if (data.status === "success" && data.data.status === "successful") {
+
+
+                if (data.responseMessage === "success" && data.data.status === "successful") {
                     const amountPaid = data.data.amount;
                     const transactionId = data.data.id;
 
