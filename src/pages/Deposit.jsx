@@ -57,20 +57,23 @@ const Deposit = () => {
                 customerName: fullName,
                 customerEmail: email,
                 currency: "NGN",
-                callback_url: window.location.origin + "/transact/deposit-success",
+                redirectUrl: window.location.origin + "/transact/deposit-success",
+                description: "Deposit to your account",
+                metadata: {
+                    userId: user.uid,
+                    userEmail: email,
+                    userName: fullName,
+                }
             };
 
             console.log("Deposit data to send:", depositData);
 
-            const response = await fetch("https://api.ercaspay.com/api/v1/payment/initiate", {
+            const response = await fetch("http://localhost:5000/api/ercaspay/initiate-payment", {
                 method: "POST",
                 headers: {
-                    "Accept": "application/json",
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${ERCASPAY_SECRET_KEY}`,
                 },
                 body: JSON.stringify(depositData),
-                redirect: 'follow'
             });
 
             if (!response.ok) {

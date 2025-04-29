@@ -7,7 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 const DepositSuccess = () => {
     const navigate = useNavigate();
 
-    const ERCASPAY_SECRET_KEY = import.meta.env.VITE_ERCAS_PAY_SECRET_KEY;
+    const ERCASPAY_SECRET_KEY = import.meta.env.ERCASPAY_SECRET_KEY;
 
 
     useEffect(() => {
