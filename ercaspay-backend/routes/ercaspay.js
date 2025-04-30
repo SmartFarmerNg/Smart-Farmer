@@ -53,10 +53,10 @@ router.get("/verify-payment", async (req, res) => {
 
     const data = response.data;
 
-    log("ERCASPAY VERIFY RESPONSE:", data);
+    console.log("ERCASPAY VERIFY RESPONSE:", data);
 
     if (
-      data?.responseMessage === "Transaction fetched successfully" &&
+      data?.responseCode === "success" &&
       data?.responseBody?.status === "SUCCESSFUL"
     ) {
       return res.status(200).json({
@@ -64,6 +64,9 @@ router.get("/verify-payment", async (req, res) => {
         status: data.responseBody.status,
         amount: data.responseBody.amount,
         metadata: data.responseBody.metadata,
+        ercs_ref: data.responseBody.ercs_reference,
+        tx_ref: data.responseBody.tx_reference,
+        tx_details: data.responseBody,
       });
     } else {
       return res.status(200).json({

@@ -5,7 +5,7 @@ import { db } from "../firebase";
 
 const DepositSuccess = () => {
     const [searchParams] = useSearchParams();
-    const paymentReference = searchParams.get("paymentReference");
+    const transactionRef = searchParams.get("transactionRef");
     const [status, setStatus] = useState("verifying");
     const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ const DepositSuccess = () => {
     useEffect(() => {
         const verifyPayment = async () => {
             try {
-                const res = await fetch(`${BASE_URL}/api/ercaspay/verify-payment?paymentReference=${paymentReference}`);
+                const res = await fetch(`${BASE_URL}/api/ercaspay/verify-payment?transactionRef=${transactionRef}`);
                 const data = await res.json();
 
                 if (data.success) {
@@ -30,6 +30,10 @@ const DepositSuccess = () => {
                         await updateDoc(userRef, {
                             availableBalance: prevBalance + amount,
                         });
+                        await updateDoc(collection(db, "transactions"), {
+                            status: "sucessful",
+                        });
+
                         setStatus("success");
                     } else {
                         setStatus("user-not-found");
@@ -44,12 +48,12 @@ const DepositSuccess = () => {
             }
         };
 
-        if (paymentReference) {
+        if (transactionRef) {
             verifyPayment();
         } else {
             setStatus("invalid");
         }
-    }, [paymentReference]);
+    }, [transactionRef]);
 
     const renderContent = () => {
         switch (status) {
