@@ -76,20 +76,29 @@ const Deposit = () => {
                 body: JSON.stringify(depositData),
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+            const text = await response.text();
+            try {
+                const data = JSON.parse(text);
+                console.log("Response from ERCASPAY:", data);
+                // Proceed normally with data...
+                if (data.responseMessage === "success") {
+                    window.location.href = data.responseBody.checkoutUrl;
+                } else {
+                    console.error("ERCASPAY Error", data.message);
+                    alert("Payment initialization failed: " + data.message);
+                }
+            } catch (err) {
+                console.error("Failed to parse JSON:", err);
+                console.log("Raw response:", text);
+                alert("Unexpected response from server");
             }
 
-            const data = await response.json();
 
-            console.log("Response from ERCASPAY:", data);
 
-            if (data.responseMessage === "success") {
-                window.location.href = data.responseBody.checkoutUrl;
-            } else {
-                console.error("ERCASPAY Error", data.message);
-                alert("Payment initialization failed: " + data.message);
-            }
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! Status: ${response.status}`);
+            // }
+
         } catch (error) {
             console.error("Error initializing payment", error);
             alert("Error initializing payment");
