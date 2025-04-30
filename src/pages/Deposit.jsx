@@ -23,7 +23,6 @@ const Deposit = () => {
     const theme = localStorage.getItem("theme") || "light";
 
     const BASE_URL = 'https://smart-farmer-ercaspay-api.onrender.com';
-    console.log(BASE_URL);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
