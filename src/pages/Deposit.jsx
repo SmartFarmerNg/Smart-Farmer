@@ -68,7 +68,7 @@ const Deposit = () => {
 
             console.log("Deposit data to send:", depositData);
 
-            const response = await fetch("http://localhost:5000/api/ercaspay/initiate-payment", {
+            const response = await fetch("https://smart-farmer-ercaspay-api.onrender.com", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
