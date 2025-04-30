@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
+import { toast, ToastContainer } from "react-toastify";
 
 const Deposit = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Deposit = () => {
     const [email, setEmail] = useState("");
     const [fullName, setFullName] = useState("");
     const [balance, setBalance] = useState(0);
+    const [minimumDeposit, setMinimumDeposit] = useState(1000);
     const [showSuccess, setShowSuccess] = useState(false);
     const [transactionId, setTransactionId] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -21,6 +23,7 @@ const Deposit = () => {
     const theme = localStorage.getItem("theme") || "light";
 
     const ERCASPAY_SECRET_KEY = import.meta.env.VITE_ERCAS_PAY_SECRET_KEY;
+    const BASE_URL = import.meta.env.VITE_BACKEND_URL;
     // const ERCASPAY_API_KEY = import.meta.env.VITE_ERCASPAY_API_KEY;
     // console.log(ERCASPAY_SECRET_KEY);
 
@@ -48,6 +51,13 @@ const Deposit = () => {
     const handleErcaspayDeposit = async () => {
         if (isProcessing) return;
         setIsProcessing(true);
+        const parsedAmount = parseFloat(amount);
+        if (!parsedAmount || parsedAmount < minimumDeposit) {
+            toast.warning("Please enter a valid amount");
+            setIsProcessing(false);
+            return;
+        }
+
 
         try {
             const depositData = {
@@ -66,14 +76,20 @@ const Deposit = () => {
                 }
             };
 
-            console.log("Deposit data to send:", depositData);
+            const payload = {
+                ...depositData,
+                metadata: depositData.metadata || {},
+            };
 
-            const response = await fetch("https://smart-farmer-ercaspay-api.onrender.com", {
+
+            console.log("Deposit data to send:", payload);
+
+            const response = await fetch(`${BASE_URL}/api/ercaspay/initiate-payment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(depositData),
+                body: JSON.stringify(payload),
             });
 
             const text = await response.text();
@@ -83,15 +99,25 @@ const Deposit = () => {
                 console.log("Response from ERCASPAY:", data);
                 // Proceed normally with data...
                 if (data.responseMessage === "success") {
+                    await addDoc(collection(db, "transactions"), {
+                        uid: user.uid,
+                        email: user.email,
+                        type: "deposit",
+                        amount: parseFloat(amount),
+                        status: "pending",
+                        reference: depositData.paymentReference,
+                        createdAt: new Date(),
+                    });
+
                     window.location.href = data.responseBody.checkoutUrl;
                 } else {
                     console.error("ERCASPAY Error", data.message);
-                    alert("Payment initialization failed: " + data.message);
+                    toast.error("Payment initialization failed: " + data.message);
                 }
             } catch (err) {
                 console.error("Failed to parse JSON:", err);
                 console.log("Raw response:", text);
-                alert("Unexpected response from server");
+                toast.error("Unexpected response from server");
             }
 
 
@@ -102,7 +128,7 @@ const Deposit = () => {
 
         } catch (error) {
             console.error("Error initializing payment", error);
-            alert("Error initializing payment");
+            toast.error("Error initializing payment");
         } finally {
             setIsProcessing(false);
         }
@@ -120,6 +146,7 @@ const Deposit = () => {
 
     return (
         <div className={`min-h-screen text-white font-sans flex items-center justify-center p-4 ${theme === 'dark' ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-[#0FA280] to-[#054D3B]'}`}>
+            <ToastContainer position="top-right" autoClose={2300} />
             <div className={`${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'} backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6 animate-fade-in z-50`}>
                 <div className="flex items-center gap-4">
                     <button
@@ -134,6 +161,9 @@ const Deposit = () => {
                 <div>
                     <p className="text-base">
                         Available Balance: <span className="font-semibold">{formatCurrency(balance)}</span>
+                    </p>
+                    <p className="text-base">
+                        Minimum Deposit <span className="font-semibold">{formatCurrency(minimumDeposit)}</span>
                     </p>
                 </div>
 
@@ -161,6 +191,7 @@ const Deposit = () => {
                         <label className="text-sm font-semibold">Amount (₦)</label>
                         <input
                             type="number"
+                            min={minimumDeposit}
                             inputMode="numeric"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ""))}

@@ -55,15 +55,9 @@ const DepositSuccess = () => {
 
                     // Save transaction to Firestore
                     const transactionRef = collection(db, "transactions");
-                    await addDoc(transactionRef, {
-                        uid: user.uid,
-                        email: user.email,
-                        type: "deposit",
-                        amount: amountPaid,
-                        reference: reference,
+                    await updateDoc(transactionRef, {
                         transactionId: transactionId,
                         status: "success",
-                        createdAt: new Date(),
                     });
 
                     // Done! Show success and redirect
