@@ -77,6 +77,7 @@ const Deposit = () => {
             });
 
             const text = await response.text();
+
             try {
                 const data = JSON.parse(text);
                 console.log("Response from ERCASPAY:", data);

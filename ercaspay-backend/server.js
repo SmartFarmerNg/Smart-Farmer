@@ -57,11 +57,6 @@ app.post("/api/ercaspay/initiate-payment", async (req, res) => {
       }
     );
 
-    const text = await response.text(); // <-- first read as plain text
-    console.log("Raw response from ERCASPAY:", text);
-
-    const data = JSON.parse(text); // try to parse manually
-
     console.log("Response from ERCASPAY:", response.data);
     res.json(response.data);
   } catch (error) {
