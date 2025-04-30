@@ -9,10 +9,13 @@ const DepositSuccess = () => {
     const [status, setStatus] = useState("verifying");
     const navigate = useNavigate();
 
+    const BASE_URL = 'https://smart-farmer-ercaspay-api.onrender.com';
+
+
     useEffect(() => {
         const verifyPayment = async () => {
             try {
-                const res = await fetch(`https://smart-farmer-ercaspay-api.onrender.com/api/ercaspay/verify-payment?paymentReference=${paymentReference}`);
+                const res = await fetch(`${BASE_URL}/api/ercaspay/verify-payment?paymentReference=${paymentReference}`);
                 const data = await res.json();
 
                 if (data.success) {

@@ -35,15 +35,15 @@ router.post("/initiate-payment", async (req, res) => {
 });
 
 router.get("/verify-payment", async (req, res) => {
-  const { paymentReference } = req.query;
+  const { transactionRef } = req.query;
 
-  if (!paymentReference) {
+  if (!transactionRef) {
     return res.status(400).json({ message: "Missing payment reference" });
   }
 
   try {
     const response = await axios.get(
-      `https://api.ercaspay.com/api/v1/payment/transaction/verify/${paymentReference}`, // ← ERCASPAY endpoint
+      `https://api.ercaspay.com/api/v1/payment/transaction/verify/${transactionRef}`, // ← ERCASPAY endpoint
       {
         headers: {
           Authorization: `Bearer ${process.env.ERCASPAY_SECRET_KEY}`,
@@ -56,19 +56,19 @@ router.get("/verify-payment", async (req, res) => {
     log("ERCASPAY VERIFY RESPONSE:", data);
 
     if (
-      data?.responseMessage === "success" &&
-      data?.responseBody?.paymentStatus === "PAID"
+      data?.responseMessage === "Transaction fetched successfully" &&
+      data?.responseBody?.status === "SUCCESSFUL"
     ) {
       return res.status(200).json({
         success: true,
-        status: data.responseBody.paymentStatus,
+        status: data.responseBody.status,
         amount: data.responseBody.amount,
         metadata: data.responseBody.metadata,
       });
     } else {
       return res.status(200).json({
         success: false,
-        status: data.responseBody?.paymentStatus || "UNKNOWN",
+        status: data.responseBody?.status || "UNKNOWN",
         message: "Payment not successful",
       });
     }
