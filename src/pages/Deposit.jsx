@@ -83,7 +83,7 @@ const Deposit = () => {
 
             console.log("Deposit data to send:", payload);
 
-            const response = await fetch(`${BASE_URL}/initiate-payment`, {
+            const response = await fetch(`${BASE_URL}/api/ercaspay/initiate-payment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
