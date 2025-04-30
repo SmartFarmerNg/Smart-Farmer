@@ -14,7 +14,7 @@ const Deposit = () => {
     const [email, setEmail] = useState("");
     const [fullName, setFullName] = useState("");
     const [balance, setBalance] = useState(0);
-    const [minimumDeposit, setMinimumDeposit] = useState(1000);
+    const [minimumDeposit, setMinimumDeposit] = useState(100);
     const [showSuccess, setShowSuccess] = useState(false);
     const [transactionId, setTransactionId] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
