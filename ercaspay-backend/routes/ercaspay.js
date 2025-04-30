@@ -34,4 +34,51 @@ router.post("/initiate-payment", async (req, res) => {
   }
 });
 
+router.get("/verify-payment", async (req, res) => {
+  const { paymentReference } = req.query;
+
+  if (!paymentReference) {
+    return res.status(400).json({ message: "Missing payment reference" });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://api.ercaspay.com/api/v1/payment/transaction/verify/${paymentReference}`, // ← ERCASPAY endpoint
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.ERCASPAY_SECRET_KEY}`,
+        },
+      }
+    );
+
+    const data = response.data;
+
+    log("ERCASPAY VERIFY RESPONSE:", data);
+
+    if (
+      data?.responseMessage === "success" &&
+      data?.responseBody?.paymentStatus === "PAID"
+    ) {
+      return res.status(200).json({
+        success: true,
+        status: data.responseBody.paymentStatus,
+        amount: data.responseBody.amount,
+        metadata: data.responseBody.metadata,
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        status: data.responseBody?.paymentStatus || "UNKNOWN",
+        message: "Payment not successful",
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Error verifying ERCASPAY payment:",
+      error?.response?.data || error.message
+    );
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = router;

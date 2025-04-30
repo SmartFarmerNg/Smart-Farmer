@@ -22,7 +22,9 @@ const Deposit = () => {
     const accent = localStorage.getItem("accent") || "#0FA280";
     const theme = localStorage.getItem("theme") || "light";
 
-    const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+    const BASE_URL = 'https://smart-farmer-ercaspay-api.onrender.com';
+    console.log(BASE_URL);
+
 
 
     useEffect(() => {
@@ -81,7 +83,7 @@ const Deposit = () => {
 
             console.log("Deposit data to send:", payload);
 
-            const response = await fetch(`${BASE_URL}/api/ercaspay/initiate-payment`, {
+            const response = await fetch(`${BASE_URL}/initiate-payment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -90,12 +92,13 @@ const Deposit = () => {
             });
 
             const text = await response.text();
-
-            try {
+            console.log("Raw response:", text);
+            if (response.ok) {
                 const data = JSON.parse(text);
                 console.log("Response from ERCASPAY:", data);
-                // Proceed normally with data...
                 if (data.responseMessage === "success") {
+                    setTransactionId(data.responseBody.paymentReference);
+                    setShowSuccess(true);
                     await addDoc(collection(db, "transactions"), {
                         uid: user.uid,
                         email: user.email,
@@ -108,24 +111,14 @@ const Deposit = () => {
 
                     window.location.href = data.responseBody.checkoutUrl;
                 } else {
-                    console.error("ERCASPAY Error", data.message);
-                    toast.error("Payment initialization failed: " + data.message);
+                    toast.error("Payment initiation failed");
                 }
-            } catch (err) {
-                console.error("Failed to parse JSON:", err);
-                console.log("Raw response:", text);
-                toast.error("Unexpected response from server");
+            } else {
+                toast.error("Payment initiation failed");
             }
-
-
-
-            // if (!response.ok) {
-            //     throw new Error(`HTTP error! Status: ${response.status}`);
-            // }
-
         } catch (error) {
-            console.error("Error initializing payment", error);
-            toast.error("Error initializing payment");
+            console.error("Error during payment initiation:", error);
+            toast.error("Payment initiation failed");
         } finally {
             setIsProcessing(false);
         }
