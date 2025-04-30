@@ -22,10 +22,7 @@ const Deposit = () => {
     const accent = localStorage.getItem("accent") || "#0FA280";
     const theme = localStorage.getItem("theme") || "light";
 
-    const ERCASPAY_SECRET_KEY = import.meta.env.VITE_ERCAS_PAY_SECRET_KEY;
     const BASE_URL = import.meta.env.VITE_BACKEND_URL;
-    // const ERCASPAY_API_KEY = import.meta.env.VITE_ERCASPAY_API_KEY;
-    // console.log(ERCASPAY_SECRET_KEY);
 
 
     useEffect(() => {
