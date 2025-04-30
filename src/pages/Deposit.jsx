@@ -25,8 +25,6 @@ const Deposit = () => {
     const BASE_URL = 'https://smart-farmer-ercaspay-api.onrender.com';
     console.log(BASE_URL);
 
-
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {

@@ -10,7 +10,7 @@ router.post("/initiate-payment", async (req, res) => {
 
   try {
     const response = await axios.post(
-      "https://api-staging.ercaspay.com/api/v1/payment/initiate", // ← ERCASPAY endpoint
+      "https://api.ercaspay.com/api/v1/payment/initiate", // ← ERCASPAY endpoint
       payload,
       {
         headers: {
@@ -43,7 +43,7 @@ router.get("/verify-payment", async (req, res) => {
 
   try {
     const response = await axios.get(
-      `https://api-staging.ercaspay.com/api/v1/payment/transaction/verify/${paymentReference}`, // ← ERCASPAY endpoint
+      `https://api.ercaspay.com/api/v1/payment/transaction/verify/${paymentReference}`, // ← ERCASPAY endpoint
       {
         headers: {
           Authorization: `Bearer ${process.env.ERCASPAY_SECRET_KEY}`,
