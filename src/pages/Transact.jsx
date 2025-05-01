@@ -38,18 +38,22 @@ const Transact = () => {
     }, [navigate]);
 
     const fetchTransactions = (userId) => {
-        const q = query(collection(db, "transactions"), where("userId", "==", userId));
+        const q = query(collection(db, "transactions"), where("uid", "==", userId) && where("status", "==", "successful"));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let totalBalance = 0;
             const txnList = snapshot.docs.map(doc => {
                 const data = doc.data();
-                if (data.type === "Deposit") totalBalance += data.amount;
-                if (data.type === "Withdraw") {
+                if (data.type === "deposit" && data.status === "successful") {
+                    totalBalance += data.amount;
+                }
+                if (data.type === "withdraw" && data.status === "successful") {
                     const withdrawalFee = data.amount * 0.05;
                     totalBalance -= (data.amount + withdrawalFee);
                 }
-                if (data.type === "Invest") totalBalance -= data.amount;
+                if (data.type === "invest" && data.status === "successful") {
+                    totalBalance -= data.amount
+                };
                 return { id: doc.id, ...data };
             });
 

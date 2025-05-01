@@ -54,18 +54,22 @@ const WithdrawalSettings = () => {
 
 
     const fetchTransactions = (userId) => {
-        const q = query(collection(db, "transactions"), where("userId", "==", userId));
+        const q = query(collection(db, "transactions"), where("uid", "==", userId) && where("status", "==", "successful"));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let totalBalance = 0;
             const txnList = snapshot.docs.map(doc => {
                 const data = doc.data();
-                if (data.type === "Deposit") totalBalance += data.amount;
-                if (data.type === "Withdraw") {
+                if (data.type === "deposit" && data.status === "successful") {
+                    totalBalance += data.amount;
+                }
+                if (data.type === "withdraw" && data.status === "successful") {
                     const withdrawalFee = data.amount * 0.05;
                     totalBalance -= (data.amount + withdrawalFee);
                 }
-                if (data.type === "Invest") totalBalance -= data.amount;
+                if (data.type === "invest" && data.status === "successful") {
+                    totalBalance -= data.amount
+                };
                 return { id: doc.id, ...data };
             });
 
@@ -206,9 +210,9 @@ const WithdrawalSettings = () => {
                         <tbody>
                             {transactions.map((transaction, index) => (
                                 <tr key={index} className="border-b border-white/10">
-                                    <td className="px-4 py-2 text-sm">{new Date(transaction.timestamp).toLocaleDateString()}</td>
-                                    <td className={"px-4 py-2 text-sm"}>NGN {transaction.type === 'Deposit' ? '+' : '-'}{transaction.amount.toLocaleString()}</td>
-                                    <td className={`px-4 py-2 text-sm ${transaction.type === 'Deposit' ? 'text-green-400' : transaction.type === 'Withdrawal' ? 'text-red-400' : ''}`}>{transaction.type}</td>
+                                    <td className="px-4 py-2 text-sm">{new Date(transaction.createdAt.seconds * 1000).toLocaleString()}</td>
+                                    <td className={"px-4 py-2 text-sm"}>NGN {transaction.type === 'deposit' ? '+' : '-'}{transaction.amount.toLocaleString()}</td>
+                                    <td className={`px-4 py-2 text-sm ${transaction.type === 'deposit' ? 'text-green-400' : transaction.type === 'Withdrawal' ? 'text-red-400' : ''}`}>{transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
                                     <td className="px-4 py-2 text-sm">{transaction.status}</td>
                                 </tr>
                             ))}

@@ -59,7 +59,9 @@ const Dashboard = () => {
         setAvailableBalance(userSnap.exists() ? userSnap.data().availableBalance || 0 : 0);
         setInvestmentBalance(userSnap.exists() ? userSnap.data().investmentBalance || 0 : 0);
         setTheme(userSnap.data().theme || 'light');
+        localStorage.setItem('theme', userSnap.data().theme || 'light');
         setAccent(userSnap.data().accent || '#0FA280');
+        localStorage.setItem('accent', userSnap.data().accent || '#0FA280');
       });
       return unsubscribe;
     } catch (error) {

@@ -27,7 +27,7 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
         currentPage * transactionsPerPage
     );
 
-    const typeOptions = ["All", "Deposit", "Invest", "Withdraw"];
+    const typeOptions = ["All", "deposit", "invest", "Withdraw"];
 
     return (
         <div className="mt-4 w-full">
@@ -48,7 +48,7 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
                             color: selectedType === type ? '#fff' : '#333',
                         }}
                     >
-                        {type}
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
                     </button>
                 ))}
             </div>
@@ -71,25 +71,25 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
                             className={`${theme === "dark" ? 'bg-gray-800 text-gray-200' : 'bg-gray-200 border border-gray-300'} shadow-md border-b px-4 py-2 flex items-center gap-2 overflow-hidden`}
                         >
                             <div
-                                className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${txn.type === "Deposit"
+                                className={`w-10 h-10 flex items-center justify-center rounded-full text-white ${txn.type === "deposit"
                                     ? "bg-green-400"
-                                    : txn.type === "Invest"
+                                    : txn.type === "invest"
                                         ? "bg-blue-400"
                                         : "bg-red-400"
                                     }`}
                             >
-                                {txn.type === "Deposit" ? (
+                                {txn.type === "deposit" ? (
                                     <ArrowDownLeft className="w-5 h-5" />
-                                ) : txn.type === "Invest" ? (
+                                ) : txn.type === "invest" ? (
                                     <Wallet className="w-5 h-5" />
                                 ) : (
                                     <ArrowUpRight className="w-5 h-5" />
                                 )}
                             </div>
                             <div className="z-10">
-                                <h1 className="font-semibold sm:text-lg">{txn.type}</h1>
+                                <h1 className="font-semibold sm:text-lg">{txn.type.charAt(0).toUpperCase() + txn.type.slice(1)}</h1>
                                 <span className="text-xs sm:text-sm ">
-                                    {new Date(txn.timestamp).toLocaleString()}
+                                    {new Date(txn.createdAt.seconds * 1000).toLocaleString()}
                                 </span>
                             </div>
                             <div className="ml-auto font-bold ">

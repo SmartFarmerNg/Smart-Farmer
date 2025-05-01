@@ -134,7 +134,7 @@ const Profile = () => {
                         <motion.div
                             whileTap={{ scale: 0.97 }}
                             className={`${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} shadow-md p-4 rounded-xl flex items-center gap-4 cursor-pointer`}
-                            onClick={() => navigate('/transactions')}
+                            onClick={() => navigate('/transact')}
                         >
                             <History style={{ color: accent }} />
                             <p className='text-sm font-semibold'>Transaction History</p>
