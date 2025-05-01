@@ -8,7 +8,6 @@ import {
     getDoc,
     collection,
     addDoc,
-    serverTimestamp,
 } from "firebase/firestore";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -105,7 +104,7 @@ const Deposit = () => {
                         status: "pending",
                         reference: paymentReference,
                         txn_data: depositData,
-                        createdAt: new Date()
+                        createdAt: new Date().toISOString()
                     });
 
                     window.location.href = data.responseBody.checkoutUrl;

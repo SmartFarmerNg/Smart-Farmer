@@ -155,6 +155,7 @@ const Withdraw = () => {
                     accountNumber,
                     bankCode,
                     accountName,
+                    createdAt: new Date().toISOString(),
                     timestamp: new Date().toISOString(),
                 });
 

@@ -18,7 +18,7 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
         const filtered = selectedType === "All"
             ? [...transactions]
             : transactions.filter((txn) => txn.type === selectedType);
-        return filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }, [transactions, selectedType]);
 
     const totalPages = Math.ceil(filteredTransactions.length / transactionsPerPage);
@@ -89,7 +89,7 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
                             <div className="z-10">
                                 <h1 className="font-semibold sm:text-lg">{txn.type.charAt(0).toUpperCase() + txn.type.slice(1)}</h1>
                                 <span className="text-xs sm:text-sm ">
-                                    {new Date(txn.createdAt.seconds * 1000).toLocaleString()}
+                                    {new Date(txn.createdAt).toLocaleString()}
                                 </span>
                             </div>
                             <div className="ml-auto font-bold ">

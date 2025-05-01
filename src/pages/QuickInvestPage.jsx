@@ -14,7 +14,7 @@ const InvestProductPage = () => {
     const [user, setUser] = useState(null);
     const [investmentBalance, setInvestmentBalance] = useState(0);
     const [investmentAmount, setInvestmentAmount] = useState("");
-    const [numberOfDays, setNumberOfDays] = useState(7); // Default to 30 days
+    const [numberOfDays, setNumberOfDays] = useState(investment.minimumInvestmentPeriod); // Default to 30 days
     const [calculatedProfit, setCalculatedProfit] = useState(0);
     const [isInvesting, setIsInvesting] = useState(false);
 
@@ -131,6 +131,7 @@ const InvestProductPage = () => {
                 type: "Invest",
                 investmentId: investment?.productName,
                 timestamp: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
             });
 
             toast.success(`Successfully invested ₦${Number(investmentAmount).toLocaleString()} in ${investment.productName}!`);

@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+
+// import { Player } from "@lottiefiles/react-lottie-player"; // optional alternative
+// import Lottie from "lottie-react";
+// import successAnim from "../animations/success.json";
+
+
 import {
     collection,
     doc,
@@ -91,7 +97,7 @@ const DepositSuccess = () => {
                     // Mark transaction as successful
                     await updateDoc(transactionRef, {
                         status: "successful",
-                        verifiedAt: new Date(),
+                        verifiedAt: new Date().toISOString(),
                         transactionId: data.transactionReference || transactionRef,
                         paymentMethod: data.paymentMethod || "unknown",
                         rawResponse: data,
@@ -120,33 +126,66 @@ const DepositSuccess = () => {
     const renderContent = () => {
         switch (status) {
             case "verifying":
-                return <p>Verifying your payment...</p>;
+                return (
+                    <div className="flex flex-col items-center space-y-4">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-opacity-50"></div>
+                        <p className="text-lg font-medium text-gray-600 dark:text-gray-300">Verifying your payment...</p>
+                    </div>
+                );
             case "success":
                 return (
-                    <>
-                        <h2 className="text-2xl font-bold text-green-600">
-                            Deposit of {formatCurrency(amount)} Successful 🎉
-                        </h2>
-                        <p className="text-lg">Your new balance is {formatCurrency(newBalance)}</p>
-                        <button
-                            onClick={() => navigate("/dashboard")}
-                            className="mt-4 px-6 py-2 bg-green-600 text-white rounded-md"
-                        >
-                            Go to Dashboard
-                        </button>
-                    </>
+                    <div className="relative overflow-hidden px-4">
+                        <div className="relative z-10 backdrop-blur-xl bg-white/30 dark:bg-white/10 shadow-2xl rounded-2xl p-8 max-w-md mx-auto text-center space-y-6 border border-white/20">
+                            <h2 className="text-2xl md:text-3xl font-bold text-green-700 dark:text-green-300">
+                                Deposit Successful 🎉
+                            </h2>
+                            <p className="text-lg text-gray-700 dark:text-gray-300">
+                                You’ve deposited <span className="font-semibold">{formatCurrency(amount)}</span>
+                            </p>
+                            <p className="text-md text-gray-600 dark:text-gray-400">
+                                Your new balance is <span className="font-semibold">{formatCurrency(newBalance)}</span>
+                            </p>
+                            <button
+                                onClick={() => navigate("/dashboard")}
+                                className="w-full py-3 px-6 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 transition duration-300 shadow-md"
+                            >
+                                Go to Dashboard
+                            </button>
+                        </div>
+                    </div>
                 );
             case "failed":
-                return <p className="text-red-500">Payment not successful.</p>;
+                return (
+                    <div className="space-y-3">
+                        <p className="text-xl font-semibold text-red-600">❌ Payment Failed</p>
+                        <p className="text-gray-600 dark:text-gray-300">We couldn't verify your payment. Please try again.</p>
+                    </div>
+                );
             case "user-not-found":
-                return <p>User not found. Contact support.</p>;
+                return (
+                    <div className="space-y-3">
+                        <p className="text-xl font-semibold text-yellow-600">⚠️ User Not Found</p>
+                        <p className="text-gray-600 dark:text-gray-300">The user ID could not be found. Contact support.</p>
+                    </div>
+                );
             case "invalid":
-                return <p>Invalid payment reference.</p>;
+                return (
+                    <div className="space-y-3">
+                        <p className="text-xl font-semibold text-red-500">Invalid Payment</p>
+                        <p className="text-gray-600 dark:text-gray-300">Missing or invalid transaction reference.</p>
+                    </div>
+                );
             case "error":
             default:
-                return <p>Something went wrong. Please try again later.</p>;
+                return (
+                    <div className="space-y-3">
+                        <p className="text-xl font-semibold text-red-600">🚫 Error</p>
+                        <p className="text-gray-600 dark:text-gray-300">Something went wrong. Please try again later.</p>
+                    </div>
+                );
         }
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white p-4">
