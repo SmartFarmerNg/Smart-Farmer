@@ -206,19 +206,6 @@ const Invest = () => {
     return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
   };
 
-  const displayedInvestments = useMemo(() => {
-    return sortedInvestments
-      .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
-      .sort((a, b) => {
-        if (sortBy === 'latest') {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        } else if (sortBy === 'progress') {
-          return getProgress(b) - getProgress(a);
-        }
-        return 0;
-      });
-  }, [sortedInvestments, statusFilter, sortBy]);
-
   const getDaysLeft = (inv) => {
     const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
     const start = new Date(startRaw);
@@ -231,6 +218,19 @@ const Invest = () => {
     const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
     return Math.max(0, Math.ceil(totalDays - daysElapsed));
   };
+
+  const displayedInvestments = useMemo(() => {
+    return sortedInvestments
+      .filter(inv => statusFilter === 'All' || inv.status === statusFilter)
+      .sort((a, b) => {
+        if (sortBy === 'latest') {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        } else if (sortBy === 'progress') {
+          return getProgress(b) - getProgress(a);
+        }
+        return 0;
+      });
+  }, [sortedInvestments, statusFilter, sortBy]);
 
   const totalInvested = investments.filter(inv => inv.status === 'Active').reduce((sum, inv) => sum + inv.investmentAmount, 0);
 
