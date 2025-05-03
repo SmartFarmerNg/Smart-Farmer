@@ -5,6 +5,7 @@ import { collection, query, where, onSnapshot, doc, updateDoc, orderBy } from 'f
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide';
 import { Check, Hourglass } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const WithdrawalSettings = () => {
     const [user, setUser] = useState('');

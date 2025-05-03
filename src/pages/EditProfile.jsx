@@ -11,7 +11,6 @@ import { toast, ToastContainer } from 'react-toastify';
 const EditProfile = () => {
     const navigate = useNavigate();
     const user = auth.currentUser;
-    console.log(user);
 
 
     const [displayName, setDisplayName] = useState('');
