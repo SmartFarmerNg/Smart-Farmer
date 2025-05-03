@@ -25,7 +25,7 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
-        }, 60000);
+        }, 1000); // Update every second instead of minute for more accurate tracking
 
         return () => clearInterval(timer);
     }, []);
@@ -37,62 +37,64 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
         const investmentsRef = collection(db, "users", userId, "investments");
 
         const unsubscribe = onSnapshot(investmentsRef, (querySnapshot) => {
-            const updatedInvestments = [];
-            const now = new Date();
-
-            for (const docSnap of querySnapshot.docs) {
+            const updatedInvestments = querySnapshot.docs.map(docSnap => {
                 const inv = { id: docSnap.id, ...docSnap.data() };
-
-                const progress = getProgress(inv, now);
-                const daysLeft = getDaysLeft(inv, now);
-
-                updatedInvestments.push({
+                return {
                     ...inv,
-                    progress,
-                    daysLeft
-                });
-            }
+                    progress: getProgress(inv, currentTime),
+                    daysLeft: getDaysLeft(inv, currentTime)
+                };
+            });
 
             setinvestment(updatedInvestments);
         });
 
         return () => unsubscribe();
-    }, [userId]);
+    }, [userId, currentTime]);
 
-    const getProgress = (inv, now = new Date()) => {
+    const getProgress = (inv, currentTime) => {
         const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
-        const start = new Date(startRaw);
+        const start = startRaw instanceof Date ? startRaw : new Date(startRaw);
 
         const totalDays = inv.productName === 'Fast Vegetables'
             ? inv.investmentPeriod
             : inv.investmentPeriod * 30;
 
-        const duration = totalDays * 24 * 60 * 60 * 1000; // ms
-        const elapsed = now - start;
+        const duration = totalDays * 24 * 60 * 60 * 1000;
+        const elapsed = currentTime.getTime() - start.getTime();
         const percentage = (elapsed / duration) * 100;
 
         return Math.min(Math.max(percentage, 0), 100);
     };
 
-    const getDaysLeft = (inv, now = new Date()) => {
+    const getDaysLeft = (inv, currentTime) => {
         const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
-        const start = new Date(startRaw);
+        const start = startRaw instanceof Date ? startRaw : new Date(startRaw);
 
         const totalDays = inv.productName === 'Fast Vegetables'
             ? inv.investmentPeriod
             : inv.investmentPeriod * 30;
 
-        const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
-        return Math.max(0, Math.ceil(totalDays - daysElapsed));
+        const msElapsed = currentTime.getTime() - start.getTime();
+        const daysElapsed = msElapsed / (1000 * 60 * 60 * 24);
+        const daysLeft = totalDays - daysElapsed;
+
+        if (daysLeft < 1 && daysLeft > 0) {
+            const hoursLeft = Math.floor(daysLeft * 24);
+            const minutesLeft = Math.floor((daysLeft * 24 - hoursLeft) * 60);
+            return `${hoursLeft}h ${minutesLeft}m`;
+        }
+
+        return `${Math.max(0, Math.ceil(daysLeft))}  day${daysLeft !== 1 ? 's' : ''} `;
     };
 
     const getDaysLeftColor = (daysLeft) => {
         if (daysLeft <= 7) {
-            return "#00FF00";
+            return "#FF5733";
         } else if (daysLeft <= 14) {
             return "#FFC300";
         } else {
-            return "#FF5733";
+            return "#00FF00";
         }
     };
 
@@ -120,8 +122,8 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 >
                     {investment.map((investment, index) => {
-                        const progress = getProgress(investment);
-                        const daysLeft = getDaysLeft(investment);
+                        const progress = getProgress(investment, currentTime);
+                        const daysLeft = getDaysLeft(investment, currentTime);
                         return (
                             <div
                                 key={index}
@@ -143,7 +145,7 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                                             {
                                                 color: getDaysLeftColor(daysLeft),
                                             }
-                                        }>Days Left: {daysLeft}</p>
+                                        }>Time Left: {daysLeft}</p>
                                 </div>
 
                                 <div className="w-20 h-20 mt-4 self-center">
@@ -155,6 +157,8 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                                             textColor: progress === 100 ? `${accent}` : getProgressColor(progress),
                                             pathColor: progress === 100 ? `${accent}` : getProgressColor(progress),
                                             trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                            pathTransition: "stroke-dashoffset 0.5s ease 0s",
+                                            transition: "stroke-dashoffset 0.5s ease 0s"
                                         })}
                                     />
                                 </div>

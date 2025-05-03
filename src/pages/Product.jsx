@@ -66,6 +66,18 @@ const Product = () => {
                 return;
             }
 
+            // Check if investment is being made at least 5 days before start date
+            const startDate = new Date(product.startDate);
+            const today = new Date();
+            const daysDifference = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+
+            if (daysDifference < 5) {
+                toast.error("Investment must be made at least 5 days before the start date");
+                setLoading(false);
+                return;
+            }
+
+
             // Update available units in Firestore
             await updateDoc(productRef, {
                 availableUnits: availableUnits - investmentUnits,

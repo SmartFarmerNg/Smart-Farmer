@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useEffect, useState } from "react";
 
 const InvestProductPage = () => {
     const { state } = useLocation();
@@ -47,9 +48,30 @@ const InvestProductPage = () => {
             ? inv.investmentPeriod
             : inv.investmentPeriod * 30;
 
-        const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
-        return Math.max(0, Math.ceil(totalDays - daysElapsed));
+        const msLeft = (start.getTime() + (totalDays * 24 * 60 * 60 * 1000)) - now.getTime();
+        const daysLeft = Math.floor(msLeft / (1000 * 60 * 60 * 24));
+
+        if (daysLeft < 1 && msLeft > 0) {
+            const hoursLeft = Math.floor((msLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutesLeft = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
+            return `${hoursLeft}h ${minutesLeft}m`;
+        }
+
+        return `${Math.max(0, Math.ceil(daysLeft))}  day${daysLeft !== 1 ? 's' : ''} `;
     };
+
+    const [progress, setProgress] = useState(getProgress(investment));
+    const [daysLeft, setDaysLeft] = useState(getDaysLeft(investment));
+
+    // Update every minute
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setProgress(getProgress(investment));
+            setDaysLeft(getDaysLeft(investment));
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, [investment]);
 
     const getProgressColor = (progress) => {
         if (progress < 50) {
@@ -60,9 +82,6 @@ const InvestProductPage = () => {
             return "#00FF00";
         }
     };
-
-    const progress = getProgress(investment);
-    const daysLeft = getDaysLeft(investment);
 
     return (
         <div className={`min-h-screen flex flex-col items-center justify-center px-6 bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'}`}>
@@ -79,8 +98,8 @@ const InvestProductPage = () => {
                                 <p><strong>Created At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             </>
                         }
-                        <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === 'Fast Vegetables' ? 'day(s)' : 'months'}</p>
-                        <p><strong>Time Left:</strong> {daysLeft} {investment.productName === 'Fast Vegetables' ? 'day(s)' : 'months'}</p>
+                        <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === "Fast Vegetables" ? `day${investment.investmentPeriod !== 1 ? 's' : ''}` : 'months'}</p>
+                        <p><strong>Time Left:</strong> {daysLeft}</p>
                         <p className={`${investment.status === 'Active' ? 'text-blue-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-green-500'} font-semibold`}><strong className={theme === 'dark' ? 'text-white' : 'text-black'}>Status:</strong> {investment.status}</p>
                         <p><strong>{investment.status === 'Completed' ? 'Profit' : 'Expected Profit'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100).toLocaleString()}</p>
                         <p><strong>{investment.status === 'Completed' ? 'Payout' : 'Expected Payout'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100 + investment.investmentAmount).toLocaleString()}</p>
