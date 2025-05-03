@@ -1,8 +1,10 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { auth, db } from '../../../firebase';
-import { collection, query, where, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, updateDoc, orderBy } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircle } from 'lucide';
+import { Check, Hourglass } from 'lucide-react';
 
 const WithdrawalSettings = () => {
     const [user, setUser] = useState('');
@@ -13,6 +15,9 @@ const WithdrawalSettings = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(true);
+
+    const [page, setPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     const accent = localStorage.getItem('accent') || '#0FA280';
 
@@ -54,32 +59,38 @@ const WithdrawalSettings = () => {
 
 
     const fetchTransactions = (userId) => {
-        const q = query(collection(db, "transactions"), where("uid", "==", userId) && where("status", "==", "successful"));
+        const q = query(
+            collection(db, "transactions"),
+            where("uid", "==", userId),
+            where("status", "==", "successful"),
+            orderBy("createdAt", "desc")
+        );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let totalBalance = 0;
             const txnList = snapshot.docs.map(doc => {
                 const data = doc.data();
-                if (data.type === "deposit" && data.status === "successful") {
-                    totalBalance += data.amount;
+                if (data.status === "successful") {
+                    switch (data.type) {
+                        case "deposit":
+                            totalBalance += parseFloat(data.amount);
+                            break;
+                        case "withdraw":
+                            const withdrawalFee = parseFloat(data.amount) * 0.05;
+                            totalBalance -= (parseFloat(data.amount) + withdrawalFee);
+                            break;
+                        case "invest":
+                            totalBalance -= parseFloat(data.amount);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                if (data.type === "withdraw" && data.status === "successful") {
-                    const withdrawalFee = data.amount * 0.05;
-                    totalBalance -= (data.amount + withdrawalFee);
-                }
-                if (data.type === "invest" && data.status === "successful") {
-                    totalBalance -= data.amount
-                };
                 return { id: doc.id, ...data };
             });
-
             setTransactions(txnList);
-            console.log(txnList);
-
             setLoading(false);
-        });
-
-        return unsubscribe;
+        }); return unsubscribe;
     };
     // Replace with actual list or fetch dynamically from Paystack
     const [banks, setBanks] = useState([]);
@@ -131,6 +142,24 @@ const WithdrawalSettings = () => {
             setLoading(false);
         }
     };
+
+    const formatCurrency = (value) =>
+        new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+            minimumFractionDigits: 2,
+        }).format(value);
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
     return (
         <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-4">Withdrawal Settings</h2>
@@ -198,26 +227,48 @@ const WithdrawalSettings = () => {
                 {loading ? (
                     <p>Loading transactions...</p>
                 ) : (
-                    <table className="w-full table-auto border-collapse bg-white/10">
-                        <thead>
-                            <tr className="text-left">
-                                <th className="px-4 py-2 text-sm font-medium">Date</th>
-                                <th className="px-4 py-2 text-sm font-medium">Amount</th>
-                                <th className="px-4 py-2 text-sm font-medium">Type</th>
-                                <th className="px-4 py-2 text-sm font-medium">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transactions.map((transaction, index) => (
-                                <tr key={index} className="border-b border-white/10">
-                                    <td className="px-4 py-2 text-sm">{new Date(transaction.createdAt.seconds * 1000).toLocaleString()}</td>
-                                    <td className={"px-4 py-2 text-sm"}>NGN {transaction.type === 'deposit' ? '+' : '-'}{transaction.amount.toLocaleString()}</td>
-                                    <td className={`px-4 py-2 text-sm ${transaction.type === 'deposit' ? 'text-green-400' : transaction.type === 'Withdrawal' ? 'text-red-400' : ''}`}>{transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
-                                    <td className="px-4 py-2 text-sm">{transaction.status}</td>
+                    <>
+                        <table className="w-full table-auto border-collapse">
+                            <thead>
+                                <tr className="text-left">
+                                    <th className="px-2 sm:px-4 py-2 text-sm font-medium">Date</th>
+                                    <th className="px-2 sm:px-4 py-2 text-sm font-medium">Amount</th>
+                                    <th className="px-2 sm:px-4 py-2 text-sm font-medium">Type</th>
+                                    <th className="px-2 sm:px-4 py-2 text-sm font-medium">Status</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>)}
+                            </thead>
+                            <tbody>
+                                {transactions.slice(page * itemsPerPage, (page + 1) * itemsPerPage).map((transaction, index) => (
+                                    <tr key={index} className="border-b border-white/10">
+                                        <td className="px-2 sm:px-4 py-2 text-sm">{formatDate(transaction.createdAt)}</td>
+                                        <td className={"px-2 sm:px-4 py-2 text-sm"}>{transaction.type === 'deposit' ? '+' : '-'}{formatCurrency(transaction.amount)}</td>
+                                        <td className={`px-2 sm:px-4 py-2 text-sm ${transaction.type === 'deposit' ? 'text-green-400' : transaction.type === 'Withdrawal' ? 'text-red-400' : ''}`}>{transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
+                                        <td className="px-2 sm:px-4 py-2 text-sm">{transaction.status === 'successful' ? <Check className='text-green-500' /> : <Hourglass className='text-amber-400' />}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className="flex justify-between items-center mt-4">
+                            <button
+                                onClick={() => setPage(Math.max(0, page - 1))}
+                                disabled={page === 0}
+                                className="px-4 py-2 text-sm bg-white/10 rounded-lg disabled:opacity-50"
+                            >
+                                Previous
+                            </button>
+                            <span className="text-sm">
+                                Page {page + 1} of {Math.ceil(transactions.length / itemsPerPage)}
+                            </span>
+                            <button
+                                onClick={() => setPage(Math.min(Math.ceil(transactions.length / itemsPerPage) - 1, page + 1))}
+                                disabled={page >= Math.ceil(transactions.length / itemsPerPage) - 1}
+                                className="px-4 py-2 text-sm bg-white/10 rounded-lg disabled:opacity-50"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

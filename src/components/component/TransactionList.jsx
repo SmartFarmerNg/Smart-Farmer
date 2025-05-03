@@ -29,6 +29,23 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
 
     const typeOptions = ["All", "deposit", "invest", "Withdraw"];
 
+    const formatCurrency = (value) =>
+        new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+            minimumFractionDigits: 2,
+        }).format(value);
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
     return (
         <div className="mt-4 w-full">
             <h2 className="text-lg font-semibold text-white mb-4">Recent Transactions</h2>
@@ -89,11 +106,11 @@ const TransactionList = ({ transactions, loading, theme, accent }) => {
                             <div className="z-10">
                                 <h1 className="font-semibold sm:text-lg">{txn.type.charAt(0).toUpperCase() + txn.type.slice(1)}</h1>
                                 <span className="text-xs sm:text-sm ">
-                                    {new Date(txn.createdAt).toLocaleString()}
+                                    {formatDate(txn.createdAt)}
                                 </span>
                             </div>
                             <div className="ml-auto font-bold ">
-                                NGN {txn.amount.toLocaleString()}
+                                {formatCurrency(txn.amount)}
                             </div>
                         </motion.div>
                     ))}

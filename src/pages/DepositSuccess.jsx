@@ -38,7 +38,6 @@ const DepositSuccess = () => {
             try {
                 const res = await fetch(`${BASE_URL}/api/ercaspay/verify-payment?transactionRef=${transactionRef}`);
                 const data = await res.json();
-                console.log("Verification result:", data);
 
                 if (data.success && data.status === "SUCCESSFUL") {
                     let uid = null;
@@ -79,7 +78,6 @@ const DepositSuccess = () => {
                     const currentStatus = transactionDoc.data().status;
 
                     if (currentStatus === "successful") {
-                        console.log("Transaction already completed.");
                         navigate("/dashboard");
                         return;
                     }

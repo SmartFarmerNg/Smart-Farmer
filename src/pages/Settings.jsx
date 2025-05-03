@@ -20,6 +20,9 @@ const Settings = () => {
     const [accent, setAccent] = useState(localStorage.getItem('accent') || '#0FA280');
 
     useEffect(() => {
+
+        if (!auth.currentUser?.uid) return
+
         const unsubscribe = onSnapshot(doc(db, "users", auth.currentUser?.uid), (doc) => {
             if (doc.exists()) {
                 setTheme(doc.data().theme || 'light');
@@ -50,7 +53,7 @@ const Settings = () => {
     };
 
     return (
-        <div className={`min-h-screen p-4 sm:p-6 text-white w-full mx-auto shadow-lg bg-gradient-to-br  ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'} transition duration-500`}>
+        <div className={`min-h-screen p-4 md:p-6 text-white w-full mx-auto shadow-lg bg-gradient-to-br  ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'} transition duration-500`}>
             <div className=' max-w-5xl mx-auto'>
                 <button className='flex items-center mb-4' onClick={() => {
                     localStorage.removeItem('activeTab')
@@ -59,9 +62,9 @@ const Settings = () => {
                     <ArrowLeft className="mr-2" />
                     <span className="text-2xl font-semibold">Account Settings</span>
                 </button>
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <div className="flex flex-col md:flex-row gap-4 md:gap-6">
                     {/* Tabs: full width on mobile, sidebar on desktop */}
-                    <div className="w-full sm:w-1/4 sm:sticky sm:top-4">
+                    <div className="w-full md:w-1/4 md:sticky md:top-4">
                         <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} theme={theme} accent={accent} />
                     </div>
 
@@ -71,7 +74,7 @@ const Settings = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="w-full sm:flex-1 backdrop-blur-md bg-white/5 rounded-2xl p-4 sm:p-6 shadow-xl border border-white/10"
+                        className="w-full md:flex-1 backdrop-blur-md bg-white/5 rounded-2xl p-4 md:p-6 shadow-xl border border-white/10"
                     >
                         {renderTab()}
                     </motion.div>

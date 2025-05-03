@@ -28,7 +28,7 @@ const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
   return (
     <div className="w-full">
       {/* Mobile: Horizontal Scrollable Tabs */}
-      <div className="sm:hidden mb-4 flex overflow-x-auto gap-3 pb-2">
+      <div className="md:hidden mb-4 flex overflow-x-auto gap-3 pb-2">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -52,7 +52,7 @@ const SettingsTabs = ({ activeTab, setActiveTab, theme, accent }) => {
       </div>
 
       {/* Desktop: Vertical Sidebar */}
-      <div className="hidden sm:flex flex-col gap-2">
+      <div className="hidden md:flex flex-col gap-2">
         {tabs.map((tab) => (
           <button
             key={tab.key}
