@@ -95,11 +95,11 @@ const InvestProductPage = () => {
                         {investment.productName === 'Fast Vegetables' ? <p><strong>Start Date:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             : <>
                                 <p><strong>Start Date:</strong> {new Date(investment.startDate).toLocaleDateString()}</p>
-                                <p><strong>Created At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
+                                <p><strong>Invested At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             </>
                         }
                         <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === "Fast Vegetables" ? `day${investment.investmentPeriod !== 1 ? 's' : ''}` : 'months'}</p>
-                        <p><strong>Time Left:</strong> {daysLeft}</p>
+                        {investment.status === 'Active' && <p><strong>Time Left:</strong> {daysLeft}</p>}
                         <p className={`${investment.status === 'Active' ? 'text-blue-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-green-500'} font-semibold`}><strong className={theme === 'dark' ? 'text-white' : 'text-black'}>Status:</strong> {investment.status}</p>
                         <p><strong>{investment.status === 'Completed' ? 'Profit' : 'Expected Profit'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100).toLocaleString()}</p>
                         <p><strong>{investment.status === 'Completed' ? 'Payout' : 'Expected Payout'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100 + investment.investmentAmount).toLocaleString()}</p>

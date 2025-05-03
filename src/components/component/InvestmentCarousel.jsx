@@ -145,7 +145,11 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                                             {
                                                 color: getDaysLeftColor(daysLeft),
                                             }
-                                        }>Time Left: {daysLeft}</p>
+                                        }>
+                                        {investment.status === 'Completed' ? 'Status: Completed' :
+                                            investment.status === 'Pending' ? 'Status: Pending' :
+                                                `Time Left: ${daysLeft}`}
+                                    </p>
                                 </div>
 
                                 <div className="w-20 h-20 mt-4 self-center">

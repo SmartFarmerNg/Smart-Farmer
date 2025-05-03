@@ -162,7 +162,7 @@ const Deposit = () => {
                     <p className="text-center text-sm">Loading user info...</p>
                 ) : (
                     <div className="flex flex-col gap-2">
-                        <p className='text-red-600 font-semibold flex gap-2 items-center mb-2 text-sm'> <AlertTriangle size={20} /><span>(Deposits is still in development. Funds may be lost.)</span></p>
+                        <p className='text-red-600 font-semibold flex gap-2 items-center mb-2 text-sm'> <AlertTriangle size={20} /><span>(Deposit is still in development. Funds may be lost.)</span></p>
 
                         <p>
                             Available Balance:{" "}
