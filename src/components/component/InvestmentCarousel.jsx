@@ -32,52 +32,25 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
 
 
     useEffect(() => {
-        if (userId) return;
+        if (!userId) return;
 
         const investmentsRef = collection(db, "users", userId, "investments");
-        const userRef = doc(db, "users", userId);
 
-        const unsubscribe = onSnapshot(investmentsRef, async (querySnapshot) => {
+        const unsubscribe = onSnapshot(investmentsRef, (querySnapshot) => {
             const updatedInvestments = [];
             const now = new Date();
 
             for (const docSnap of querySnapshot.docs) {
                 const inv = { id: docSnap.id, ...docSnap.data() };
-                const start = inv.startDate?.toDate?.() || null;
 
-                if (start && now >= start && inv.status === 'Pending') {
-                    await updateDoc(docSnap.ref, { status: 'Active' });
-                    inv.status = 'Active';
-                }
+                const progress = getProgress(inv, now);
+                const daysLeft = getDaysLeft(inv, now);
 
-                const progress = getProgress(inv);
-                const daysLeft = getDaysLeft(inv);
-
-                if (
-                    progress >= 100 &&
-                    daysLeft === 0 &&
-                    inv.status === 'Active' &&
-                    typeof inv.investmentAmount === 'number' &&
-                    typeof inv.expectedROI === 'number'
-                ) {
-                    const roi = (inv.investmentAmount * inv.expectedROI) / 100;
-                    const totalReturn = inv.investmentAmount + roi;
-
-                    // Update balances first to avoid race conditions
-                    await updateDoc(userRef, {
-                        availableBalance: increment(totalReturn),
-                        investmentBalance: increment(-inv.investmentAmount),
-                    });
-
-                    await updateDoc(docSnap.ref, {
-                        status: 'Completed',
-                        completedAt: new Date(),
-                    });
-
-                    inv.status = 'Completed';
-                }
-
-                updatedInvestments.push(inv);
+                updatedInvestments.push({
+                    ...inv,
+                    progress,
+                    daysLeft
+                });
             }
 
             setinvestment(updatedInvestments);
@@ -86,23 +59,24 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
         return () => unsubscribe();
     }, [userId]);
 
-    const getProgress = (inv) => {
+    const getProgress = (inv, now = new Date()) => {
         const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
         const start = new Date(startRaw);
 
         const totalDays = inv.productName === 'Fast Vegetables'
             ? inv.investmentPeriod
             : inv.investmentPeriod * 30;
-        const duration = totalDays * 24 * 60 * 60 * 1000; // convert days to ms
-        const elapsed = currentTime - start;
+
+        const duration = totalDays * 24 * 60 * 60 * 1000; // ms
+        const elapsed = now - start;
         const percentage = (elapsed / duration) * 100;
-        return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
+
+        return Math.min(Math.max(percentage, 0), 100);
     };
 
-    const getDaysLeft = (inv) => {
+    const getDaysLeft = (inv, now = new Date()) => {
         const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
         const start = new Date(startRaw);
-        const now = new Date();
 
         const totalDays = inv.productName === 'Fast Vegetables'
             ? inv.investmentPeriod
@@ -110,6 +84,26 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
 
         const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
         return Math.max(0, Math.ceil(totalDays - daysElapsed));
+    };
+
+    const getDaysLeftColor = (daysLeft) => {
+        if (daysLeft <= 7) {
+            return "#00FF00";
+        } else if (daysLeft <= 14) {
+            return "#FFC300";
+        } else {
+            return "#FF5733";
+        }
+    };
+
+    const getProgressColor = (progress) => {
+        if (progress < 50) {
+            return "#FF5733";
+        } else if (progress < 75) {
+            return "#FFC300";
+        } else {
+            return "#00FF00";
+        }
     };
 
 
@@ -127,6 +121,7 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                 >
                     {investment.map((investment, index) => {
                         const progress = getProgress(investment);
+                        const daysLeft = getDaysLeft(investment);
                         return (
                             <div
                                 key={index}
@@ -141,6 +136,14 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                                             <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.startDate).toLocaleDateString()}</p>
                                         </>
                                     }
+
+                                    {/* days left */}
+                                    <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}
+                                        style={
+                                            {
+                                                color: getDaysLeftColor(daysLeft),
+                                            }
+                                        }>Days Left: {daysLeft}</p>
                                 </div>
 
                                 <div className="w-20 h-20 mt-4 self-center">
@@ -149,8 +152,9 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                                         text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
                                         styles={buildStyles({
                                             textSize: "28px",
-                                            textColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280",
-                                            pathColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280", trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                            textColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                            pathColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                            trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                                         })}
                                     />
                                 </div>

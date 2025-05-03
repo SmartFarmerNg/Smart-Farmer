@@ -37,7 +37,32 @@ const InvestProductPage = () => {
         return Math.min(Math.max(percentage, 0), 100); // clamp between 0-100
     };
 
+
+    const getDaysLeft = (inv) => {
+        const startRaw = inv.productName === 'Fast Vegetables' ? inv.createdAt : inv.startDate;
+        const start = new Date(startRaw);
+        const now = new Date();
+
+        const totalDays = inv.productName === 'Fast Vegetables'
+            ? inv.investmentPeriod
+            : inv.investmentPeriod * 30;
+
+        const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
+        return Math.max(0, Math.ceil(totalDays - daysElapsed));
+    };
+
+    const getProgressColor = (progress) => {
+        if (progress < 50) {
+            return "#FF5733";
+        } else if (progress < 75) {
+            return "#FFC300";
+        } else {
+            return "#00FF00";
+        }
+    };
+
     const progress = getProgress(investment);
+    const daysLeft = getDaysLeft(investment);
 
     return (
         <div className={`min-h-screen flex flex-col items-center justify-center px-6 bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'}`}>
@@ -48,14 +73,15 @@ const InvestProductPage = () => {
                         <p><strong>Amount:</strong> ₦{investment.investmentAmount.toLocaleString()}</p>
                         {investment.productName !== 'Fast Vegetables' && <p><strong>Units Bought:</strong> {investment.unitsBought}</p>}
                         <p><strong>ROI:</strong> {investment.expectedROI}%</p>
-                        <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === 'Fast Vegetables' ? 'days' : 'months'}</p>
-                        <p className={`${investment.status === 'Active' ? 'text-blue-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-green-500'} font-semibold`}><strong className={theme === 'dark' ? 'text-white' : 'text-black'}>Status:</strong> {investment.status}</p>
                         {investment.productName === 'Fast Vegetables' ? <p><strong>Start Date:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             : <>
                                 <p><strong>Start Date:</strong> {new Date(investment.startDate).toLocaleDateString()}</p>
                                 <p><strong>Created At:</strong> {new Date(investment.createdAt).toLocaleDateString()}</p>
                             </>
                         }
+                        <p><strong>Duration:</strong> {investment.investmentPeriod} {investment.productName === 'Fast Vegetables' ? 'day(s)' : 'months'}</p>
+                        <p><strong>Time Left:</strong> {daysLeft} {investment.productName === 'Fast Vegetables' ? 'day(s)' : 'months'}</p>
+                        <p className={`${investment.status === 'Active' ? 'text-blue-500' : investment.status === 'Pending' ? 'text-amber-400' : 'text-green-500'} font-semibold`}><strong className={theme === 'dark' ? 'text-white' : 'text-black'}>Status:</strong> {investment.status}</p>
                         <p><strong>{investment.status === 'Completed' ? 'Profit' : 'Expected Profit'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100).toLocaleString()}</p>
                         <p><strong>{investment.status === 'Completed' ? 'Payout' : 'Expected Payout'}:</strong> ₦{((investment.investmentAmount * investment.expectedROI) / 100 + investment.investmentAmount).toLocaleString()}</p>
                     </div>
@@ -65,8 +91,9 @@ const InvestProductPage = () => {
                             text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
                             styles={buildStyles({
                                 textSize: "28px",
-                                textColor: progress === 100 ? '#22C55E' : theme === "dark" ? 'white' : "#0FA280",
-                                pathColor: progress === 100 ? '#22C55E' : theme === "dark" ? 'white' : "#0FA280", trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                textColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                pathColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                             })}
                         />
                     </div>

@@ -109,11 +109,12 @@ const Product = () => {
             await addDoc(collection(db, "transactions"), {
                 userId: user.uid,
                 email: user.email,
-                amount: investmentAmount,
+                amount: Number(investmentAmount),
                 status: "successful",
-                type: "Invest",
+                type: "invest",
                 investmentId: product.name,
                 timestamp: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
             });
 
             // Fetch current user data

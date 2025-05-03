@@ -56,7 +56,9 @@ const Invest = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "users", auth.currentUser?.uid), (doc) => {
+    if (!auth.currentUser?.uid) return;
+
+    const unsubscribe = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
       if (doc.exists()) {
         setTheme(doc.data().theme || 'light');
         setAccent(doc.data().accent || '#0FA280');
@@ -64,64 +66,29 @@ const Invest = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (!user?.uid) return;
 
     const investmentsRef = collection(db, "users", user.uid, "investments");
-    const userRef = doc(db, "users", user.uid);
 
-    const unsubscribe = onSnapshot(investmentsRef, async (querySnapshot) => {
+    const unsubscribe = onSnapshot(investmentsRef, (querySnapshot) => {
       const updatedInvestments = [];
-      const now = new Date();
 
-      for (const docSnap of querySnapshot.docs) {
+      querySnapshot.forEach((docSnap) => {
         const inv = { id: docSnap.id, ...docSnap.data() };
-        const start = inv.startDate?.toDate?.() || null;
-
-        if (start && now >= start && inv.status === 'Pending') {
-          await updateDoc(docSnap.ref, { status: 'Active' });
-          inv.status = 'Active';
-        }
-
         const progress = getProgress(inv);
         const daysLeft = getDaysLeft(inv);
 
-        if (
-          progress >= 100 &&
-          daysLeft === 0 &&
-          inv.status === 'Active' &&
-          typeof inv.investmentAmount === 'number' &&
-          typeof inv.expectedROI === 'number'
-        ) {
-          const roi = (inv.investmentAmount * inv.expectedROI) / 100;
-          const totalReturn = inv.investmentAmount + roi;
-
-          // Update balances first to avoid race conditions
-          await updateDoc(userRef, {
-            availableBalance: increment(totalReturn),
-            investmentBalance: increment(-inv.investmentAmount),
-          });
-
-          await updateDoc(docSnap.ref, {
-            status: 'Completed',
-            completedAt: new Date(),
-          });
-
-          inv.status = 'Completed';
-        }
-
-        updatedInvestments.push(inv);
-      }
+        updatedInvestments.push({ ...inv, progress, daysLeft });
+      });
 
       setInvestments(updatedInvestments);
     });
 
     return () => unsubscribe();
   }, [user]);
-
-
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -217,6 +184,16 @@ const Invest = () => {
 
     const daysElapsed = (now - start) / (1000 * 60 * 60 * 24);
     return Math.max(0, Math.ceil(totalDays - daysElapsed));
+  };
+
+  const getProgressColor = (progress) => {
+    if (progress < 50) {
+      return "#FF5733";
+    } else if (progress < 75) {
+      return "#FFC300";
+    } else {
+      return "#00FF00";
+    }
   };
 
   const displayedInvestments = useMemo(() => {
@@ -399,8 +376,9 @@ const Invest = () => {
                               text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
                               styles={buildStyles({
                                 textSize: "28px",
-                                textColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280",
-                                pathColor: progress === 100 ? `${accent}` : theme === "dark" ? 'white' : "#0FA280", trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                textColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                pathColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
                               })}
                             />
                           </div>

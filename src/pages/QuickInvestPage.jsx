@@ -128,7 +128,7 @@ const InvestProductPage = () => {
                 email: user.email,
                 amount: Number(investmentAmount),
                 status: "successful",
-                type: "Invest",
+                type: "invest",
                 investmentId: investment?.productName,
                 timestamp: new Date().toISOString(),
                 createdAt: new Date().toISOString(),
