@@ -124,7 +124,7 @@ const Withdraw = () => {
                 bankCode,
                 accountNumber,
                 accountName,
-                userId: user?.uid,
+                uid: user?.uid,
                 email: user?.email,
             });
 
@@ -145,7 +145,7 @@ const Withdraw = () => {
 
                 // ✅ 2. Save withdrawal transaction
                 await addDoc(collection(db, "transactions"), {
-                    userId: user.uid,
+                    uid: user.uid,
                     email: user.email,
                     amount: withdrawAmount,
                     status: "pending", // you can update this later if needed

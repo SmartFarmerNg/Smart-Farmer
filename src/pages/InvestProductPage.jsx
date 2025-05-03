@@ -79,7 +79,7 @@ const InvestProductPage = () => {
         } else if (progress < 75) {
             return "#FFC300";
         } else {
-            return "#00FF00";
+            return "#0FA280";
         }
     };
 
@@ -87,7 +87,7 @@ const InvestProductPage = () => {
         <div className={`min-h-screen flex flex-col items-center justify-center px-6 bg-gradient-to-br ${theme === 'dark' ? 'from-gray-800 to-gray-900' : 'from-[#0FA280] to-[#054D3B]'}`}>
             <div className={`w-full max-w-2xl mx-auto mt-8 p-6 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md z-50`}>
                 <h1 className="text-2xl font-bold text-center mb-4">{investment.productName}</h1>
-                <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
                     <div className="flex-1 space-y-2">
                         <p><strong>Amount:</strong> ₦{investment.investmentAmount.toLocaleString()}</p>
                         {investment.productName !== 'Fast Vegetables' && <p><strong>Units Bought:</strong> {investment.unitsBought}</p>}

@@ -94,7 +94,7 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
         } else if (daysLeft <= 14) {
             return "#FFC300";
         } else {
-            return "#00FF00";
+            return "#0FA280";
         }
     };
 
@@ -104,7 +104,7 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
         } else if (progress < 75) {
             return "#FFC300";
         } else {
-            return "#00FF00";
+            return "#0FA280";
         }
     };
 

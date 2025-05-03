@@ -119,7 +119,7 @@ const Product = () => {
 
             // Add transaction record
             await addDoc(collection(db, "transactions"), {
-                userId: user.uid,
+                uid: user.uid,
                 email: user.email,
                 amount: Number(investmentAmount),
                 status: "successful",

@@ -38,8 +38,7 @@ const Transact = () => {
     }, [navigate]);
 
     const fetchTransactions = (userId) => {
-        const q = query(collection(db, "transactions"), where("uid", "==", userId) && where("status", "==", "successful"));
-
+        const q = query(collection(db, "transactions"), where("uid", "==", userId), where("status", "==", "successful"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let totalBalance = 0;
             const txnList = snapshot.docs.map(doc => {
