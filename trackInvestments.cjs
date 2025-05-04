@@ -1,6 +1,7 @@
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const serviceAccount = require("./serviceAccountKey.json");
+// const { useState } = require("react");
 
 initializeApp({
   credential: cert(serviceAccount),
@@ -62,8 +63,31 @@ async function trackInvestments() {
         continue; // Don't process completion in same cycle
       }
 
+      const currentTime = new Date();
+
+      const getProgress = (inv, currentTime) => {
+        const startRaw =
+          inv.productName === "Fast Vegetables" ? inv.createdAt : inv.startDate;
+        const start = startRaw instanceof Date ? startRaw : new Date(startRaw);
+
+        const totalDays =
+          inv.productName === "Fast Vegetables"
+            ? inv.investmentPeriod
+            : inv.investmentPeriod * 30;
+
+        const duration = totalDays * 24 * 60 * 60 * 1000;
+        const elapsed = currentTime.getTime() - start.getTime();
+        const percentage = (elapsed / duration) * 100;
+
+        return Math.min(Math.max(percentage, 0), 100);
+      };
+
       // Complete active investments that have reached maturity
-      if (inv.status === "Active" && elapsedDays >= totalDays) {
+      if (
+        inv.status === "Active" &&
+        elapsedDays >= totalDays &&
+        getProgress(inv, currentTime) >= 100
+      ) {
         const roi = (inv.investmentAmount * inv.expectedROI) / 100;
         const totalReturn = inv.investmentAmount + roi;
 
