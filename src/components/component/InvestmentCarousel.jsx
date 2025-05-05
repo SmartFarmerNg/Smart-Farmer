@@ -121,54 +121,60 @@ const InvestmentsCarousel = ({ investments, theme, accent, userId }) => {
                     animate={{ x: -currentIndex * 295 }}
                     transition={{ type: "spring", stiffness: 100, damping: 20 }}
                 >
-                    {investment.map((investment, index) => {
-                        const progress = getProgress(investment, currentTime);
-                        const daysLeft = getDaysLeft(investment, currentTime);
-                        return (
-                            <div
-                                key={index}
-                                className={`${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200'} text-white font-sans shadow-md rounded-xl p-4 min-w-[280px] flex justify-between`}
-                            >
-                                <div>
-                                    <p className={`font-semibold ${theme === "dark" ? 'text-white' : 'text-gray-800'}`}>{investment.productName}</p>
-                                    {investment.productName !== 'Fast Vegetables' && <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Units: {investment.unitsBought}</p>}
-                                    <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
-                                    {investment.productName === 'Fast Vegetables' ? <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.createdAt).toLocaleDateString()}</p>
-                                        : <>
-                                            <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.startDate).toLocaleDateString()}</p>
-                                        </>
-                                    }
+                    {investment
+                        .sort((a, b) => {
+                            if (a.status === 'Active' && b.status !== 'Active') return -1;
+                            if (a.status !== 'Active' && b.status === 'Active') return 1;
+                            return 0;
+                        })
+                        .map((investment, index) => {
+                            const progress = getProgress(investment, currentTime);
+                            const daysLeft = getDaysLeft(investment, currentTime);
+                            return (
+                                <div
+                                    key={index}
+                                    className={`${theme === "dark" ? 'bg-gray-800' : 'bg-gray-200'} text-white font-sans shadow-md rounded-xl p-4 min-w-[280px] flex justify-between`}
+                                >
+                                    <div>
+                                        <p className={`font-semibold ${theme === "dark" ? 'text-white' : 'text-gray-800'}`}>{investment.productName}</p>
+                                        {investment.productName !== 'Fast Vegetables' && <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Units: {investment.unitsBought}</p>}
+                                        <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Amount: ₦{investment.investmentAmount.toLocaleString()}</p>
+                                        {investment.productName === 'Fast Vegetables' ? <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.createdAt).toLocaleDateString()}</p>
+                                            : <>
+                                                <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}>Start: {new Date(investment.startDate).toLocaleDateString()}</p>
+                                            </>
+                                        }
 
-                                    {/* days left */}
-                                    <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}
-                                        style={
-                                            {
-                                                color: getDaysLeftColor(daysLeft),
-                                            }
-                                        }>
-                                        {investment.status === 'Completed' ? 'Status: Completed' :
-                                            investment.status === 'Pending' ? 'Status: Pending' :
-                                                `Time Left: ${daysLeft}`}
-                                    </p>
-                                </div>
+                                        {/* days left */}
+                                        <p className={`text-sm ${theme === "dark" ? 'text-gray-300' : 'text-gray-600'}`}
+                                            style={
+                                                {
+                                                    color: getDaysLeftColor(daysLeft),
+                                                }
+                                            }>
+                                            {investment.status === 'Completed' ? 'Status: Completed' :
+                                                investment.status === 'Pending' ? 'Status: Pending' :
+                                                    `Time Left: ${daysLeft}`}
+                                        </p>
+                                    </div>
 
-                                <div className="w-20 h-20 mt-4 self-center">
-                                    <CircularProgressbar
-                                        value={progress}
-                                        text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
-                                        styles={buildStyles({
-                                            textSize: "28px",
-                                            textColor: progress === 100 ? `${accent}` : getProgressColor(progress),
-                                            pathColor: progress === 100 ? `${accent}` : getProgressColor(progress),
-                                            trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
-                                            pathTransition: "stroke-dashoffset 0.5s ease 0s",
-                                            transition: "stroke-dashoffset 0.5s ease 0s"
-                                        })}
-                                    />
+                                    <div className="w-20 h-20 mt-4 self-center">
+                                        <CircularProgressbar
+                                            value={progress}
+                                            text={progress === 100 ? '✓' : `${Math.round(progress)}%`}
+                                            styles={buildStyles({
+                                                textSize: "28px",
+                                                textColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                                pathColor: progress === 100 ? `${accent}` : getProgressColor(progress),
+                                                trailColor: theme === "dark" ? "#4B5563" : "#d1d5dc",
+                                                pathTransition: "stroke-dashoffset 0.5s ease 0s",
+                                                transition: "stroke-dashoffset 0.5s ease 0s"
+                                            })}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                 </motion.div>
             </div>
 

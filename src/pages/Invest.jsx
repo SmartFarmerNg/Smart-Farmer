@@ -193,7 +193,7 @@ const Invest = () => {
       return `${hoursLeft}h ${minutesLeft}m`;
     }
 
-    return `${Math.max(0, Math.ceil(daysLeft))}  day${daysLeft === 1 ? 's' : ''} `;
+    return `${Math.max(0, Math.ceil(daysLeft))}  day${daysLeft !== 1 ? 's' : ''} `;
   };
   const getProgressColor = (progress) => {
     if (progress < 50) {
